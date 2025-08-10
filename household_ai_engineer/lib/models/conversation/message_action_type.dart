@@ -1,7 +1,3 @@
-/// Message Action Type Enumeration
-///
-/// Defines types of actions that can be attached to conversation messages.
-
 /// Types of actions that can be attached to conversation messages.
 ///
 /// Different action types have different visual styling and behavior
@@ -59,7 +55,6 @@ extension MessageActionTypeExtension on MessageActionType {
   /// Some action types like confirmations should be processed
   /// immediately when selected, while others may queue responses.
   bool get requiresImmediateProcessing {
-    return this == MessageActionType.confirmation ||
-        this == MessageActionType.navigation;
+    return this == MessageActionType.confirmation || this == MessageActionType.navigation;
   }
 }

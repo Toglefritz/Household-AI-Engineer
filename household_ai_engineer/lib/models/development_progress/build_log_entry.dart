@@ -1,7 +1,4 @@
-/// Build Log Entry Model
-///
-/// Represents a single entry in the development build log with
-/// timestamp, severity level, message, and source information.
+import 'package:flutter/foundation.dart';
 
 import 'log_level.dart';
 
@@ -10,17 +7,13 @@ import 'log_level.dart';
 /// Build log entries provide detailed information about specific
 /// development activities, including timestamps, severity levels,
 /// and descriptive messages for debugging and monitoring.
+@immutable
 class BuildLogEntry {
   /// Creates a new build log entry.
   ///
   /// All parameters are required to ensure complete log information
   /// for debugging and progress tracking purposes.
-  const BuildLogEntry({
-    required this.timestamp,
-    required this.level,
-    required this.message,
-    required this.source,
-  });
+  const BuildLogEntry({required this.timestamp, required this.level, required this.message, required this.source});
 
   /// Timestamp when this log entry was created.
   ///
@@ -57,16 +50,11 @@ class BuildLogEntry {
     try {
       return BuildLogEntry(
         timestamp: DateTime.parse(
-          json['timestamp'] as String? ??
-              (throw ArgumentError('Missing required field: timestamp')),
+          json['timestamp'] as String? ?? (throw ArgumentError('Missing required field: timestamp')),
         ),
         level: _parseLogLevel(json['level'] as String?),
-        message:
-            json['message'] as String? ??
-            (throw ArgumentError('Missing required field: message')),
-        source:
-            json['source'] as String? ??
-            (throw ArgumentError('Missing required field: source')),
+        message: json['message'] as String? ?? (throw ArgumentError('Missing required field: message')),
+        source: json['source'] as String? ?? (throw ArgumentError('Missing required field: source')),
       );
     } catch (e) {
       throw FormatException('Failed to parse BuildLogEntry from JSON: $e');
@@ -78,12 +66,7 @@ class BuildLogEntry {
   /// Creates a JSON representation suitable for API communication
   /// and local storage with proper type conversion.
   Map<String, dynamic> toJson() {
-    return {
-      'timestamp': timestamp.toIso8601String(),
-      'level': level.name,
-      'message': message,
-      'source': source,
-    };
+    return {'timestamp': timestamp.toIso8601String(), 'level': level.name, 'message': message, 'source': source};
   }
 
   /// Parses a log level string into the corresponding enum value.

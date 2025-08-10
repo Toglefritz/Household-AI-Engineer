@@ -61,16 +61,10 @@ void main() {
       test('should create milestone with all required fields', () {
         expect(testMilestone.id, equals('milestone_123'));
         expect(testMilestone.name, equals('Generate Code'));
-        expect(
-          testMilestone.description,
-          equals('Generate application source code'),
-        );
+        expect(testMilestone.description, equals('Generate application source code'));
         expect(testMilestone.status, equals(MilestoneStatus.completed));
         expect(testMilestone.order, equals(1));
-        expect(
-          testMilestone.completedAt,
-          equals(DateTime(2025, 1, 10, 14, 30)),
-        );
+        expect(testMilestone.completedAt, equals(DateTime(2025, 1, 10, 14, 30)));
         expect(testMilestone.errorMessage, isNull);
       });
     });
@@ -112,10 +106,7 @@ void main() {
         final milestone = DevelopmentMilestone.fromJson(json);
 
         expect(milestone.status, equals(MilestoneStatus.completed));
-        expect(
-          milestone.completedAt,
-          equals(DateTime.parse('2025-01-10T15:45:00.000Z')),
-        );
+        expect(milestone.completedAt, equals(DateTime.parse('2025-01-10T15:45:00.000Z')));
       });
 
       test('should handle failed milestone with error message', () {
@@ -132,10 +123,7 @@ void main() {
         final milestone = DevelopmentMilestone.fromJson(json);
 
         expect(milestone.status, equals(MilestoneStatus.failed));
-        expect(
-          milestone.errorMessage,
-          equals('Deployment failed: insufficient resources'),
-        );
+        expect(milestone.errorMessage, equals('Deployment failed: insufficient resources'));
       });
 
       test('should throw FormatException for missing required fields', () {
@@ -144,10 +132,7 @@ void main() {
           // Missing id, description, status, order
         };
 
-        expect(
-          () => DevelopmentMilestone.fromJson(invalidJson),
-          throwsA(isA<FormatException>()),
-        );
+        expect(() => DevelopmentMilestone.fromJson(invalidJson), throwsA(isA<FormatException>()));
       });
 
       test('should throw FormatException for invalid status', () {
@@ -159,10 +144,7 @@ void main() {
           'order': 1,
         };
 
-        expect(
-          () => DevelopmentMilestone.fromJson(invalidJson),
-          throwsA(isA<FormatException>()),
-        );
+        expect(() => DevelopmentMilestone.fromJson(invalidJson), throwsA(isA<FormatException>()));
       });
     });
 
@@ -182,10 +164,7 @@ void main() {
 
     group('copyWith', () {
       test('should create copy with updated fields', () {
-        final updated = testMilestone.copyWith(
-          status: MilestoneStatus.failed,
-          errorMessage: 'Test error',
-        );
+        final updated = testMilestone.copyWith(status: MilestoneStatus.failed, errorMessage: 'Test error');
 
         expect(updated.id, equals(testMilestone.id));
         expect(updated.name, equals(testMilestone.name));

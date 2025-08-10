@@ -36,28 +36,19 @@ void main() {
       expect(MessageActionType.values, hasLength(4));
       expect(MessageActionType.values, contains(MessageActionType.response));
       expect(MessageActionType.values, contains(MessageActionType.suggestion));
-      expect(
-        MessageActionType.values,
-        contains(MessageActionType.confirmation),
-      );
+      expect(MessageActionType.values, contains(MessageActionType.confirmation));
       expect(MessageActionType.values, contains(MessageActionType.navigation));
     });
 
     test('should return correct display names', () {
       expect(MessageActionType.response.displayName, equals('Response'));
       expect(MessageActionType.suggestion.displayName, equals('Suggestion'));
-      expect(
-        MessageActionType.confirmation.displayName,
-        equals('Confirmation'),
-      );
+      expect(MessageActionType.confirmation.displayName, equals('Confirmation'));
       expect(MessageActionType.navigation.displayName, equals('Navigation'));
     });
 
     test('should identify immediate processing types', () {
-      expect(
-        MessageActionType.confirmation.requiresImmediateProcessing,
-        isTrue,
-      );
+      expect(MessageActionType.confirmation.requiresImmediateProcessing, isTrue);
       expect(MessageActionType.navigation.requiresImmediateProcessing, isTrue);
       expect(MessageActionType.response.requiresImmediateProcessing, isFalse);
       expect(MessageActionType.suggestion.requiresImmediateProcessing, isFalse);
@@ -80,12 +71,7 @@ void main() {
     });
 
     test('should create action from valid JSON', () {
-      final json = {
-        'id': 'action_456',
-        'label': 'Tell me more',
-        'type': 'suggestion',
-        'value': 'request_details',
-      };
+      final json = {'id': 'action_456', 'label': 'Tell me more', 'type': 'suggestion', 'value': 'request_details'};
 
       final action = MessageAction.fromJson(json);
 
@@ -148,10 +134,7 @@ void main() {
       expect(message.id, equals('message_456'));
       expect(message.sender, equals(MessageSender.user));
       expect(message.content, equals('I need help'));
-      expect(
-        message.timestamp,
-        equals(DateTime.parse('2025-01-10T14:30:00.000Z')),
-      );
+      expect(message.timestamp, equals(DateTime.parse('2025-01-10T14:30:00.000Z')));
     });
 
     test('should convert message to JSON correctly', () {

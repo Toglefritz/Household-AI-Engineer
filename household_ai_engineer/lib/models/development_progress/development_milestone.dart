@@ -1,8 +1,4 @@
-/// Development Milestone Model
-///
-/// Represents individual milestones in the application development process,
-/// tracking progress through specific phases like code generation, testing,
-/// and deployment preparation.
+import 'package:flutter/foundation.dart';
 
 import 'milestone_status.dart';
 
@@ -14,6 +10,7 @@ import 'milestone_status.dart';
 ///
 /// Milestones are used to provide detailed progress feedback to users and
 /// enable fine-grained monitoring of the development process.
+@immutable
 class DevelopmentMilestone {
   /// Creates a new development milestone.
   ///
@@ -82,28 +79,16 @@ class DevelopmentMilestone {
   factory DevelopmentMilestone.fromJson(Map<String, dynamic> json) {
     try {
       return DevelopmentMilestone(
-        id:
-            json['id'] as String? ??
-            (throw ArgumentError('Missing required field: id')),
-        name:
-            json['name'] as String? ??
-            (throw ArgumentError('Missing required field: name')),
-        description:
-            json['description'] as String? ??
-            (throw ArgumentError('Missing required field: description')),
+        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
+        name: json['name'] as String? ?? (throw ArgumentError('Missing required field: name')),
+        description: json['description'] as String? ?? (throw ArgumentError('Missing required field: description')),
         status: _parseStatus(json['status'] as String?),
-        order:
-            json['order'] as int? ??
-            (throw ArgumentError('Missing required field: order')),
-        completedAt: json['completedAt'] != null
-            ? DateTime.parse(json['completedAt'] as String)
-            : null,
+        order: json['order'] as int? ?? (throw ArgumentError('Missing required field: order')),
+        completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt'] as String) : null,
         errorMessage: json['errorMessage'] as String?,
       );
     } catch (e) {
-      throw FormatException(
-        'Failed to parse DevelopmentMilestone from JSON: $e',
-      );
+      throw FormatException('Failed to parse DevelopmentMilestone from JSON: $e');
     }
   }
 
@@ -186,15 +171,7 @@ class DevelopmentMilestone {
 
   @override
   int get hashCode {
-    return Object.hash(
-      id,
-      name,
-      description,
-      status,
-      order,
-      completedAt,
-      errorMessage,
-    );
+    return Object.hash(id, name, description, status, order, completedAt, errorMessage);
   }
 
   @override

@@ -75,10 +75,7 @@ void main() {
 
         final logEntry = BuildLogEntry.fromJson(json);
 
-        expect(
-          logEntry.timestamp,
-          equals(DateTime.parse('2025-01-10T14:30:00.000Z')),
-        );
+        expect(logEntry.timestamp, equals(DateTime.parse('2025-01-10T14:30:00.000Z')));
         expect(logEntry.level, equals(LogLevel.error));
         expect(logEntry.message, equals('Build failed'));
         expect(logEntry.source, equals('container-builder'));
@@ -91,10 +88,7 @@ void main() {
           // Missing timestamp and source
         };
 
-        expect(
-          () => BuildLogEntry.fromJson(invalidJson),
-          throwsA(isA<FormatException>()),
-        );
+        expect(() => BuildLogEntry.fromJson(invalidJson), throwsA(isA<FormatException>()));
       });
 
       test('should throw FormatException for invalid log level', () {
@@ -105,10 +99,7 @@ void main() {
           'source': 'test-source',
         };
 
-        expect(
-          () => BuildLogEntry.fromJson(invalidJson),
-          throwsA(isA<FormatException>()),
-        );
+        expect(() => BuildLogEntry.fromJson(invalidJson), throwsA(isA<FormatException>()));
       });
     });
 
@@ -181,10 +172,7 @@ void main() {
         expect(testProgress.milestones, hasLength(3));
         expect(testProgress.recentLogs, hasLength(2));
         expect(testProgress.lastUpdated, equals(DateTime(2025, 1, 10, 14, 32)));
-        expect(
-          testProgress.estimatedCompletion,
-          equals(DateTime(2025, 1, 10, 15, 0)),
-        );
+        expect(testProgress.estimatedCompletion, equals(DateTime(2025, 1, 10, 15, 0)));
       });
     });
 
@@ -227,13 +215,9 @@ void main() {
       test('should detect completion correctly', () {
         expect(testProgress.isComplete, isFalse);
 
-        final completedMilestones = testMilestones
-            .map((m) => m.copyWith(status: MilestoneStatus.completed))
-            .toList();
+        final completedMilestones = testMilestones.map((m) => m.copyWith(status: MilestoneStatus.completed)).toList();
 
-        final completedProgress = testProgress.copyWith(
-          milestones: completedMilestones,
-        );
+        final completedProgress = testProgress.copyWith(milestones: completedMilestones);
 
         expect(completedProgress.isComplete, isTrue);
       });
@@ -242,10 +226,7 @@ void main() {
         final recentErrors = testProgress.recentErrors;
         expect(recentErrors, hasLength(1));
         expect(recentErrors.first.level, equals(LogLevel.error));
-        expect(
-          recentErrors.first.message,
-          equals('Test failed: assertion error'),
-        );
+        expect(recentErrors.first.message, equals('Test failed: assertion error'));
       });
     });
 
@@ -266,12 +247,7 @@ void main() {
             },
           ],
           'recentLogs': [
-            {
-              'timestamp': '2025-01-10T14:30:00.000Z',
-              'level': 'info',
-              'message': 'Test log',
-              'source': 'test-source',
-            },
+            {'timestamp': '2025-01-10T14:30:00.000Z', 'level': 'info', 'message': 'Test log', 'source': 'test-source'},
           ],
           'lastUpdated': '2025-01-10T14:32:00.000Z',
           'estimatedCompletion': '2025-01-10T15:00:00.000Z',

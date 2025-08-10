@@ -13,10 +13,7 @@ void main() {
       test('should have all expected status values', () {
         expect(ApplicationStatus.values, hasLength(7));
         expect(ApplicationStatus.values, contains(ApplicationStatus.requested));
-        expect(
-          ApplicationStatus.values,
-          contains(ApplicationStatus.developing),
-        );
+        expect(ApplicationStatus.values, contains(ApplicationStatus.developing));
         expect(ApplicationStatus.values, contains(ApplicationStatus.testing));
         expect(ApplicationStatus.values, contains(ApplicationStatus.ready));
         expect(ApplicationStatus.values, contains(ApplicationStatus.running));

@@ -74,29 +74,19 @@ class ConversationThread {
   factory ConversationThread.fromJson(Map<String, dynamic> json) {
     try {
       return ConversationThread(
-        id:
-            json['id'] as String? ??
-            (throw ArgumentError('Missing required field: id')),
+        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
         status: _parseStatus(json['status'] as String?),
-        context: ConversationContext.fromJson(
-          json['context'] as Map<String, dynamic>? ?? {},
-        ),
+        context: ConversationContext.fromJson(json['context'] as Map<String, dynamic>? ?? {}),
         messages:
             (json['messages'] as List<dynamic>?)
-                ?.map(
-                  (message) => ConversationMessage.fromJson(
-                    message as Map<String, dynamic>,
-                  ),
-                )
+                ?.map((message) => ConversationMessage.fromJson(message as Map<String, dynamic>))
                 .toList() ??
             [],
         createdAt: DateTime.parse(
-          json['createdAt'] as String? ??
-              (throw ArgumentError('Missing required field: createdAt')),
+          json['createdAt'] as String? ?? (throw ArgumentError('Missing required field: createdAt')),
         ),
         updatedAt: DateTime.parse(
-          json['updatedAt'] as String? ??
-              (throw ArgumentError('Missing required field: updatedAt')),
+          json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
         ),
       );
     } catch (e) {
@@ -146,8 +136,7 @@ class ConversationThread {
   /// Returns a new thread instance with the message added and
   /// updated timestamp. Does not modify the original thread.
   ConversationThread addMessage(ConversationMessage message) {
-    final updatedMessages = List<ConversationMessage>.from(messages)
-      ..add(message);
+    final updatedMessages = List<ConversationMessage>.from(messages)..add(message);
 
     return copyWith(messages: updatedMessages, updatedAt: DateTime.now());
   }
@@ -258,14 +247,7 @@ class ConversationThread {
 
   @override
   int get hashCode {
-    return Object.hash(
-      id,
-      status,
-      context,
-      messages.length,
-      createdAt,
-      updatedAt,
-    );
+    return Object.hash(id, status, context, messages.length, createdAt, updatedAt);
   }
 
   @override

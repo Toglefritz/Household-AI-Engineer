@@ -13,14 +13,8 @@ void main() {
       expect(ConversationStatus.values, hasLength(7));
       expect(ConversationStatus.values, contains(ConversationStatus.active));
       expect(ConversationStatus.values, contains(ConversationStatus.ongoing));
-      expect(
-        ConversationStatus.values,
-        contains(ConversationStatus.waitingForUser),
-      );
-      expect(
-        ConversationStatus.values,
-        contains(ConversationStatus.waitingForSystem),
-      );
+      expect(ConversationStatus.values, contains(ConversationStatus.waitingForUser));
+      expect(ConversationStatus.values, contains(ConversationStatus.waitingForSystem));
       expect(ConversationStatus.values, contains(ConversationStatus.completed));
       expect(ConversationStatus.values, contains(ConversationStatus.cancelled));
       expect(ConversationStatus.values, contains(ConversationStatus.failed));
@@ -29,14 +23,8 @@ void main() {
     test('should return correct display names', () {
       expect(ConversationStatus.active.displayName, equals('Active'));
       expect(ConversationStatus.ongoing.displayName, equals('Ongoing'));
-      expect(
-        ConversationStatus.waitingForUser.displayName,
-        equals('Waiting for Response'),
-      );
-      expect(
-        ConversationStatus.waitingForSystem.displayName,
-        equals('Processing'),
-      );
+      expect(ConversationStatus.waitingForUser.displayName, equals('Waiting for Response'));
+      expect(ConversationStatus.waitingForSystem.displayName, equals('Processing'));
       expect(ConversationStatus.completed.displayName, equals('Completed'));
       expect(ConversationStatus.cancelled.displayName, equals('Cancelled'));
       expect(ConversationStatus.failed.displayName, equals('Failed'));
@@ -142,10 +130,7 @@ void main() {
       ),
     ];
 
-    final testContext = ConversationContext(
-      userId: 'user_123',
-      sessionId: 'session_456',
-    );
+    final testContext = ConversationContext(userId: 'user_123', sessionId: 'session_456');
 
     final testThread = ConversationThread(
       id: 'thread_123',
@@ -193,9 +178,7 @@ void main() {
     test('should detect modification correctly', () {
       expect(testThread.isModification, isFalse);
 
-      final modificationThread = testThread.copyWith(
-        context: testContext.copyWith(applicationId: 'existing_app'),
-      );
+      final modificationThread = testThread.copyWith(context: testContext.copyWith(applicationId: 'existing_app'));
       expect(modificationThread.isModification, isTrue);
     });
 
@@ -220,9 +203,7 @@ void main() {
     });
 
     test('should update status correctly', () {
-      final updatedThread = testThread.updateStatus(
-        ConversationStatus.completed,
-      );
+      final updatedThread = testThread.updateStatus(ConversationStatus.completed);
 
       expect(updatedThread.status, equals(ConversationStatus.completed));
       expect(updatedThread.updatedAt.isAfter(testThread.updatedAt), isTrue);
@@ -234,12 +215,7 @@ void main() {
         'status': 'active',
         'context': {'userId': 'user_test', 'sessionId': 'session_test'},
         'messages': [
-          {
-            'id': 'message_test',
-            'sender': 'user',
-            'content': 'Test message',
-            'timestamp': '2025-01-10T14:00:00.000Z',
-          },
+          {'id': 'message_test', 'sender': 'user', 'content': 'Test message', 'timestamp': '2025-01-10T14:00:00.000Z'},
         ],
         'createdAt': '2025-01-10T14:00:00.000Z',
         'updatedAt': '2025-01-10T14:01:00.000Z',

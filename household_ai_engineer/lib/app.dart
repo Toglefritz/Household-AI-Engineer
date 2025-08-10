@@ -31,16 +31,8 @@ class HouseholdAIEngineerApp extends StatelessWidget {
         ),
         // macOS-style typography
         textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.5,
-          ),
-          headlineMedium: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.25,
-          ),
+          headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600, letterSpacing: -0.5),
+          headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w500, letterSpacing: -0.25),
           titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
@@ -49,10 +41,7 @@ class HouseholdAIEngineerApp extends StatelessWidget {
 
       darkTheme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2196F3),
-          brightness: Brightness.dark,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2196F3), brightness: Brightness.dark),
       ),
 
       // Follow system theme preference

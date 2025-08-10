@@ -1,6 +1,4 @@
-/// Message Action Model
-///
-/// Represents an actionable button or link within a conversation message.
+import 'package:flutter/foundation.dart';
 
 import 'message_action_type.dart';
 
@@ -10,17 +8,13 @@ import 'message_action_type.dart';
 /// questions or perform common tasks without typing full responses.
 ///
 /// Actions are typically displayed as buttons or chips below system messages.
+@immutable
 class MessageAction {
   /// Creates a new message action.
   ///
   /// All parameters are required to ensure complete action information
   /// for proper UI rendering and event handling.
-  const MessageAction({
-    required this.id,
-    required this.label,
-    required this.type,
-    this.value,
-  });
+  const MessageAction({required this.id, required this.label, required this.type, this.value});
 
   /// Unique identifier for this action.
   ///
@@ -55,12 +49,8 @@ class MessageAction {
   factory MessageAction.fromJson(Map<String, dynamic> json) {
     try {
       return MessageAction(
-        id:
-            json['id'] as String? ??
-            (throw ArgumentError('Missing required field: id')),
-        label:
-            json['label'] as String? ??
-            (throw ArgumentError('Missing required field: label')),
+        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
+        label: json['label'] as String? ?? (throw ArgumentError('Missing required field: label')),
         type: _parseActionType(json['type'] as String?),
         value: json['value'] as String?,
       );

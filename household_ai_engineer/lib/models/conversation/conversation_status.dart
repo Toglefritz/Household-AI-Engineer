@@ -1,7 +1,3 @@
-/// Conversation Status Enumeration
-///
-/// Tracks the lifecycle of conversations from initiation through completion.
-
 /// Current status of a conversation thread.
 ///
 /// Tracks the lifecycle of conversations from initiation through completion
@@ -104,8 +100,7 @@ extension ConversationStatusExtension on ConversationStatus {
   /// Used to determine whether to show input fields and
   /// enable message sending in the conversation interface.
   bool get isWaitingForUser {
-    return this == ConversationStatus.active ||
-        this == ConversationStatus.waitingForUser;
+    return this == ConversationStatus.active || this == ConversationStatus.waitingForUser;
   }
 
   /// Returns true if the conversation is processing.

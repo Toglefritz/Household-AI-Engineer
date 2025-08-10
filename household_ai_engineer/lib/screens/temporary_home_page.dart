@@ -39,11 +39,7 @@ class TemporaryHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.home_work_outlined,
-              size: 64,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(Icons.home_work_outlined, size: 64, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 24),
             Text(
               'Household Software Engineer',

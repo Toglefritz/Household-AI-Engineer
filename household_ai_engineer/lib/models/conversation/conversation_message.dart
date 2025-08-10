@@ -1,7 +1,4 @@
-/// Conversation Message Model
-///
-/// Represents individual messages within a conversation thread between
-/// the user and the AI system during application creation and modification.
+import 'package:flutter/foundation.dart';
 
 import 'message_action.dart';
 import 'message_sender.dart';
@@ -14,6 +11,7 @@ import 'message_sender.dart';
 ///
 /// Messages are immutable once created and form the permanent record
 /// of the conversation history.
+@immutable
 class ConversationMessage {
   /// Creates a new conversation message.
   ///
@@ -67,28 +65,18 @@ class ConversationMessage {
   factory ConversationMessage.fromJson(Map<String, dynamic> json) {
     try {
       return ConversationMessage(
-        id:
-            json['id'] as String? ??
-            (throw ArgumentError('Missing required field: id')),
+        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
         sender: _parseSender(json['sender'] as String?),
-        content:
-            json['content'] as String? ??
-            (throw ArgumentError('Missing required field: content')),
+        content: json['content'] as String? ?? (throw ArgumentError('Missing required field: content')),
         timestamp: DateTime.parse(
-          json['timestamp'] as String? ??
-              (throw ArgumentError('Missing required field: timestamp')),
+          json['timestamp'] as String? ?? (throw ArgumentError('Missing required field: timestamp')),
         ),
         actions: (json['actions'] as List<dynamic>?)
-            ?.map(
-              (action) =>
-                  MessageAction.fromJson(action as Map<String, dynamic>),
-            )
+            ?.map((action) => MessageAction.fromJson(action as Map<String, dynamic>))
             .toList(),
       );
     } catch (e) {
-      throw FormatException(
-        'Failed to parse ConversationMessage from JSON: $e',
-      );
+      throw FormatException('Failed to parse ConversationMessage from JSON: $e');
     }
   }
 

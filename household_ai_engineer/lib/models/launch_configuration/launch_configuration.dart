@@ -1,7 +1,4 @@
-/// Launch Configuration Model
-///
-/// Contains platform-specific settings and parameters needed to
-/// properly launch and manage running applications.
+import 'package:flutter/foundation.dart';
 
 import 'launch_type.dart';
 
@@ -9,6 +6,7 @@ import 'launch_type.dart';
 ///
 /// Contains platform-specific settings and parameters needed to
 /// properly launch and manage running applications.
+@immutable
 class LaunchConfiguration {
   /// Creates a new launch configuration.
   ///
@@ -74,20 +72,15 @@ class LaunchConfiguration {
     try {
       return LaunchConfiguration(
         type: _parseLaunchType(json['type'] as String?),
-        url:
-            json['url'] as String? ??
-            (throw ArgumentError('Missing required field: url')),
+        url: json['url'] as String? ?? (throw ArgumentError('Missing required field: url')),
         windowTitle: json['windowTitle'] as String?,
         windowWidth: json['windowWidth'] as int?,
         windowHeight: json['windowHeight'] as int?,
         allowResize: json['allowResize'] as bool? ?? true,
-        showNavigationControls:
-            json['showNavigationControls'] as bool? ?? false,
+        showNavigationControls: json['showNavigationControls'] as bool? ?? false,
       );
     } catch (e) {
-      throw FormatException(
-        'Failed to parse LaunchConfiguration from JSON: $e',
-      );
+      throw FormatException('Failed to parse LaunchConfiguration from JSON: $e');
     }
   }
 
@@ -127,8 +120,7 @@ class LaunchConfiguration {
       windowWidth: windowWidth ?? this.windowWidth,
       windowHeight: windowHeight ?? this.windowHeight,
       allowResize: allowResize ?? this.allowResize,
-      showNavigationControls:
-          showNavigationControls ?? this.showNavigationControls,
+      showNavigationControls: showNavigationControls ?? this.showNavigationControls,
     );
   }
 
@@ -166,15 +158,7 @@ class LaunchConfiguration {
 
   @override
   int get hashCode {
-    return Object.hash(
-      type,
-      url,
-      windowTitle,
-      windowWidth,
-      windowHeight,
-      allowResize,
-      showNavigationControls,
-    );
+    return Object.hash(type, url, windowTitle, windowWidth, windowHeight, allowResize, showNavigationControls);
   }
 
   @override

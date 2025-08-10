@@ -1,23 +1,16 @@
-/// Conversation Context Model
-///
-/// Provides additional metadata and context that influences
-/// conversation behavior and system responses.
+import 'package:flutter/foundation.dart';
 
 /// Context information for a conversation thread.
 ///
 /// Provides additional metadata and context that influences
 /// conversation behavior and system responses.
+@immutable
 class ConversationContext {
   /// Creates a new conversation context.
   ///
   /// All parameters are optional and provide additional context
   /// for more intelligent conversation handling.
-  const ConversationContext({
-    this.applicationId,
-    this.userId,
-    this.sessionId,
-    this.metadata,
-  });
+  const ConversationContext({this.applicationId, this.userId, this.sessionId, this.metadata});
 
   /// ID of the application being created or modified.
   ///

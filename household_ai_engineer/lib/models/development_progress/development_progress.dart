@@ -1,7 +1,4 @@
-/// Development Progress Model
-///
-/// Tracks the overall progress of application development including
-/// completion percentage, current phase, milestone status, and build logs.
+import 'package:flutter/foundation.dart';
 
 import 'build_log_entry.dart';
 import 'development_milestone.dart';
@@ -16,6 +13,7 @@ import 'milestone_status.dart';
 ///
 /// This model is used throughout the UI to display progress indicators,
 /// phase information, and detailed development status to users.
+@immutable
 class DevelopmentProgress {
   /// Creates a new development progress instance.
   ///
@@ -77,39 +75,27 @@ class DevelopmentProgress {
     try {
       return DevelopmentProgress(
         percentage:
-            (json['percentage'] as num?)?.toDouble() ??
-            (throw ArgumentError('Missing required field: percentage')),
-        currentPhase:
-            json['currentPhase'] as String? ??
-            (throw ArgumentError('Missing required field: currentPhase')),
+            (json['percentage'] as num?)?.toDouble() ?? (throw ArgumentError('Missing required field: percentage')),
+        currentPhase: json['currentPhase'] as String? ?? (throw ArgumentError('Missing required field: currentPhase')),
         milestones:
             (json['milestones'] as List<dynamic>?)
-                ?.map(
-                  (milestone) => DevelopmentMilestone.fromJson(
-                    milestone as Map<String, dynamic>,
-                  ),
-                )
+                ?.map((milestone) => DevelopmentMilestone.fromJson(milestone as Map<String, dynamic>))
                 .toList() ??
             [],
         recentLogs:
             (json['recentLogs'] as List<dynamic>?)
-                ?.map(
-                  (log) => BuildLogEntry.fromJson(log as Map<String, dynamic>),
-                )
+                ?.map((log) => BuildLogEntry.fromJson(log as Map<String, dynamic>))
                 .toList() ??
             [],
         lastUpdated: DateTime.parse(
-          json['lastUpdated'] as String? ??
-              (throw ArgumentError('Missing required field: lastUpdated')),
+          json['lastUpdated'] as String? ?? (throw ArgumentError('Missing required field: lastUpdated')),
         ),
         estimatedCompletion: json['estimatedCompletion'] != null
             ? DateTime.parse(json['estimatedCompletion'] as String)
             : null,
       );
     } catch (e) {
-      throw FormatException(
-        'Failed to parse DevelopmentProgress from JSON: $e',
-      );
+      throw FormatException('Failed to parse DevelopmentProgress from JSON: $e');
     }
   }
 
@@ -156,9 +142,7 @@ class DevelopmentProgress {
   /// Returns null if no milestone is currently active.
   DevelopmentMilestone? get currentMilestone {
     try {
-      return milestones.firstWhere(
-        (milestone) => milestone.status == MilestoneStatus.inProgress,
-      );
+      return milestones.firstWhere((milestone) => milestone.status == MilestoneStatus.inProgress);
     } catch (e) {
       return null;
     }
@@ -168,9 +152,7 @@ class DevelopmentProgress {
   ///
   /// Used for calculating progress and displaying milestone completion status.
   int get completedMilestoneCount {
-    return milestones
-        .where((milestone) => milestone.status == MilestoneStatus.completed)
-        .length;
+    return milestones.where((milestone) => milestone.status == MilestoneStatus.completed).length;
   }
 
   /// Returns the total number of milestones.
@@ -186,9 +168,7 @@ class DevelopmentProgress {
   /// Indicates that one or more critical milestones have failed
   /// and development cannot continue without intervention.
   bool get hasFailed {
-    return milestones.any(
-      (milestone) => milestone.status == MilestoneStatus.failed,
-    );
+    return milestones.any((milestone) => milestone.status == MilestoneStatus.failed);
   }
 
   /// Returns true if all milestones are completed.
@@ -196,10 +176,7 @@ class DevelopmentProgress {
   /// Indicates that development has finished successfully and
   /// the application is ready for deployment or use.
   bool get isComplete {
-    return milestones.isNotEmpty &&
-        milestones.every(
-          (milestone) => milestone.status == MilestoneStatus.completed,
-        );
+    return milestones.isNotEmpty && milestones.every((milestone) => milestone.status == MilestoneStatus.completed);
   }
 
   /// Returns recent error log entries.

@@ -1,8 +1,3 @@
-/// Log Level Enumeration
-///
-/// Defines severity levels for build log entries during development.
-/// Used for filtering, styling, and prioritizing log information.
-
 /// Severity levels for build log entries.
 ///
 /// Defines the importance and type of logged events during development.

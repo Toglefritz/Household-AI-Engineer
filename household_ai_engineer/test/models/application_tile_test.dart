@@ -88,10 +88,7 @@ void main() {
   });
 
   group('ApplicationTile', () {
-    final testLaunchConfig = LaunchConfiguration(
-      type: LaunchType.web,
-      url: 'http://localhost:3000',
-    );
+    final testLaunchConfig = LaunchConfiguration(type: LaunchType.web, url: 'http://localhost:3000');
 
     final testProgress = DevelopmentProgress(
       percentage: 75,
@@ -125,10 +122,7 @@ void main() {
     test('should create tile with all required fields', () {
       expect(testTile.id, equals('app_123'));
       expect(testTile.title, equals('Chore Tracker'));
-      expect(
-        testTile.description,
-        equals('A family chore management application'),
-      );
+      expect(testTile.description, equals('A family chore management application'));
       expect(testTile.status, equals(ApplicationStatus.developing));
       expect(testTile.createdAt, equals(DateTime(2025, 1, 10, 14, 0)));
       expect(testTile.updatedAt, equals(DateTime(2025, 1, 10, 14, 30)));
@@ -141,10 +135,7 @@ void main() {
     test('should detect development status correctly', () {
       expect(testTile.isInDevelopment, isTrue);
 
-      final readyTile = testTile.copyWith(
-        status: ApplicationStatus.ready,
-        progress: null,
-      );
+      final readyTile = testTile.copyWith(status: ApplicationStatus.ready, progress: null);
       expect(readyTile.isInDevelopment, isFalse);
     });
 
@@ -221,51 +212,32 @@ void main() {
     test('should format creation time description correctly', () {
       final now = DateTime.now();
 
-      final dayOldTile = testTile.copyWith(
-        createdAt: now.subtract(const Duration(days: 2)),
-      );
+      final dayOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(days: 2)));
       expect(dayOldTile.createdTimeDescription, equals('2 days ago'));
 
-      final hourOldTile = testTile.copyWith(
-        createdAt: now.subtract(const Duration(hours: 3)),
-      );
+      final hourOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(hours: 3)));
       expect(hourOldTile.createdTimeDescription, equals('3 hours ago'));
 
-      final minuteOldTile = testTile.copyWith(
-        createdAt: now.subtract(const Duration(minutes: 45)),
-      );
+      final minuteOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(minutes: 45)));
       expect(minuteOldTile.createdTimeDescription, equals('45 minutes ago'));
 
-      final recentTile = testTile.copyWith(
-        createdAt: now.subtract(const Duration(seconds: 30)),
-      );
+      final recentTile = testTile.copyWith(createdAt: now.subtract(const Duration(seconds: 30)));
       expect(recentTile.createdTimeDescription, equals('Just now'));
     });
 
     test('should format updated time description correctly', () {
       final now = DateTime.now();
 
-      final dayOldTile = testTile.copyWith(
-        updatedAt: now.subtract(const Duration(days: 1)),
-      );
+      final dayOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(days: 1)));
       expect(dayOldTile.updatedTimeDescription, equals('Updated 1 day ago'));
 
-      final hourOldTile = testTile.copyWith(
-        updatedAt: now.subtract(const Duration(hours: 2)),
-      );
+      final hourOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(hours: 2)));
       expect(hourOldTile.updatedTimeDescription, equals('Updated 2 hours ago'));
 
-      final minuteOldTile = testTile.copyWith(
-        updatedAt: now.subtract(const Duration(minutes: 15)),
-      );
-      expect(
-        minuteOldTile.updatedTimeDescription,
-        equals('Updated 15 minutes ago'),
-      );
+      final minuteOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(minutes: 15)));
+      expect(minuteOldTile.updatedTimeDescription, equals('Updated 15 minutes ago'));
 
-      final recentTile = testTile.copyWith(
-        updatedAt: now.subtract(const Duration(seconds: 10)),
-      );
+      final recentTile = testTile.copyWith(updatedAt: now.subtract(const Duration(seconds: 10)));
       expect(recentTile.updatedTimeDescription, equals('Just updated'));
     });
 
@@ -297,10 +269,7 @@ void main() {
 
       expect(json['id'], equals('app_123'));
       expect(json['title'], equals('Chore Tracker'));
-      expect(
-        json['description'],
-        equals('A family chore management application'),
-      );
+      expect(json['description'], equals('A family chore management application'));
       expect(json['status'], equals('developing'));
       expect(json['createdAt'], equals('2025-01-10T14:00:00.000'));
       expect(json['updatedAt'], equals('2025-01-10T14:30:00.000'));

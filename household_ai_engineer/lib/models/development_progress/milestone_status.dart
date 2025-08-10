@@ -1,8 +1,3 @@
-/// Milestone Status Enumeration
-///
-/// Defines the status of a development milestone throughout its lifecycle
-/// from pending to completion or failure.
-
 /// Status of a development milestone.
 ///
 /// Milestones progress through these states as development advances:

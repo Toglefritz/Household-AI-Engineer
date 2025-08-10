@@ -1,7 +1,3 @@
-/// Message Sender Enumeration
-///
-/// Identifies who sent a conversation message for styling and behavior.
-
 /// Identifies who sent a conversation message.
 ///
 /// Used to determine message styling, positioning, and available actions
