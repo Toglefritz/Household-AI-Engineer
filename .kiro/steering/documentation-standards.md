@@ -34,16 +34,6 @@ Use Dartdoc format with triple slashes (`///`) for all public and private entiti
 /// This controller handles application creation, modification, deployment,
 /// and monitoring. It serves as the primary interface between the UI and
 /// the backend orchestration services.
-/// 
-/// Example usage:
-/// ```dart
-/// final controller = ApplicationController(apiService, webSocketService);
-/// await controller.createApplication(userRequest);
-/// ```
-/// 
-/// See also:
-/// * [ApiService] for backend communication
-/// * [WebSocketService] for real-time updates
 class ApplicationController extends ChangeNotifier {
   /// The API service used for backend communication.
   /// 
@@ -121,18 +111,6 @@ class ApplicationController extends ChangeNotifier {
   /// * [ValidationException] if the user request is invalid or incomplete
   /// * [NetworkException] if backend communication fails
   /// * [QuotaException] if the user has reached their application limit
-  /// 
-  /// Example:
-  /// ```dart
-  /// try {
-  ///   final app = await controller.createApplication(
-  ///     'I need a chore tracker for my family',
-  ///   );
-  ///   print('Created application: ${app.title}');
-  /// } catch (e) {
-  ///   print('Failed to create application: $e');
-  /// }
-  /// ```
   Future<Application> createApplication(
     String userRequest, {
     String? conversationId,
@@ -161,12 +139,6 @@ Use JSDoc format for all TypeScript code:
  * This service manages the complete lifecycle from user request to deployed
  * application, including specification generation, Kiro integration, and
  * container deployment.
- * 
- * @example
- * ```typescript
- * const orchestrator = new ApplicationOrchestrator(apiClient, kiroService);
- * const app = await orchestrator.createApplication(userRequest);
- * ```
  */
 export class ApplicationOrchestrator {
   /**
@@ -229,21 +201,6 @@ export class ApplicationOrchestrator {
    * @throws {ValidationError} When the user request is invalid or incomplete
    * @throws {QuotaExceededError} When the user has reached their application limit
    * @throws {ServiceUnavailableError} When required services are unavailable
-   * 
-   * @example
-   * ```typescript
-   * const request: ApplicationRequest = {
-   *   description: 'A family chore tracker with rotation scheduling',
-   *   userId: 'user123',
-   *   priority: 'normal'
-   * };
-   * 
-   * try {
-   *   const app = await orchestrator.createApplication(request);
-   *   console.log(`Created application: ${app.title}`);
-   * } catch (error) {
-   *   console.error('Application creation failed:', error.message);
-   * }
    * ```
    */
   async createApplication(
@@ -293,98 +250,6 @@ export interface CreateApplicationOptions {
 }
 ```
 
-### Python Documentation
-
-Use docstrings with Google or NumPy style formatting:
-
-```python
-class ContainerManager:
-    """Manages Docker containers for deployed applications.
-    
-    This class handles the complete container lifecycle including creation,
-    deployment, monitoring, and cleanup. Each application runs in an isolated
-    container with enforced resource limits and security policies.
-    
-    Attributes:
-        docker_client: Docker API client for container operations
-        network_manager: Manages container networking and isolation
-        policy_enforcer: Enforces security and resource policies
-        
-    Example:
-        >>> manager = ContainerManager(docker_client, network_manager)
-        >>> container = await manager.deploy_application(app_config)
-        >>> print(f"Deployed to container: {container.id}")
-    """
-    
-    def __init__(
-        self, 
-        docker_client: DockerClient, 
-        network_manager: NetworkManager,
-        policy_enforcer: PolicyEnforcer
-    ) -> None:
-        """Initialize the container manager with required dependencies.
-        
-        Args:
-            docker_client: Configured Docker client for container operations
-            network_manager: Service for managing container networking
-            policy_enforcer: Service for enforcing security policies
-            
-        Raises:
-            ValueError: If any required dependency is None
-            ConnectionError: If Docker daemon is not accessible
-        """
-        if not docker_client:
-            raise ValueError("docker_client is required")
-        if not network_manager:
-            raise ValueError("network_manager is required")
-        if not policy_enforcer:
-            raise ValueError("policy_enforcer is required")
-            
-        self.docker_client = docker_client
-        self.network_manager = network_manager
-        self.policy_enforcer = policy_enforcer
-        
-        # Verify Docker daemon connectivity
-        try:
-            self.docker_client.ping()
-        except Exception as e:
-            raise ConnectionError(f"Cannot connect to Docker daemon: {e}")
-
-    async def deploy_application(
-        self, 
-        app_config: ApplicationConfig,
-        deployment_options: Optional[DeploymentOptions] = None
-    ) -> Container:
-        """Deploy an application in a new Docker container.
-        
-        Creates and starts a new container with the specified application
-        configuration. The container is automatically configured with
-        appropriate resource limits, network isolation, and security policies.
-        
-        Args:
-            app_config: Configuration for the application to deploy
-            deployment_options: Optional deployment customization settings
-            
-        Returns:
-            Container object representing the deployed application
-            
-        Raises:
-            DeploymentError: If container creation or startup fails
-            PolicyViolationError: If the application violates security policies
-            ResourceExhaustedError: If insufficient system resources are available
-            
-        Example:
-            >>> config = ApplicationConfig(
-            ...     name="chore-tracker",
-            ...     image="household-apps:chore-tracker-v1.0",
-            ...     port=3000
-            ... )
-            >>> container = await manager.deploy_application(config)
-            >>> assert container.status == "running"
-        """
-        # Implementation details...
-```
-
 ## Documentation Structure Requirements
 
 ### File-Level Documentation
@@ -402,19 +267,6 @@ Every source file must begin with a comprehensive header:
 /// * [ApplicationController] - Main controller class
 /// * [ApplicationState] - State management for UI binding
 /// * [ApplicationError] - Error types and handling
-/// 
-/// Dependencies:
-/// * ApiService for backend communication
-/// * WebSocketService for real-time updates
-/// * Provider for state management
-/// 
-/// Usage:
-/// This controller should be instantiated at the app level and provided
-/// to child widgets through the Provider pattern.
-/// 
-/// Author: Development Agent
-/// Created: 2025-01-10
-/// Last Modified: 2025-01-10
 ```
 
 ### Complex Algorithm Documentation
