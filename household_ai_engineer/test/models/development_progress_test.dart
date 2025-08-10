@@ -2,10 +2,10 @@
 ///
 /// Tests model creation, JSON serialization/deserialization, validation,
 /// and all utility methods to ensure reliable progress tracking.
+library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/development_progress.dart';
-import 'package:household_ai_engineer/models/development_milestone.dart';
+import 'package:household_ai_engineer/models/models.dart';
 
 void main() {
   group('LogLevel', () {

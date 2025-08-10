@@ -2,12 +2,10 @@
 ///
 /// Tests model creation, JSON serialization/deserialization, validation,
 /// and all utility methods to ensure reliable application management.
+library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/application_tile.dart';
-import 'package:household_ai_engineer/models/application_status.dart';
-import 'package:household_ai_engineer/models/development_progress.dart';
-import 'package:household_ai_engineer/models/development_milestone.dart';
+import 'package:household_ai_engineer/models/models.dart';
 
 void main() {
   group('LaunchType', () {
@@ -96,7 +94,7 @@ void main() {
     );
 
     final testProgress = DevelopmentProgress(
-      percentage: 75.0,
+      percentage: 75,
       currentPhase: 'Running Tests',
       milestones: [
         DevelopmentMilestone(
@@ -224,22 +222,22 @@ void main() {
       final now = DateTime.now();
 
       final dayOldTile = testTile.copyWith(
-        createdAt: now.subtract(Duration(days: 2)),
+        createdAt: now.subtract(const Duration(days: 2)),
       );
       expect(dayOldTile.createdTimeDescription, equals('2 days ago'));
 
       final hourOldTile = testTile.copyWith(
-        createdAt: now.subtract(Duration(hours: 3)),
+        createdAt: now.subtract(const Duration(hours: 3)),
       );
       expect(hourOldTile.createdTimeDescription, equals('3 hours ago'));
 
       final minuteOldTile = testTile.copyWith(
-        createdAt: now.subtract(Duration(minutes: 45)),
+        createdAt: now.subtract(const Duration(minutes: 45)),
       );
       expect(minuteOldTile.createdTimeDescription, equals('45 minutes ago'));
 
       final recentTile = testTile.copyWith(
-        createdAt: now.subtract(Duration(seconds: 30)),
+        createdAt: now.subtract(const Duration(seconds: 30)),
       );
       expect(recentTile.createdTimeDescription, equals('Just now'));
     });
@@ -248,17 +246,17 @@ void main() {
       final now = DateTime.now();
 
       final dayOldTile = testTile.copyWith(
-        updatedAt: now.subtract(Duration(days: 1)),
+        updatedAt: now.subtract(const Duration(days: 1)),
       );
       expect(dayOldTile.updatedTimeDescription, equals('Updated 1 day ago'));
 
       final hourOldTile = testTile.copyWith(
-        updatedAt: now.subtract(Duration(hours: 2)),
+        updatedAt: now.subtract(const Duration(hours: 2)),
       );
       expect(hourOldTile.updatedTimeDescription, equals('Updated 2 hours ago'));
 
       final minuteOldTile = testTile.copyWith(
-        updatedAt: now.subtract(Duration(minutes: 15)),
+        updatedAt: now.subtract(const Duration(minutes: 15)),
       );
       expect(
         minuteOldTile.updatedTimeDescription,
@@ -266,7 +264,7 @@ void main() {
       );
 
       final recentTile = testTile.copyWith(
-        updatedAt: now.subtract(Duration(seconds: 10)),
+        updatedAt: now.subtract(const Duration(seconds: 10)),
       );
       expect(recentTile.updatedTimeDescription, equals('Just updated'));
     });

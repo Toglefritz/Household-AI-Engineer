@@ -2,9 +2,10 @@
 ///
 /// Tests model creation, JSON serialization/deserialization, validation,
 /// and all utility methods to ensure reliable conversation handling.
+library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/conversation_message.dart';
+import 'package:household_ai_engineer/models/models.dart';
 
 void main() {
   group('MessageSender', () {

@@ -2,9 +2,10 @@
 ///
 /// Tests all enum values, extension methods, and edge cases to ensure
 /// reliable behavior across different application states.
+library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/application_status.dart';
+import 'package:household_ai_engineer/models/models.dart';
 
 void main() {
   group('ApplicationStatus', () {

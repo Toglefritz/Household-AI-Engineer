@@ -1,13 +1,11 @@
 /// Models Barrel File
-/// 
+///
 /// Exports all model classes for convenient importing throughout the application.
 /// This file provides a single import point for all data models used in the
 /// Flutter dashboard application.
-/// 
-/// Usage:
-/// ```dart
-/// import 'package:household_ai_engineer/models/models.dart';
-/// ```
+library;
+
+// ignore_for_file: directives_ordering
 
 // Core application models
 export 'application_status.dart';

@@ -2,10 +2,10 @@
 ///
 /// Tests model creation, JSON serialization/deserialization, validation,
 /// and all utility methods to ensure reliable conversation thread management.
+library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/conversation_thread.dart';
-import 'package:household_ai_engineer/models/conversation_message.dart';
+import 'package:household_ai_engineer/models/models.dart';
 
 void main() {
   group('ConversationStatus', () {
