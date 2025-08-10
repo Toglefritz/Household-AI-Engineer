@@ -15,7 +15,7 @@ void main() async {
   await windowManager.ensureInitialized();
 
   // Set up window properties for macOS
-  WindowOptions windowOptions = const WindowOptions(
+  const WindowOptions windowOptions = WindowOptions(
     size: Size(1200, 800),
     minimumSize: Size(800, 600),
     center: true,
@@ -26,7 +26,7 @@ void main() async {
   );
 
   // Apply window configuration
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
   });

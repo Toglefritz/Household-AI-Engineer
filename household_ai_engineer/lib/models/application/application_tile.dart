@@ -6,8 +6,8 @@
 library;
 
 import 'application_status.dart';
-import 'development_progress.dart';
-import 'launch_configuration.dart';
+import '../development_progress/development_progress.dart';
+import '../launch_configuration/launch_configuration.dart';
 
 /// Represents a household application tile with complete metadata.
 ///

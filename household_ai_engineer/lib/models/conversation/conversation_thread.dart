@@ -1,7 +1,4 @@
-/// Conversation Thread Model
-///
-/// Represents a complete conversation thread between a user and the AI system
-/// during application creation or modification.
+import 'package:flutter/foundation.dart';
 
 import 'conversation_context.dart';
 import 'conversation_message.dart';
@@ -16,6 +13,7 @@ import 'conversation_status.dart';
 ///
 /// Threads are the primary unit of conversation management and are
 /// used throughout the conversational interface for state management.
+@immutable
 class ConversationThread {
   /// Creates a new conversation thread.
   ///

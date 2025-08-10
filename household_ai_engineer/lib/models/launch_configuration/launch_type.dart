@@ -1,7 +1,3 @@
-/// Launch Type Enumeration
-///
-/// Determines how applications are launched and managed within the dashboard.
-
 /// Types of application launches supported by the system.
 ///
 /// Determines how applications are launched and managed within

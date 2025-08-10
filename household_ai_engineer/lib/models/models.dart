@@ -8,25 +8,25 @@ library;
 // ignore_for_file: directives_ordering
 
 // Core application models
-export 'application_status.dart';
-export 'application_tile.dart';
+export 'application/application_status.dart';
+export 'application/application_tile.dart';
 
 // Launch configuration models
-export 'launch_configuration.dart';
-export 'launch_type.dart';
+export 'launch_configuration/launch_configuration.dart';
+export 'launch_configuration/launch_type.dart';
 
 // Development progress models
-export 'build_log_entry.dart';
-export 'development_milestone.dart';
-export 'development_progress.dart';
-export 'log_level.dart';
-export 'milestone_status.dart';
+export 'development_progress/build_log_entry.dart';
+export 'development_progress/development_milestone.dart';
+export 'development_progress/development_progress.dart';
+export 'development_progress/log_level.dart';
+export 'development_progress/milestone_status.dart';
 
 // Conversation models
-export 'conversation_context.dart';
-export 'conversation_message.dart';
-export 'conversation_status.dart';
-export 'conversation_thread.dart';
-export 'message_action.dart';
-export 'message_action_type.dart';
-export 'message_sender.dart';
+export 'conversation/conversation_context.dart';
+export 'conversation/conversation_message.dart';
+export 'conversation/conversation_status.dart';
+export 'conversation/conversation_thread.dart';
+export 'conversation/message_action.dart';
+export 'conversation/message_action_type.dart';
+export 'conversation/message_sender.dart';
