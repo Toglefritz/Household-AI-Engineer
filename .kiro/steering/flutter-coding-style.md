@@ -11,7 +11,6 @@ All code should be documented with the assumption that another developer will co
 **Documentation Requirements:**
 - Every feature should include inline comments for complex logic
 - Usage examples should be provided when helpful
-- Each feature folder should include README-style explanations when appropriate
 - Public APIs, classes, and methods must use Dartdoc comments
 - Keep documentation updated alongside code changes
 

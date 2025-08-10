@@ -2,6 +2,8 @@
 ///
 /// This widget configures the overall app theme, routing, and provides
 /// the root MaterialApp configuration for the macOS desktop application.
+library;
+
 import 'package:flutter/material.dart';
 
 /// Root application widget that configures the MaterialApp.
