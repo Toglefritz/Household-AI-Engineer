@@ -6,6 +6,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'screens/temporary_home_page.dart';
+
 /// Root application widget that configures the MaterialApp.
 ///
 /// Provides theme configuration, routing setup, and overall app structure
@@ -57,45 +59,7 @@ class HouseholdAIEngineerApp extends StatelessWidget {
       themeMode: ThemeMode.system,
 
       // Temporary home page - will be replaced with dashboard
-      home: const _TemporaryHomePage(),
-    );
-  }
-}
-
-/// Temporary home page widget for initial project setup.
-///
-/// This will be replaced with the actual dashboard once the dashboard
-/// screen is implemented in subsequent tasks.
-class _TemporaryHomePage extends StatelessWidget {
-  const _TemporaryHomePage();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.home_work_outlined,
-              size: 64,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Household Software Engineer',
-              style: Theme.of(context).textTheme.headlineLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Flutter project setup complete!\nReady for dashboard implementation.',
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+      home: const TemporaryHomePage(),
     );
   }
 }

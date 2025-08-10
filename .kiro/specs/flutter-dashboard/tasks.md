@@ -7,7 +7,7 @@
   - Configure macOS-specific settings and permissions in macos/ directory
   - _Requirements: 8.1, 8.4_
 
-- [ ] 2. Create core data models and enums
+- [x] 2. Create core data models and enums
   - Implement ApplicationTile model with JSON serialization
   - Create ApplicationStatus enum with all required states
   - Implement DevelopmentProgress and DevelopmentMilestone models

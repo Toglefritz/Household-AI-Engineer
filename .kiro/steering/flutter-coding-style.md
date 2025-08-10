@@ -1,493 +1,319 @@
-# Flutter Coding Style Guide
+# Flutter Coding Standards
 
-## Purpose
+## Architecture Pattern: MVC
 
-These rules guide development agents in building and editing Flutter applications using a consistent, scalable, and maintainable structure for the Household Software Engineer project. The guidelines are inspired by clean architecture principles and practical Flutter development experience.
+This project follows a strict MVC (Model-View-Controller) pattern for all screens:
 
-## Documentation Philosophy
+### Route (Entry Point)
+- Each screen has a `*_route.dart` file containing a `StatefulWidget`
+- The route's `createState()` method returns the corresponding controller
+- Routes are responsible only for defining the screen entry point
 
-All code should be documented with the assumption that another developer will continue the work. Excellent documentation ensures knowledge transfer, supports scalability, and reduces onboarding time.
-
-**Documentation Requirements:**
-- Every feature should include inline comments for complex logic
-- Usage examples should be provided when helpful
-- Public APIs, classes, and methods must use Dartdoc comments
-- Keep documentation updated alongside code changes
-
-## Flexibility Notice
-
-This is a recommended project structure, but be flexible and adapt to existing project structures. Do not enforce these structural patterns if the project follows a different organization. Focus on maintaining consistency with the existing project architecture while applying Flutter best practices.
-
-## Flutter Best Practices
-
-When working on the Flutter dashboard, follow these core principles:
-
-1. **Adapt to existing project architecture** while maintaining clean code principles
-2. **Use Flutter 3.x features** and Material 3 design system
-3. **Use MVC-inspired architecture** where controllers manage state for the view
-4. **Follow proper state management** principles with Provider or similar
-5. **Use proper dependency injection** with GetIt or similar service locator
-6. **Implement comprehensive error handling** with Either types or similar patterns
-7. **Follow macOS platform-specific** design guidelines for native feel
-8. **Use proper localization techniques** for future internationalization support
-
-## Project Structure Reference
-
-Adapt this structure to the existing project organization:
-
-```
-lib/
-├── main.dart
-├── app.dart
-├── components/
-│   ├── buttons/
-│   │   └── primary_button.dart
-│   ├── loaders/
-│   │   └── spinner.dart
-│   ├── layout/
-│   │   └── responsive_container.dart
-│   └── tiles/
-│       └── application_tile.dart
-├── extensions/
-│   ├── context_extensions.dart
-│   └── string_extensions.dart
-├── models/
-│   ├── application.dart
-│   ├── conversation.dart
-│   └── progress.dart
-├── screens/
-│   ├── dashboard/
-│   │   ├── dashboard_view.dart
-│   │   ├── dashboard_controller.dart
-│   │   └── dashboard_route.dart
-│   ├── conversation/
-│   │   ├── conversation_view.dart
-│   │   ├── conversation_controller.dart
-│   │   └── conversation_route.dart
-│   └── progress/
-│       ├── progress_view.dart
-│       ├── progress_controller.dart
-│       └── progress_route.dart
-├── services/
-│   ├── api_service.dart
-│   ├── websocket_service.dart
-│   └── launch_service.dart
-├── providers/
-│   ├── app_state_provider.dart
-│   ├── ui_state_provider.dart
-│   └── conversation_provider.dart
-├── theme/
-│   ├── app_theme.dart
-│   ├── color_palette.dart
-│   └── spacing.dart
-└── values/
-    ├── strings.dart
-    ├── assets.dart
-    └── constants.dart
-```
-
-## Coding Guidelines
-
-### 1. Null Safety and Error Handling
 ```dart
-// Good: Proper null safety with error handling
-Future<Either<AppError, List<Application>>> fetchApplications() async {
-  try {
-    final response = await apiService.getApplications();
-    return Right(response.map((json) => Application.fromJson(json)).toList());
-  } catch (e) {
-    return Left(AppError.networkError(e.toString()));
-  }
-}
-
-// Good: Null-aware operators
-final title = application?.title ?? 'Untitled Application';
-```
-
-### 2. Widget Composition and Performance
-```dart
-// Good: Small, focused widgets with const constructors
-class ApplicationTile extends StatelessWidget {
-  const ApplicationTile({
-    Key? key,
-    required this.application,
-    this.onTap,
-  }) : super(key: key);
-
-  final Application application;
-  final VoidCallback? onTap;
+class WelcomeRoute extends StatefulWidget {
+  const WelcomeRoute({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        child: _buildTileContent(),
-      ),
-    );
-  }
-
-  Widget _buildTileContent() {
-    // Extract complex widget building to separate methods
-    return Column(
-      children: [
-        _buildHeader(),
-        _buildStatus(),
-        _buildActions(),
-      ],
-    );
-  }
+  State<WelcomeRoute> createState() => WelcomeController();
 }
 ```
 
-### 3. State Management with Controllers
+### Controller (Business Logic)
+- Controllers extend `State<RouteWidget>` and handle all business logic
+- Controllers manage state and call `setState()` to trigger UI updates
+- All event handlers and data manipulation logic belongs in controllers
+- Controllers pass themselves to views for access to state and methods
+
 ```dart
-// Good: MVC-style controller managing state
-class DashboardController extends ChangeNotifier {
-  final ApiService _apiService;
-  final WebSocketService _webSocketService;
+class WelcomeController extends State<WelcomeRoute> {
+  // State variables
+  late BrineDevice selectedDevice;
 
-  DashboardController(this._apiService, this._webSocketService);
-
-  List<Application> _applications = [];
-  bool _isLoading = false;
-  String? _error;
-
-  List<Application> get applications => _applications;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  /// Fetches applications from the backend
-  Future<void> loadApplications() async {
-    _setLoading(true);
-    
-    final result = await _apiService.getApplications();
-    result.fold(
-      (error) => _setError(error.message),
-      (apps) => _setApplications(apps),
-    );
-    
-    _setLoading(false);
-  }
-
-  void _setLoading(bool loading) {
-    _isLoading = loading;
-    notifyListeners();
-  }
-
-  void _setApplications(List<Application> apps) {
-    _applications = apps;
-    _error = null;
-    notifyListeners();
-  }
-
-  void _setError(String error) {
-    _error = error;
-    notifyListeners();
-  }
-}
-```
-
-### 4. Proper Routing with GoRouter
-```dart
-// Good: Declarative routing configuration
-final appRouter = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const DashboardView(),
-    ),
-    GoRoute(
-      path: '/conversation',
-      builder: (context, state) => const ConversationView(),
-    ),
-    GoRoute(
-      path: '/progress/:appId',
-      builder: (context, state) => ProgressView(
-        appId: state.params['appId']!,
-      ),
-    ),
-  ],
-);
-```
-
-## Widget Guidelines
-
-### 1. Widget Structure
-- Keep widgets small and focused on a single responsibility
-- Use const constructors whenever possible for performance
-- Implement proper widget keys for complex lists and animations
-- Extract complex build logic into separate methods
-- Use proper widget lifecycle methods (initState, dispose, etc.)
-
-### 2. Layout and Responsiveness
-```dart
-// Good: Responsive layout with proper constraints
-class ResponsiveGrid extends StatelessWidget {
-  const ResponsiveGrid({Key? key, required this.children}) : super(key: key);
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final crossAxisCount = _calculateCrossAxisCount(constraints.maxWidth);
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: AppSpacing.medium,
-            mainAxisSpacing: AppSpacing.medium,
-          ),
-          itemCount: children.length,
-          itemBuilder: (context, index) => children[index],
-        );
-      },
-    );
-  }
-
-  int _calculateCrossAxisCount(double width) {
-    if (width > 1200) return 4;
-    if (width > 800) return 3;
-    if (width > 400) return 2;
-    return 1;
-  }
-}
-```
-
-### 3. Error Boundaries and Loading States
-```dart
-// Good: Proper error handling in widgets
-class ApplicationGrid extends StatelessWidget {
-  const ApplicationGrid({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<DashboardController>(
-      builder: (context, controller, child) {
-        if (controller.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.error != null) {
-          return ErrorWidget(
-            error: controller.error!,
-            onRetry: controller.loadApplications,
-          );
-        }
-
-        if (controller.applications.isEmpty) {
-          return const EmptyStateWidget();
-        }
-
-        return ResponsiveGrid(
-          children: controller.applications
-              .map((app) => ApplicationTile(application: app))
-              .toList(),
-        );
-      },
-    );
-  }
-}
-```
-
-## Performance Guidelines
-
-### 1. List Optimization
-```dart
-// Good: Efficient list building with proper keys
-ListView.builder(
-  itemCount: applications.length,
-  itemBuilder: (context, index) {
-    final app = applications[index];
-    return ApplicationTile(
-      key: ValueKey(app.id), // Proper key for performance
-      application: app,
-    );
-  },
-)
-```
-
-### 2. Image and Asset Management
-```dart
-// Good: Proper image caching and optimization
-class OptimizedImage extends StatelessWidget {
-  const OptimizedImage({
-    Key? key,
-    required this.imageUrl,
-    this.width,
-    this.height,
-  }) : super(key: key);
-
-  final String imageUrl;
-  final double? width;
-  final double? height;
-
-  @override
-  Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      width: width,
-      height: height,
-      placeholder: (context, url) => const ShimmerPlaceholder(),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
-      memCacheWidth: width?.toInt(),
-      memCacheHeight: height?.toInt(),
-    );
-  }
-}
-```
-
-## Testing Guidelines
-
-### 1. Unit Tests for Business Logic
-```dart
-// Good: Comprehensive unit tests for controllers
-void main() {
-  group('DashboardController', () {
-    late DashboardController controller;
-    late MockApiService mockApiService;
-
-    setUp(() {
-      mockApiService = MockApiService();
-      controller = DashboardController(mockApiService);
+  // Event handlers
+  void onDeviceSelected(BrineDevice device) {
+    setState(() {
+      selectedDevice = device;
     });
-
-    test('should load applications successfully', () async {
-      // Arrange
-      final apps = [Application(id: '1', title: 'Test App')];
-      when(mockApiService.getApplications())
-          .thenAnswer((_) async => Right(apps));
-
-      // Act
-      await controller.loadApplications();
-
-      // Assert
-      expect(controller.applications, equals(apps));
-      expect(controller.isLoading, false);
-      expect(controller.error, null);
-    });
-  });
-}
-```
-
-### 2. Widget Tests for UI Components
-```dart
-// Good: Widget tests with proper setup
-void main() {
-  group('ApplicationTile', () {
-    testWidgets('should display application title and status', (tester) async {
-      // Arrange
-      final app = Application(
-        id: '1',
-        title: 'Test App',
-        status: ApplicationStatus.ready,
-      );
-
-      // Act
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ApplicationTile(application: app),
-        ),
-      );
-
-      // Assert
-      expect(find.text('Test App'), findsOneWidget);
-      expect(find.text('Ready'), findsOneWidget);
-    });
-  });
-}
-```
-
-## macOS Platform Integration
-
-### 1. Native Window Behavior
-```dart
-// Good: macOS-specific window configuration
-class MacOSWindowConfig {
-  static void configureWindow() {
-    if (Platform.isMacOS) {
-      // Configure native macOS window behavior
-      windowManager.setTitle('Household Software Engineer');
-      windowManager.setMinimumSize(const Size(800, 600));
-      windowManager.setMaximizable(true);
-    }
   }
+
+  @override
+  Widget build(BuildContext context) => WelcomeView(this);
 }
 ```
 
-### 2. Platform-Specific UI Elements
+### View (Presentation)
+- Views are `StatelessWidget` classes that handle only UI presentation
+- Views receive the controller as a parameter for accessing state and methods
+- Views should be "dumb" and purely declarative
+- No business logic should exist in view classes
+
 ```dart
-// Good: Platform-adaptive UI components
-Widget buildPlatformButton({
-  required String text,
-  required VoidCallback onPressed,
-}) {
-  if (Platform.isMacOS) {
-    return CupertinoButton(
-      onPressed: onPressed,
-      child: Text(text),
+class WelcomeView extends StatelessWidget {
+  const WelcomeView(this.state, {super.key});
+
+  final WelcomeController state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // UI only - no business logic
     );
   }
-  return ElevatedButton(
-    onPressed: onPressed,
-    child: Text(text),
+}
+```
+
+## State Management
+
+### Primary Pattern: setState()
+- Use `setState()` as the primary state management mechanism
+- Controllers call `setState()` to trigger UI rebuilds
+- Avoid complex state management solutions (Provider, Bloc, Riverpod, etc.)
+- Keep state management simple and predictable
+
+### State Organization
+- Declare state variables as instance variables in controllers
+- Initialize state in `initState()` when needed
+- Use `late` keyword for variables that will be initialized before first use
+
+## Widget Composition
+
+### Avoid Functions Returning Widgets
+**❌ Don't do this:**
+```dart
+Widget _buildHeader() {
+  return Container(
+    child: Text('Header'),
   );
 }
 ```
 
-## Documentation Standards
-
-### 1. Class and Method Documentation
+**✅ Do this instead:**
 ```dart
-/// A tile widget that displays application information and status.
-/// 
-/// This widget shows the application title, description, current status,
-/// and provides interaction capabilities for launching or managing the app.
-/// 
-/// Example usage:
-/// ```dart
-/// ApplicationTile(
-///   application: myApp,
-///   onTap: () => launchApplication(myApp),
-/// )
-/// ```
-class ApplicationTile extends StatelessWidget {
-  /// Creates an application tile.
-  /// 
-  /// The [application] parameter is required and contains the app data to display.
-  /// The [onTap] callback is optional and will be called when the tile is tapped.
-  const ApplicationTile({
-    Key? key,
-    required this.application,
-    this.onTap,
-  }) : super(key: key);
+class HeaderWidget extends StatelessWidget {
+  const HeaderWidget({super.key});
 
-  /// The application data to display in this tile.
-  final Application application;
-
-  /// Callback function called when the tile is tapped.
-  /// 
-  /// Typically used to launch the application or show details.
-  final VoidCallback? onTap;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('Header'),
+    );
+  }
 }
 ```
 
-### 2. Complex Logic Comments
+### Widget Extraction Guidelines
+- Extract reusable UI components into separate widget classes
+- Place screen-specific widgets in `components/` subdirectories
+- Place shared widgets in `lib/components/`
+- Prefer composition over inheritance
+
+## Navigation
+
+### Use MaterialApp Navigator
+- Use the Navigator provided by MaterialApp
+- Avoid named routes in favor of direct route construction
+- Use `MaterialPageRoute` for standard transitions
+
+**✅ Preferred navigation pattern:**
 ```dart
-// Calculate the optimal number of columns based on available width
-// This ensures tiles maintain a minimum width while maximizing screen usage
-int _calculateCrossAxisCount(double width) {
-  const double minTileWidth = 200.0;
-  const double spacing = 16.0;
-  
-  // Account for spacing between tiles when calculating columns
-  final availableWidth = width - (spacing * 2);
-  final maxColumns = (availableWidth / (minTileWidth + spacing)).floor();
-  
-  // Ensure at least one column is always shown
-  return math.max(1, maxColumns);
+await Navigator.push(
+  context,
+  MaterialPageRoute<void>(
+    builder: (BuildContext context) => const TargetRoute(),
+  ),
+);
+```
+
+**❌ Avoid named routes:**
+```dart
+// Don't use this pattern
+Navigator.pushNamed(context, '/target');
+```
+
+### Navigation Best Practices
+- Use `pushReplacement` when the current screen should not be accessible via back button
+- Pass data through constructor parameters rather than route arguments
+- Handle navigation in controllers, not views
+
+## Code Style
+
+### Linting
+- Follow `very_good_analysis` linting rules
+- Prefer single quotes for strings
+- Always declare return types
+- Use relative imports for local files
+- Avoid lines longer than 80 characters when practical
+
+### Documentation
+- Document all public classes and methods
+- Use `///` for documentation comments
+- Include parameter descriptions for complex methods
+- Document business logic and architectural decisions
+
+### Error Handling
+- Use specific exception types when possible
+- Log errors with `debugPrint()` in debug mode
+- Implement proper error boundaries in UI
+- Handle async operations with try-catch blocks
+
+## File Organization
+
+### Naming Conventions
+- Use snake_case for file names
+- Use PascalCase for class names
+- Use camelCase for variable and method names
+- Suffix controller files with `_controller.dart`
+- Suffix view files with `_view.dart`
+- Suffix route files with `_route.dart`
+
+### Directory Structure
+- Group related files in feature directories
+- Place shared components in `lib/components/`
+- Place business logic in `lib/services/`
+- Keep models in `lib/models/`
+- Organize by feature, not by file type
+
+### One Class Per File
+- Each file must contain exactly one class or enum, regardless of relationship
+- The file name should match the class or enum name in snake_case
+- This architecture makes maintenance, testing, and code navigation easier
+- Use Dart's `library` directive to group related files into logical units
+
+**✅ Preferred structure for related classes:**
+```
+lib/services/authentication/models/
+├── auth_method.dart         # Contains AuthMethod enum
+├── auth_credentials.dart    # Contains AuthCredentials class
+└── auth_result.dart         # Contains AuthResult class
+```
+
+**✅ Using library directive to group related files:**
+```dart
+// lib/services/authentication/models/auth_method.dart
+library authentication.models;
+
+enum AuthMethod { basicAuth, google, apple }
+```
+
+```dart
+// lib/services/authentication/models/auth_credentials.dart
+library authentication.models;
+
+class AuthCredentials {
+  // Implementation
 }
 ```
 
-This steering document will guide all Flutter development work to maintain consistency, quality, and adherence to best practices throughout the project.
+```dart
+// lib/services/authentication/models/auth_result.dart
+library authentication.models;
+
+class AuthResult {
+  // Implementation
+}
+```
+
+**✅ Importing a library:**
+```dart
+// Import individual files as needed
+import '../models/auth_method.dart';
+import '../models/auth_credentials.dart';
+import '../models/auth_result.dart';
+```
+
+**❌ Never put multiple classes in one file:**
+```dart
+// Don't do this - even for related classes
+class AuthCredentials { }
+class AuthResult { }
+enum AuthMethod { basicAuth, google, apple }
+```
+
+### File Naming Rules
+- Use snake_case for file names
+- File name should reflect the primary class/enum it contains
+- For related classes, use a descriptive library name
+- Avoid generic names like `models.dart` or `utils.dart`
+
+## JSON Handling
+
+### Avoid Code Generation
+- Avoid packages like `json_serializable` that generate opaque classes
+- Prefer explicit, readable code over generated code
+- Keep JSON parsing logic transparent and maintainable
+
+### Use fromJson Factory Constructors
+**✅ Preferred pattern:**
+```dart
+class BrineDevice {
+  const BrineDevice({
+    required this.id,
+    required this.name,
+    required this.saltLevel,
+    required this.batteryLevel,
+  });
+
+  final String id;
+  final String name;
+  final double saltLevel;
+  final double batteryLevel;
+
+  factory BrineDevice.fromJson(Map<String, dynamic> json) {
+    return BrineDevice(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      saltLevel: (json['saltLevel'] as num).toDouble(),
+      batteryLevel: (json['batteryLevel'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'saltLevel': saltLevel,
+      'batteryLevel': batteryLevel,
+    };
+  }
+}
+```
+
+### JSON Best Practices
+- Always use explicit type casting with `as` operator
+- Handle nullable fields appropriately
+- Use `toDouble()` for numeric values that should be doubles
+- Include both `fromJson` and `toJson` methods for complete serialization
+- Validate required fields and throw meaningful errors for missing data
+- Document expected JSON structure in class documentation
+
+### Error Handling in JSON Parsing
+```dart
+factory BrineDevice.fromJson(Map<String, dynamic> json) {
+  try {
+    return BrineDevice(
+      id: json['id'] as String? ?? 
+          throw ArgumentError('Missing required field: id'),
+      name: json['name'] as String? ?? 
+          throw ArgumentError('Missing required field: name'),
+      saltLevel: (json['saltLevel'] as num?)?.toDouble() ?? 0.0,
+      batteryLevel: (json['batteryLevel'] as num?)?.toDouble() ?? 0.0,
+    );
+  } catch (e) {
+    throw FormatException('Failed to parse BrineDevice from JSON: $e');
+  }
+}
+```
+
+## Testing
+
+### Test Organization
+- Mirror the `lib/` structure in `test/`
+- Write unit tests for controllers and services
+- Write widget tests for complex UI components
+- Use mocking for external dependencies
+
+### Testing Best Practices
+- Test business logic in controllers
+- Mock Firebase services in tests
+- Use `fake_http_client` for HTTP mocking
+- Test error scenarios and edge cases
