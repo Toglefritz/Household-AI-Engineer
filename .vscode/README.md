@@ -1,0 +1,3 @@
+## Household AI Engineer
+
+Imagine if your household had a full-time software engineer, dedicated solely to you. This project builds that engineer, an agentic AI system capable of designing, coding, testing, and deploying bespoke software tools on demand, tailored to a single household’s unique needs. Users interact through a friendly dashboard UI to request new tools or refine existing ones. Behind the scenes, the system uses Amazon Kiro to iteratively gather requirements, generate code, run tests, and deploy each tool as a standalone, sandboxed application. The result: dynamic, personal software that saves time, reduces friction, and simplifies everyday tasks.
