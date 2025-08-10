@@ -1,0 +1,46 @@
+name: household_ai_engineer
+description: "Flutter dashboard for the Household Software Engineer system - a native macOS application for creating and managing custom household applications."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # HTTP client for API communication
+  http: ^1.2.0
+  
+  # WebSocket client for real-time updates
+  web_socket_channel: ^2.4.5
+  
+  # Local storage and preferences
+  shared_preferences: ^2.2.2
+  
+  # Window management for macOS
+  window_manager: ^0.3.8
+  
+  # Path utilities
+  path: ^1.9.0
+  
+  # JSON serialization
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+  
+  # Code generation for JSON serialization
+  json_serializable: ^6.7.1
+  build_runner: ^2.4.9
+  
+  # Testing utilities
+  mockito: ^5.4.4
+
+flutter:
+  uses-material-design: true

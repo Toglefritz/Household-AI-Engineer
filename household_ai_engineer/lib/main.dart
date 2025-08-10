@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
+
+import 'app.dart';
+
+/// Application entry point.
+///
+/// Initializes the Flutter application with proper window management
+/// for macOS desktop environment.
+void main() async {
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Configure macOS window settings
+  await windowManager.ensureInitialized();
+
+  // Set up window properties for macOS
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1200, 800),
+    minimumSize: Size(800, 600),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+    windowButtonVisibility: true,
+  );
+
+  // Apply window configuration
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
+  // Launch the application
+  runApp(const HouseholdAIEngineerApp());
+}
