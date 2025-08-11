@@ -1,14 +1,12 @@
 import 'launch_type.dart';
 
-/// Configuration for launching an application.
+/// Configuration for launching a user application.
 ///
-/// Contains platform-specific settings and parameters needed to
-/// properly launch and manage running applications.
+/// Contains platform-specific settings and parameters needed to properly launch and manage running user applications.
 class LaunchConfiguration {
   /// Creates a new launch configuration.
   ///
-  /// All parameters are required to ensure complete launch information
-  /// for proper application startup and management.
+  /// All parameters are required to ensure complete launch information for proper application startup and management.
   const LaunchConfiguration({
     required this.type,
     required this.url,
@@ -26,26 +24,22 @@ class LaunchConfiguration {
 
   /// URL or path for launching the application.
   ///
-  /// For web applications, this is the HTTP URL.
-  /// For native applications, this is the executable path or command.
+  /// For web applications, this is the HTTP URL. For native applications, this is the executable path or command.
   final String url;
 
   /// Title for the application window.
   ///
-  /// Used as the window title when launching the application.
-  /// Defaults to the application title if not specified.
+  /// Used as the window title when launching the application. Defaults to the application title if not specified.
   final String? windowTitle;
 
   /// Initial width of the application window in pixels.
   ///
-  /// Used for web applications launched in embedded WebView.
-  /// Null means use default or full-screen width.
+  /// Used for web applications launched in embedded WebView. Null means use default or full-screen width.
   final int? windowWidth;
 
   /// Initial height of the application window in pixels.
   ///
-  /// Used for web applications launched in embedded WebView.
-  /// Null means use default or full-screen height.
+  /// Used for web applications launched in embedded `WebView`. Null means use default or full-screen height.
   final int? windowHeight;
 
   /// Whether the application window can be resized by the user.
@@ -60,11 +54,9 @@ class LaunchConfiguration {
 
   /// Creates a LaunchConfiguration from JSON data.
   ///
-  /// Parses launch configuration data and creates a properly typed
-  /// configuration object with validation and defaults.
+  /// Parses launch configuration data and creates a properly typed configuration object with validation and defaults.
   ///
-  /// Throws [FormatException] if the JSON structure is invalid or
-  /// required fields are missing.
+  /// Throws [FormatException] if the JSON structure is invalid or required fields are missing.
   factory LaunchConfiguration.fromJson(Map<String, dynamic> json) {
     try {
       return LaunchConfiguration(
@@ -99,8 +91,7 @@ class LaunchConfiguration {
 
   /// Creates a copy of this configuration with updated fields.
   ///
-  /// Allows updating specific fields while preserving others.
-  /// Commonly used when modifying application launch settings.
+  /// Allows updating specific fields while preserving others. Commonly used when modifying application launch settings.
   LaunchConfiguration copyWith({
     LaunchType? type,
     String? url,
@@ -123,8 +114,7 @@ class LaunchConfiguration {
 
   /// Parses a launch type string into the corresponding enum value.
   ///
-  /// Handles case-insensitive parsing and provides clear error messages
-  /// for invalid launch type values.
+  /// Handles case-insensitive parsing and provides clear error messages for invalid launch type values.
   static LaunchType _parseLaunchType(String? typeString) {
     if (typeString == null) {
       throw ArgumentError('Missing required field: type');

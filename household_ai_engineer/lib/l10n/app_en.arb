@@ -1,0 +1,10 @@
+{
+  "greeting": "Hello",
+  "@greeting": {
+    "description": "A greeting displayed to the user"
+  },
+  "welcomeMessage": "How can I help you today?",
+  "@welcomeMessage": {
+    "description": "A message welcoming the user to the app"
+  }
+}

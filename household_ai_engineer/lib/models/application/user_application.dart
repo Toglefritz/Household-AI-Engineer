@@ -1,28 +1,16 @@
-/// Application Tile Model
-///
-/// This module contains the ApplicationTile model class that represents
-/// a household application tile with complete metadata for display,
-/// interaction, progress tracking, and lifecycle management.
-library;
-
-import 'application_status.dart';
 import '../development_progress/development_progress.dart';
 import '../launch_configuration/launch_configuration.dart';
+import 'application_status.dart';
 
-/// Represents a household application tile with complete metadata.
+/// Represents a household application created on behalf of the user by Amazon Kiro.
 ///
-/// Application tiles are the primary unit of application management
-/// within the dashboard. They contain all information needed for
-/// display, interaction, progress tracking, and lifecycle management.
-///
-/// This model supports the complete application lifecycle from initial
-/// request through development, deployment, and runtime management.
-class ApplicationTile {
+/// This model supports the complete application lifecycle from initial request through development, deployment, and runtime management.
+class UserApplication {
   /// Creates a new application tile.
   ///
   /// All parameters except [iconUrl], [progress], and [tags] are required
   /// to ensure complete application information for proper management.
-  const ApplicationTile({
+  const UserApplication({
     required this.id,
     required this.title,
     required this.description,
@@ -102,9 +90,9 @@ class ApplicationTile {
   ///
   /// Throws [FormatException] if the JSON structure is invalid or
   /// required fields are missing.
-  factory ApplicationTile.fromJson(Map<String, dynamic> json) {
+  factory UserApplication.fromJson(Map<String, dynamic> json) {
     try {
-      return ApplicationTile(
+      return UserApplication(
         id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
         title: json['title'] as String? ?? (throw ArgumentError('Missing required field: title')),
         description: json['description'] as String? ?? (throw ArgumentError('Missing required field: description')),
@@ -153,7 +141,7 @@ class ApplicationTile {
   ///
   /// Allows updating specific fields while preserving others.
   /// Commonly used when receiving status updates from the backend.
-  ApplicationTile copyWith({
+  UserApplication copyWith({
     String? id,
     String? title,
     String? description,
@@ -165,7 +153,7 @@ class ApplicationTile {
     DevelopmentProgress? progress,
     LaunchConfiguration? launchConfig,
   }) {
-    return ApplicationTile(
+    return UserApplication(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -212,65 +200,63 @@ class ApplicationTile {
   ///
   /// Convenience method for checking if the application has active
   /// development progress that should be displayed to users.
-  bool get isInDevelopment {
-    return status.isActive && progress != null;
-  }
+  bool get isInDevelopment => status.isActive && progress != null;
+
 
   /// Returns true if this application can be launched.
   ///
   /// Applications can be launched when they are ready or already running.
   /// Uses the status extension method for consistent behavior.
-  bool get canLaunch {
-    return status.canLaunch;
-  }
+  bool get canLaunch =>
+     status.canLaunch;
+
 
   /// Returns true if this application can be modified.
   ///
   /// Applications can be modified when they are in stable states.
   /// Uses the status extension method for consistent behavior.
-  bool get canModify {
-    return status.canModify;
-  }
+  bool get canModify =>
+     status.canModify;
+
 
   /// Returns true if this application has a custom icon.
   ///
   /// Used to determine whether to display a custom icon or
   /// fall back to a default application icon.
-  bool get hasCustomIcon {
-    return iconUrl != null && iconUrl!.isNotEmpty;
-  }
+  bool get hasCustomIcon =>
+     iconUrl != null && iconUrl!.isNotEmpty;
 
   /// Returns true if this application has tags.
   ///
   /// Used to determine whether to display tag information
   /// in the application tile interface.
-  bool get hasTags {
-    return tags.isNotEmpty;
-  }
+  bool get hasTags =>
+     tags.isNotEmpty;
+
 
   /// Returns the age of this application since creation.
   ///
   /// Calculated as the time between creation and now.
   /// Used for displaying creation time and analytics.
-  Duration get age {
-    return DateTime.now().difference(createdAt);
-  }
+  Duration get age =>
+     DateTime.now().difference(createdAt);
+
 
   /// Returns the time since this application was last updated.
   ///
   /// Calculated as the time between last update and now.
   /// Used for staleness detection and update indicators.
-  Duration get timeSinceUpdate {
-    return DateTime.now().difference(updatedAt);
-  }
+  Duration get timeSinceUpdate =>
+     DateTime.now().difference(updatedAt);
+
 
   /// Returns a formatted string describing when this application was created.
   ///
   /// Provides human-readable creation time information suitable
   /// for display in the application tile.
   String get createdTimeDescription {
-    final now = DateTime.now();
-    final difference = now.difference(createdAt);
+    final DateTime now = DateTime.now();
+    final Duration difference = now.difference(createdAt);
 
     if (difference.inDays > 0) {
       return '${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
@@ -288,8 +274,8 @@ class ApplicationTile {
   /// Provides human-readable update time information suitable
   /// for display in the application tile.
   String get updatedTimeDescription {
-    final now = DateTime.now();
-    final difference = now.difference(updatedAt);
+    final DateTime now = DateTime.now();
+    final Duration difference = now.difference(updatedAt);
 
     if (difference.inDays > 0) {
       return 'Updated ${difference.inDays} day${difference.inDays == 1 ? '' : 's'} ago';
@@ -300,47 +286,5 @@ class ApplicationTile {
     } else {
       return 'Just updated';
     }
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ApplicationTile &&
-        other.id == id &&
-        other.title == title &&
-        other.description == description &&
-        other.status == status &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt &&
-        other.iconUrl == iconUrl &&
-        other.tags.length == tags.length &&
-        other.progress == progress &&
-        other.launchConfig == launchConfig;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      id,
-      title,
-      description,
-      status,
-      createdAt,
-      updatedAt,
-      iconUrl,
-      tags.length,
-      progress,
-      launchConfig,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'ApplicationTile('
-        'id: $id, '
-        'title: $title, '
-        'status: $status, '
-        'createdAt: $createdAt'
-        ')';
   }
 }

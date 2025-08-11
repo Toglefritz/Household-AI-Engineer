@@ -1,12 +1,8 @@
-/// Main application widget for the Household Software Engineer.
-///
-/// This widget configures the overall app theme, routing, and provides
-/// the root MaterialApp configuration for the macOS desktop application.
-library;
-
 import 'package:flutter/material.dart';
 
-import 'screens/temporary_home_page.dart';
+import 'l10n/app_localizations.dart';
+import 'screens/dashboard/dashboard_route.dart';
+import 'theme/app_theme.dart';
 
 /// Root application widget that configures the MaterialApp.
 ///
@@ -22,33 +18,15 @@ class HouseholdAIEngineerApp extends StatelessWidget {
       title: 'Household Software Engineer',
       debugShowCheckedModeBanner: false,
 
-      // Theme configuration for light and dark modes
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2196F3), // Blue primary color
-          brightness: Brightness.light,
-        ),
-        // macOS-style typography
-        textTheme: const TextTheme(
-          headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600, letterSpacing: -0.5),
-          headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w500, letterSpacing: -0.25),
-          titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-        ),
-      ),
+      // Localizations
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
 
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2196F3), brightness: Brightness.dark),
-      ),
+      // Themes
+      theme: AppTheme.lightThemeData,
+      darkTheme: AppTheme.darkThemeData,
 
-      // Follow system theme preference
-      themeMode: ThemeMode.system,
-
-      // Temporary home page - will be replaced with dashboard
-      home: const TemporaryHomePage(),
+      home: const DashboardRoute(),
     );
   }
 }

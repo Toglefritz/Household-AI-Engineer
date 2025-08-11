@@ -10,13 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+
+  # Used to define localizable strings
+  flutter_localizations:
+    sdk: flutter
+  # Path utilities
+  path: ^1.9.0
   # Local storage and preferences
   shared_preferences: ^2.2.2
   # Window management for macOS
   window_manager: ^0.3.8
-  # Path utilities
-  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +29,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true

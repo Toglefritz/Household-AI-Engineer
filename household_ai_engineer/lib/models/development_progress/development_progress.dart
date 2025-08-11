@@ -1,16 +1,13 @@
-import 'build_log_entry.dart';
 import 'development_milestone.dart';
-import 'log_level.dart';
 import 'milestone_status.dart';
 
 /// Represents the overall progress of application development.
 ///
-/// Aggregates information from multiple development phases including
-/// completion percentage, current phase, milestone status, and recent
-/// build logs to provide comprehensive progress tracking.
+/// Aggregates information from multiple development phases including completion percentage, current phase, milestone
+/// status, and recent build logs to provide comprehensive progress tracking.
 ///
-/// This model is used throughout the UI to display progress indicators,
-/// phase information, and detailed development status to users.
+/// This model is used throughout the UI to display progress indicators, phase information, and detailed development
+/// status to users.
 class DevelopmentProgress {
   /// Creates a new development progress instance.
   ///
@@ -20,7 +17,6 @@ class DevelopmentProgress {
     required this.percentage,
     required this.currentPhase,
     required this.milestones,
-    required this.recentLogs,
     required this.lastUpdated,
     this.estimatedCompletion,
   });
@@ -42,12 +38,6 @@ class DevelopmentProgress {
   /// Milestones are ordered by their sequence number and provide
   /// detailed progress information for each development phase.
   final List<DevelopmentMilestone> milestones;
-
-  /// Recent build log entries from the development process.
-  ///
-  /// Contains the most recent log entries for display in progress views.
-  /// Typically limited to the last 50-100 entries to manage memory usage.
-  final List<BuildLogEntry> recentLogs;
 
   /// Timestamp of the last progress update.
   ///
@@ -79,11 +69,6 @@ class DevelopmentProgress {
                 ?.map((milestone) => DevelopmentMilestone.fromJson(milestone as Map<String, dynamic>))
                 .toList() ??
             [],
-        recentLogs:
-            (json['recentLogs'] as List<dynamic>?)
-                ?.map((log) => BuildLogEntry.fromJson(log as Map<String, dynamic>))
-                .toList() ??
-            [],
         lastUpdated: DateTime.parse(
           json['lastUpdated'] as String? ?? (throw ArgumentError('Missing required field: lastUpdated')),
         ),
@@ -105,7 +90,6 @@ class DevelopmentProgress {
       'percentage': percentage,
       'currentPhase': currentPhase,
       'milestones': milestones.map((milestone) => milestone.toJson()).toList(),
-      'recentLogs': recentLogs.map((log) => log.toJson()).toList(),
       'lastUpdated': lastUpdated.toIso8601String(),
       'estimatedCompletion': estimatedCompletion?.toIso8601String(),
     };
@@ -119,7 +103,6 @@ class DevelopmentProgress {
     double? percentage,
     String? currentPhase,
     List<DevelopmentMilestone>? milestones,
-    List<BuildLogEntry>? recentLogs,
     DateTime? lastUpdated,
     DateTime? estimatedCompletion,
   }) {
@@ -127,7 +110,6 @@ class DevelopmentProgress {
       percentage: percentage ?? this.percentage,
       currentPhase: currentPhase ?? this.currentPhase,
       milestones: milestones ?? this.milestones,
-      recentLogs: recentLogs ?? this.recentLogs,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       estimatedCompletion: estimatedCompletion ?? this.estimatedCompletion,
     );
@@ -174,13 +156,5 @@ class DevelopmentProgress {
   /// the application is ready for deployment or use.
   bool get isComplete {
     return milestones.isNotEmpty && milestones.every((milestone) => milestone.status == MilestoneStatus.completed);
-  }
-
-  /// Returns recent error log entries.
-  ///
-  /// Filters recent logs to show only error-level entries for
-  /// quick identification of critical issues.
-  List<BuildLogEntry> get recentErrors {
-    return recentLogs.where((log) => log.level == LogLevel.error).toList();
   }
 }

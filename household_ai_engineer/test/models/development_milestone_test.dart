@@ -48,7 +48,7 @@ void main() {
   });
 
   group('DevelopmentMilestone', () {
-    final testMilestone = DevelopmentMilestone(
+    final DevelopmentMilestone testMilestone = DevelopmentMilestone(
       id: 'milestone_123',
       name: 'Generate Code',
       description: 'Generate application source code',
@@ -71,7 +71,7 @@ void main() {
 
     group('fromJson', () {
       test('should create milestone from valid JSON', () {
-        final json = {
+        final Map<String, dynamic> json = {
           'id': 'milestone_456',
           'name': 'Run Tests',
           'description': 'Execute automated test suite',
@@ -81,7 +81,7 @@ void main() {
           'errorMessage': null,
         };
 
-        final milestone = DevelopmentMilestone.fromJson(json);
+        final DevelopmentMilestone milestone = DevelopmentMilestone.fromJson(json);
 
         expect(milestone.id, equals('milestone_456'));
         expect(milestone.name, equals('Run Tests'));
@@ -93,7 +93,7 @@ void main() {
       });
 
       test('should handle completed milestone with timestamp', () {
-        final json = {
+        final Map<String, dynamic> json = {
           'id': 'milestone_789',
           'name': 'Build Container',
           'description': 'Create application container',
@@ -103,14 +103,14 @@ void main() {
           'errorMessage': null,
         };
 
-        final milestone = DevelopmentMilestone.fromJson(json);
+        final DevelopmentMilestone milestone = DevelopmentMilestone.fromJson(json);
 
         expect(milestone.status, equals(MilestoneStatus.completed));
         expect(milestone.completedAt, equals(DateTime.parse('2025-01-10T15:45:00.000Z')));
       });
 
       test('should handle failed milestone with error message', () {
-        final json = {
+        final Map<String, dynamic> json = {
           'id': 'milestone_error',
           'name': 'Deploy Application',
           'description': 'Deploy to production environment',
@@ -120,14 +120,14 @@ void main() {
           'errorMessage': 'Deployment failed: insufficient resources',
         };
 
-        final milestone = DevelopmentMilestone.fromJson(json);
+        final DevelopmentMilestone milestone = DevelopmentMilestone.fromJson(json);
 
         expect(milestone.status, equals(MilestoneStatus.failed));
         expect(milestone.errorMessage, equals('Deployment failed: insufficient resources'));
       });
 
       test('should throw FormatException for missing required fields', () {
-        final invalidJson = {
+        final Map<String, dynamic> invalidJson = {
           'name': 'Test Milestone',
           // Missing id, description, status, order
         };
@@ -136,7 +136,7 @@ void main() {
       });
 
       test('should throw FormatException for invalid status', () {
-        final invalidJson = {
+        final Map<String, dynamic> invalidJson = {
           'id': 'milestone_invalid',
           'name': 'Test Milestone',
           'description': 'Test description',
@@ -150,7 +150,7 @@ void main() {
 
     group('toJson', () {
       test('should convert milestone to JSON correctly', () {
-        final json = testMilestone.toJson();
+        final Map<String, dynamic> json = testMilestone.toJson();
 
         expect(json['id'], equals('milestone_123'));
         expect(json['name'], equals('Generate Code'));
@@ -164,7 +164,7 @@ void main() {
 
     group('copyWith', () {
       test('should create copy with updated fields', () {
-        final updated = testMilestone.copyWith(status: MilestoneStatus.failed, errorMessage: 'Test error');
+        final DevelopmentMilestone updated = testMilestone.copyWith(status: MilestoneStatus.failed, errorMessage: 'Test error');
 
         expect(updated.id, equals(testMilestone.id));
         expect(updated.name, equals(testMilestone.name));
@@ -175,7 +175,7 @@ void main() {
 
     group('equality and hashCode', () {
       test('should be equal for identical milestones', () {
-        final milestone1 = DevelopmentMilestone(
+        const DevelopmentMilestone milestone1 = DevelopmentMilestone(
           id: 'test_id',
           name: 'Test',
           description: 'Test description',
@@ -183,7 +183,7 @@ void main() {
           order: 1,
         );
 
-        final milestone2 = DevelopmentMilestone(
+        const DevelopmentMilestone milestone2 = DevelopmentMilestone(
           id: 'test_id',
           name: 'Test',
           description: 'Test description',
@@ -196,7 +196,7 @@ void main() {
       });
 
       test('should not be equal for different milestones', () {
-        final milestone1 = DevelopmentMilestone(
+        const DevelopmentMilestone milestone1 = DevelopmentMilestone(
           id: 'test_id_1',
           name: 'Test',
           description: 'Test description',
@@ -204,7 +204,7 @@ void main() {
           order: 1,
         );
 
-        final milestone2 = DevelopmentMilestone(
+        const DevelopmentMilestone milestone2 = DevelopmentMilestone(
           id: 'test_id_2',
           name: 'Test',
           description: 'Test description',

@@ -5,8 +5,7 @@ import 'app.dart';
 
 /// Application entry point.
 ///
-/// Initializes the Flutter application with proper window management
-/// for macOS desktop environment.
+/// Initializes the Flutter application with proper window management for macOS desktop environment.
 void main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();

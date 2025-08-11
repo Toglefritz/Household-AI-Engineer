@@ -1,9 +1,3 @@
-/// Unit tests for ApplicationTile model and related classes.
-///
-/// Tests model creation, JSON serialization/deserialization, validation,
-/// and all utility methods to ensure reliable application management.
-library;
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/models/models.dart';
 
@@ -32,14 +26,12 @@ void main() {
   });
 
   group('LaunchConfiguration', () {
-    final testConfig = LaunchConfiguration(
+    const LaunchConfiguration testConfig = LaunchConfiguration(
       type: LaunchType.web,
       url: 'http://localhost:3000',
       windowTitle: 'Test Application',
       windowWidth: 800,
       windowHeight: 600,
-      allowResize: true,
-      showNavigationControls: false,
     );
 
     test('should create configuration with all fields', () {
@@ -53,7 +45,7 @@ void main() {
     });
 
     test('should create configuration from JSON', () {
-      final json = {
+      final Map<String, dynamic> json = {
         'type': 'native',
         'url': '/usr/local/bin/myapp',
         'windowTitle': 'My Native App',
@@ -63,7 +55,7 @@ void main() {
         'showNavigationControls': true,
       };
 
-      final config = LaunchConfiguration.fromJson(json);
+      final LaunchConfiguration config = LaunchConfiguration.fromJson(json);
 
       expect(config.type, equals(LaunchType.native));
       expect(config.url, equals('/usr/local/bin/myapp'));
@@ -75,7 +67,7 @@ void main() {
     });
 
     test('should convert configuration to JSON correctly', () {
-      final json = testConfig.toJson();
+      final Map<String, dynamic> json = testConfig.toJson();
 
       expect(json['type'], equals('web'));
       expect(json['url'], equals('http://localhost:3000'));
@@ -88,13 +80,13 @@ void main() {
   });
 
   group('ApplicationTile', () {
-    final testLaunchConfig = LaunchConfiguration(type: LaunchType.web, url: 'http://localhost:3000');
+    const LaunchConfiguration testLaunchConfig = LaunchConfiguration(type: LaunchType.web, url: 'http://localhost:3000');
 
-    final testProgress = DevelopmentProgress(
+    final DevelopmentProgress testProgress = DevelopmentProgress(
       percentage: 75,
       currentPhase: 'Running Tests',
       milestones: [
-        DevelopmentMilestone(
+        const DevelopmentMilestone(
           id: 'milestone_1',
           name: 'Generate Code',
           description: 'Generate application code',
@@ -102,16 +94,15 @@ void main() {
           order: 1,
         ),
       ],
-      recentLogs: [],
       lastUpdated: DateTime(2025, 1, 10, 14, 30),
     );
 
-    final testTile = ApplicationTile(
+    final UserApplication testTile = UserApplication(
       id: 'app_123',
       title: 'Chore Tracker',
       description: 'A family chore management application',
       status: ApplicationStatus.developing,
-      createdAt: DateTime(2025, 1, 10, 14, 0),
+      createdAt: DateTime(2025, 1, 10, 14),
       updatedAt: DateTime(2025, 1, 10, 14, 30),
       launchConfig: testLaunchConfig,
       iconUrl: 'https://example.com/icon.png',
@@ -124,7 +115,7 @@ void main() {
       expect(testTile.title, equals('Chore Tracker'));
       expect(testTile.description, equals('A family chore management application'));
       expect(testTile.status, equals(ApplicationStatus.developing));
-      expect(testTile.createdAt, equals(DateTime(2025, 1, 10, 14, 0)));
+      expect(testTile.createdAt, equals(DateTime(2025, 1, 10, 14)));
       expect(testTile.updatedAt, equals(DateTime(2025, 1, 10, 14, 30)));
       expect(testTile.launchConfig, equals(testLaunchConfig));
       expect(testTile.iconUrl, equals('https://example.com/icon.png'));
@@ -135,34 +126,34 @@ void main() {
     test('should detect development status correctly', () {
       expect(testTile.isInDevelopment, isTrue);
 
-      final readyTile = testTile.copyWith(status: ApplicationStatus.ready, progress: null);
+      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
       expect(readyTile.isInDevelopment, isFalse);
     });
 
     test('should detect launch capability correctly', () {
       expect(testTile.canLaunch, isFalse);
 
-      final readyTile = testTile.copyWith(status: ApplicationStatus.ready);
+      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
       expect(readyTile.canLaunch, isTrue);
 
-      final runningTile = testTile.copyWith(status: ApplicationStatus.running);
+      final UserApplication runningTile = testTile.copyWith(status: ApplicationStatus.running);
       expect(runningTile.canLaunch, isTrue);
     });
 
     test('should detect modification capability correctly', () {
       expect(testTile.canModify, isFalse);
 
-      final readyTile = testTile.copyWith(status: ApplicationStatus.ready);
+      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
       expect(readyTile.canModify, isTrue);
 
-      final failedTile = testTile.copyWith(status: ApplicationStatus.failed);
+      final UserApplication failedTile = testTile.copyWith(status: ApplicationStatus.failed);
       expect(failedTile.canModify, isTrue);
     });
 
     test('should detect custom icon correctly', () {
       expect(testTile.hasCustomIcon, isTrue);
 
-      final noIconTile = ApplicationTile(
+      final UserApplication noIconTile = UserApplication(
         id: testTile.id,
         title: testTile.title,
         description: testTile.description,
@@ -170,13 +161,12 @@ void main() {
         createdAt: testTile.createdAt,
         updatedAt: testTile.updatedAt,
         launchConfig: testTile.launchConfig,
-        iconUrl: null,
         tags: testTile.tags,
         progress: testTile.progress,
       );
       expect(noIconTile.hasCustomIcon, isFalse);
 
-      final emptyIconTile = ApplicationTile(
+      final UserApplication emptyIconTile = UserApplication(
         id: testTile.id,
         title: testTile.title,
         description: testTile.description,
@@ -194,7 +184,7 @@ void main() {
     test('should detect tags correctly', () {
       expect(testTile.hasTags, isTrue);
 
-      final noTagsTile = ApplicationTile(
+      final UserApplication noTagsTile = UserApplication(
         id: testTile.id,
         title: testTile.title,
         description: testTile.description,
@@ -210,39 +200,39 @@ void main() {
     });
 
     test('should format creation time description correctly', () {
-      final now = DateTime.now();
+      final DateTime now = DateTime.now();
 
-      final dayOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(days: 2)));
+      final UserApplication dayOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(days: 2)));
       expect(dayOldTile.createdTimeDescription, equals('2 days ago'));
 
-      final hourOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(hours: 3)));
+      final UserApplication hourOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(hours: 3)));
       expect(hourOldTile.createdTimeDescription, equals('3 hours ago'));
 
-      final minuteOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(minutes: 45)));
+      final UserApplication minuteOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(minutes: 45)));
       expect(minuteOldTile.createdTimeDescription, equals('45 minutes ago'));
 
-      final recentTile = testTile.copyWith(createdAt: now.subtract(const Duration(seconds: 30)));
+      final UserApplication recentTile = testTile.copyWith(createdAt: now.subtract(const Duration(seconds: 30)));
       expect(recentTile.createdTimeDescription, equals('Just now'));
     });
 
     test('should format updated time description correctly', () {
-      final now = DateTime.now();
+      final DateTime now = DateTime.now();
 
-      final dayOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(days: 1)));
+      final UserApplication dayOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(days: 1)));
       expect(dayOldTile.updatedTimeDescription, equals('Updated 1 day ago'));
 
-      final hourOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(hours: 2)));
+      final UserApplication hourOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(hours: 2)));
       expect(hourOldTile.updatedTimeDescription, equals('Updated 2 hours ago'));
 
-      final minuteOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(minutes: 15)));
+      final UserApplication minuteOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(minutes: 15)));
       expect(minuteOldTile.updatedTimeDescription, equals('Updated 15 minutes ago'));
 
-      final recentTile = testTile.copyWith(updatedAt: now.subtract(const Duration(seconds: 10)));
+      final UserApplication recentTile = testTile.copyWith(updatedAt: now.subtract(const Duration(seconds: 10)));
       expect(recentTile.updatedTimeDescription, equals('Just updated'));
     });
 
     test('should create tile from JSON', () {
-      final json = {
+      final Map<String, dynamic> json = {
         'id': 'app_456',
         'title': 'Budget Tracker',
         'description': 'Personal finance management',
@@ -255,7 +245,7 @@ void main() {
         'progress': null,
       };
 
-      final tile = ApplicationTile.fromJson(json);
+      final UserApplication tile = UserApplication.fromJson(json);
 
       expect(tile.id, equals('app_456'));
       expect(tile.title, equals('Budget Tracker'));
@@ -265,7 +255,7 @@ void main() {
     });
 
     test('should convert tile to JSON correctly', () {
-      final json = testTile.toJson();
+      final Map<String, dynamic> json = testTile.toJson();
 
       expect(json['id'], equals('app_123'));
       expect(json['title'], equals('Chore Tracker'));
@@ -280,7 +270,7 @@ void main() {
     });
 
     test('should create copy with updated fields', () {
-      final updated = testTile.copyWith(
+      final UserApplication updated = testTile.copyWith(
         title: 'Updated Chore Tracker',
         status: ApplicationStatus.ready,
         tags: ['updated', 'tags'],

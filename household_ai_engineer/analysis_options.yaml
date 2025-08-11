@@ -13,3 +13,6 @@ linter:
       sort_constructors_first: false
       avoid_catches_without_on_clauses: false
       document_ignores: false
+
+formatter:
+  trailing_commas: preserve

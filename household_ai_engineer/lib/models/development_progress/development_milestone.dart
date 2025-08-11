@@ -1,10 +1,9 @@
 import 'milestone_status.dart';
 
-/// Represents a single milestone in the application development process.
+/// Represents a single milestone in the user application development process.
 ///
-/// Milestones track specific phases of development such as code generation,
-/// testing, containerization, and deployment. Each milestone has a status,
-/// timing information, and optional error details for failed milestones.
+/// Milestones track specific phases of development such as code generation, testing, containerization, and deployment.
+/// Each milestone has a status, timing information, and optional error details for failed milestones.
 ///
 /// Milestones are used to provide detailed progress feedback to users and
 /// enable fine-grained monitoring of the development process.
