@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'message_action.dart';
 import 'message_sender.dart';
 
@@ -11,7 +9,6 @@ import 'message_sender.dart';
 ///
 /// Messages are immutable once created and form the permanent record
 /// of the conversation history.
-@immutable
 class ConversationMessage {
   /// Creates a new conversation message.
   ///
@@ -157,31 +154,5 @@ class ConversationMessage {
   /// directly accessing the sender enum.
   bool get isFromSystem {
     return sender.isSystem;
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ConversationMessage &&
-        other.id == id &&
-        other.sender == sender &&
-        other.content == content &&
-        other.timestamp == timestamp &&
-        other.actions?.length == actions?.length;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(id, sender, content, timestamp, actions?.length);
-  }
-
-  @override
-  String toString() {
-    return 'ConversationMessage('
-        'id: $id, '
-        'sender: $sender, '
-        'content: ${content.length > 50 ? '${content.substring(0, 50)}...' : content}, '
-        'timestamp: $timestamp'
-        ')';
   }
 }

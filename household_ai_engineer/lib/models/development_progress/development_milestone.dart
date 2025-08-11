@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'milestone_status.dart';
 
 /// Represents a single milestone in the application development process.
@@ -10,7 +8,6 @@ import 'milestone_status.dart';
 ///
 /// Milestones are used to provide detailed progress feedback to users and
 /// enable fine-grained monitoring of the development process.
-@immutable
 class DevelopmentMilestone {
   /// Creates a new development milestone.
   ///
@@ -154,33 +151,5 @@ class DevelopmentMilestone {
       default:
         throw ArgumentError('Invalid milestone status: $statusString');
     }
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is DevelopmentMilestone &&
-        other.id == id &&
-        other.name == name &&
-        other.description == description &&
-        other.status == status &&
-        other.order == order &&
-        other.completedAt == completedAt &&
-        other.errorMessage == errorMessage;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(id, name, description, status, order, completedAt, errorMessage);
-  }
-
-  @override
-  String toString() {
-    return 'DevelopmentMilestone('
-        'id: $id, '
-        'name: $name, '
-        'status: $status, '
-        'order: $order'
-        ')';
   }
 }

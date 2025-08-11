@@ -1,10 +1,7 @@
-import 'package:flutter/foundation.dart';
-
 /// Context information for a conversation thread.
 ///
 /// Provides additional metadata and context that influences
 /// conversation behavior and system responses.
-@immutable
 class ConversationContext {
   /// Creates a new conversation context.
   ///
@@ -80,29 +77,5 @@ class ConversationContext {
       sessionId: sessionId ?? this.sessionId,
       metadata: metadata ?? this.metadata,
     );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ConversationContext &&
-        other.applicationId == applicationId &&
-        other.userId == userId &&
-        other.sessionId == sessionId &&
-        other.metadata?.length == metadata?.length;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(applicationId, userId, sessionId, metadata?.length);
-  }
-
-  @override
-  String toString() {
-    return 'ConversationContext('
-        'applicationId: $applicationId, '
-        'userId: $userId, '
-        'sessionId: $sessionId'
-        ')';
   }
 }

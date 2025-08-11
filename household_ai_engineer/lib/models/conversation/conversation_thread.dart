@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'conversation_context.dart';
 import 'conversation_message.dart';
 import 'conversation_status.dart';
@@ -13,7 +11,6 @@ import 'conversation_status.dart';
 ///
 /// Threads are the primary unit of conversation management and are
 /// used throughout the conversational interface for state management.
-@immutable
 class ConversationThread {
   /// Creates a new conversation thread.
   ///
@@ -231,32 +228,5 @@ class ConversationThread {
   /// Used for conversation analytics and timeout management.
   Duration get duration {
     return updatedAt.difference(createdAt);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ConversationThread &&
-        other.id == id &&
-        other.status == status &&
-        other.context == context &&
-        other.messages.length == messages.length &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(id, status, context, messages.length, createdAt, updatedAt);
-  }
-
-  @override
-  String toString() {
-    return 'ConversationThread('
-        'id: $id, '
-        'status: $status, '
-        'messages: ${messages.length}, '
-        'createdAt: $createdAt'
-        ')';
   }
 }

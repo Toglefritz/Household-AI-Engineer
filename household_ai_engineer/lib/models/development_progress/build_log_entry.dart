@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'log_level.dart';
 
 /// Represents a single entry in the development build log.
@@ -7,7 +5,6 @@ import 'log_level.dart';
 /// Build log entries provide detailed information about specific
 /// development activities, including timestamps, severity levels,
 /// and descriptive messages for debugging and monitoring.
-@immutable
 class BuildLogEntry {
   /// Creates a new build log entry.
   ///
@@ -91,30 +88,5 @@ class BuildLogEntry {
       default:
         throw ArgumentError('Invalid log level: $levelString');
     }
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is BuildLogEntry &&
-        other.timestamp == timestamp &&
-        other.level == level &&
-        other.message == message &&
-        other.source == source;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(timestamp, level, message, source);
-  }
-
-  @override
-  String toString() {
-    return 'BuildLogEntry('
-        'timestamp: $timestamp, '
-        'level: $level, '
-        'message: $message, '
-        'source: $source'
-        ')';
   }
 }

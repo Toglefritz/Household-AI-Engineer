@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'build_log_entry.dart';
 import 'development_milestone.dart';
 import 'log_level.dart';
@@ -13,7 +11,6 @@ import 'milestone_status.dart';
 ///
 /// This model is used throughout the UI to display progress indicators,
 /// phase information, and detailed development status to users.
-@immutable
 class DevelopmentProgress {
   /// Creates a new development progress instance.
   ///
@@ -185,39 +182,5 @@ class DevelopmentProgress {
   /// quick identification of critical issues.
   List<BuildLogEntry> get recentErrors {
     return recentLogs.where((log) => log.level == LogLevel.error).toList();
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is DevelopmentProgress &&
-        other.percentage == percentage &&
-        other.currentPhase == currentPhase &&
-        other.milestones.length == milestones.length &&
-        other.recentLogs.length == recentLogs.length &&
-        other.lastUpdated == lastUpdated &&
-        other.estimatedCompletion == estimatedCompletion;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      percentage,
-      currentPhase,
-      milestones.length,
-      recentLogs.length,
-      lastUpdated,
-      estimatedCompletion,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'DevelopmentProgress('
-        'percentage: $percentage%, '
-        'currentPhase: $currentPhase, '
-        'milestones: ${milestones.length}, '
-        'lastUpdated: $lastUpdated'
-        ')';
   }
 }

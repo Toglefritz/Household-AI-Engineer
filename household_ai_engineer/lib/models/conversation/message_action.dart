@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'message_action_type.dart';
 
 /// Represents an actionable button or link within a conversation message.
@@ -8,7 +6,6 @@ import 'message_action_type.dart';
 /// questions or perform common tasks without typing full responses.
 ///
 /// Actions are typically displayed as buttons or chips below system messages.
-@immutable
 class MessageAction {
   /// Creates a new message action.
   ///
@@ -88,29 +85,5 @@ class MessageAction {
       default:
         throw ArgumentError('Invalid action type: $typeString');
     }
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is MessageAction &&
-        other.id == id &&
-        other.label == label &&
-        other.type == type &&
-        other.value == value;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(id, label, type, value);
-  }
-
-  @override
-  String toString() {
-    return 'MessageAction('
-        'id: $id, '
-        'label: $label, '
-        'type: $type'
-        ')';
   }
 }

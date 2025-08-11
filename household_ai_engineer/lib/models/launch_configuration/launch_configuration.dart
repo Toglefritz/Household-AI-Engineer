@@ -1,12 +1,9 @@
-import 'package:flutter/foundation.dart';
-
 import 'launch_type.dart';
 
 /// Configuration for launching an application.
 ///
 /// Contains platform-specific settings and parameters needed to
 /// properly launch and manage running applications.
-@immutable
 class LaunchConfiguration {
   /// Creates a new launch configuration.
   ///
@@ -141,32 +138,5 @@ class LaunchConfiguration {
       default:
         throw ArgumentError('Invalid launch type: $typeString');
     }
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is LaunchConfiguration &&
-        other.type == type &&
-        other.url == url &&
-        other.windowTitle == windowTitle &&
-        other.windowWidth == windowWidth &&
-        other.windowHeight == windowHeight &&
-        other.allowResize == allowResize &&
-        other.showNavigationControls == showNavigationControls;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(type, url, windowTitle, windowWidth, windowHeight, allowResize, showNavigationControls);
-  }
-
-  @override
-  String toString() {
-    return 'LaunchConfiguration('
-        'type: $type, '
-        'url: $url, '
-        'windowTitle: $windowTitle'
-        ')';
   }
 }
