@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "greeting": "Hello",
   "@greeting": {
     "description": "A greeting displayed to the user"
@@ -6,5 +7,107 @@
   "welcomeMessage": "How can I help you today?",
   "@welcomeMessage": {
     "description": "A message welcoming the user to the app"
+  },
+  "sidebarTitle": "Household Engineer",
+  "@sidebarTitle": {
+    "description": "Title displayed in the sidebar header"
+  },
+  "sidebarToggleCollapse": "Collapse sidebar",
+  "@sidebarToggleCollapse": {
+    "description": "Tooltip for the sidebar collapse button"
+  },
+  "sidebarToggleExpand": "Expand sidebar",
+  "@sidebarToggleExpand": {
+    "description": "Tooltip for the sidebar expand button"
+  },
+  "searchApplicationsHint": "Search applications...",
+  "@searchApplicationsHint": {
+    "description": "Hint text for the application search field"
+  },
+  "navAllApplications": "All Applications",
+  "@navAllApplications": {
+    "description": "Navigation item for viewing all applications"
+  },
+  "navRecent": "Recent",
+  "@navRecent": {
+    "description": "Navigation item for viewing recent applications"
+  },
+  "navFavorites": "Favorites",
+  "@navFavorites": {
+    "description": "Navigation item for viewing favorite applications"
+  },
+  "navInDevelopment": "In Development",
+  "@navInDevelopment": {
+    "description": "Navigation item for viewing applications currently in development"
+  },
+  "categoriesTitle": "Categories",
+  "@categoriesTitle": {
+    "description": "Title for the categories section in the sidebar"
+  },
+  "categoryHomeManagement": "Home Management",
+  "@categoryHomeManagement": {
+    "description": "Category for home management applications"
+  },
+  "categoryFinance": "Finance",
+  "@categoryFinance": {
+    "description": "Category for finance applications"
+  },
+  "categoryPlanning": "Planning",
+  "@categoryPlanning": {
+    "description": "Category for planning applications"
+  },
+  "categoryHealthFitness": "Health & Fitness",
+  "@categoryHealthFitness": {
+    "description": "Category for health and fitness applications"
+  },
+  "categoryEducation": "Education",
+  "@categoryEducation": {
+    "description": "Category for education applications"
+  },
+  "buttonCreateNewApp": "Create New App",
+  "@buttonCreateNewApp": {
+    "description": "Button text for creating a new application"
+  },
+  "statusConnected": "Connected",
+  "@statusConnected": {
+    "description": "Status indicator showing system is connected"
+  },
+  "statusDegraded": "Degraded",
+  "@statusDegraded": {
+    "description": "Status indicator showing system performance is degraded"
+  },
+  "statusDisconnected": "Disconnected",
+  "@statusDisconnected": {
+    "description": "Status indicator showing system is disconnected"
+  },
+  "statusConnecting": "Connecting...",
+  "@statusConnecting": {
+    "description": "Status indicator showing system is attempting to connect"
+  },
+  "systemStatusRunningDeveloping": "{activeApps} running • {developingApps} developing",
+  "@systemStatusRunningDeveloping": {
+    "description": "System status showing number of running and developing applications",
+    "placeholders": {
+      "activeApps": {
+        "type": "int",
+        "description": "Number of currently running applications"
+      },
+      "developingApps": {
+        "type": "int",
+        "description": "Number of applications currently in development"
+      }
+    }
+  },
+  "tooltipSettings": "Settings",
+  "@tooltipSettings": {
+    "description": "Tooltip for the settings button"
+  },
+  "tooltipNotifications": "Notifications",
+  "@tooltipNotifications": {
+    "description": "Tooltip for the notifications button"
+  },
+  "tooltipUserProfile": "User Profile",
+  "@tooltipUserProfile": {
+    "description": "Tooltip for the user profile button"
   }
 }

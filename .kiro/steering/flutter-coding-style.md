@@ -107,6 +107,41 @@ class HeaderWidget extends StatelessWidget {
 - Place shared widgets in `lib/components/`
 - Prefer composition over inheritance
 
+### Spacing and Layout
+- Use `Padding` widgets for creating space between widgets, not `SizedBox`
+- `Padding` provides more semantic meaning and better readability
+- Use consistent padding values from the `Insets` class when available
+
+**✅ Preferred spacing pattern:**
+```dart
+Column(
+  children: [
+    Text('First item'),
+    Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Text('Second item'),
+    ),
+    Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Text('Third item'),
+    ),
+  ],
+)
+```
+
+**❌ Avoid SizedBox for spacing:**
+```dart
+Column(
+  children: [
+    Text('First item'),
+    const SizedBox(height: 16.0),
+    Text('Second item'),
+    const SizedBox(height: 8.0),
+    Text('Third item'),
+  ],
+)
+```
+
 ## Navigation
 
 ### Use MaterialApp Navigator
@@ -346,6 +381,111 @@ factory BrineDevice.fromJson(Map<String, dynamic> json) {
   }
 }
 ```
+
+## Localization and Internationalization
+
+### Use Localizable Strings
+- Never hard-code strings directly in widgets
+- All user-facing text must use the `l10n/app_localizations.dart` dependency
+- Add strings to `household_ai_engineer/lib/l10n/app_en.arb`
+- Generate localizable strings using `flutter gen-l10n`
+
+**✅ Preferred localization pattern:**
+```dart
+// In widget
+Text(AppLocalizations.of(context)!.welcomeMessage)
+
+// In app_en.arb
+{
+  "welcomeMessage": "How can I help you today?",
+  "@welcomeMessage": {
+    "description": "A message welcoming the user to the app"
+  }
+}
+```
+
+**❌ Never hard-code strings:**
+```dart
+// Don't do this
+Text('How can I help you today?')
+```
+
+### ARB File Requirements
+- Every string must include a description using the `@` prefix
+- Use descriptive key names that indicate the string's purpose
+- Include context about where and how the string is used
+
+**✅ Required ARB format:**
+```json
+{
+  "buttonSave": "Save",
+  "@buttonSave": {
+    "description": "Label for the save button in forms"
+  },
+  "errorNetworkConnection": "Unable to connect to the server. Please check your internet connection.",
+  "@errorNetworkConnection": {
+    "description": "Error message shown when network connection fails"
+  }
+}
+```
+
+### Advanced Localization Features
+
+#### Placeholders for Variables
+```json
+{
+  "welcomeUser": "Welcome back, {userName}!",
+  "@welcomeUser": {
+    "description": "Personalized welcome message for returning users",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "description": "The user's display name"
+      }
+    }
+  }
+}
+```
+
+```dart
+// Usage in widget
+Text(AppLocalizations.of(context)!.welcomeUser(user.name))
+```
+
+#### Pluralization
+```json
+{
+  "itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "description": "Shows the number of items in a list",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of items"
+      }
+    }
+  }
+}
+```
+
+```dart
+// Usage in widget
+Text(AppLocalizations.of(context)!.itemCount(items.length))
+```
+
+### Localization Workflow
+1. Add new strings to `household_ai_engineer/lib/l10n/app_en.arb`
+2. Run `flutter gen-l10n` to generate the localization classes
+3. Import `AppLocalizations` in your widget files
+4. Use `AppLocalizations.of(context)!.stringKey` to access strings
+5. Always include null-safety operator `!` when accessing localized strings
+
+### Best Practices
+- Group related strings with consistent prefixes (e.g., `error*`, `button*`, `title*`)
+- Keep descriptions clear and include context about usage
+- Use meaningful key names that describe the string's purpose
+- Test localization by switching device language settings
+- Consider text expansion when designing UI layouts for different languages
 
 ## Testing
 

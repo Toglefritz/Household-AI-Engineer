@@ -105,6 +105,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'How can I help you today?'**
   String get welcomeMessage;
+
+  /// Title displayed in the sidebar header
+  ///
+  /// In en, this message translates to:
+  /// **'Household Engineer'**
+  String get sidebarTitle;
+
+  /// Tooltip for the sidebar collapse button
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse sidebar'**
+  String get sidebarToggleCollapse;
+
+  /// Tooltip for the sidebar expand button
+  ///
+  /// In en, this message translates to:
+  /// **'Expand sidebar'**
+  String get sidebarToggleExpand;
+
+  /// Hint text for the application search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search applications...'**
+  String get searchApplicationsHint;
+
+  /// Navigation item for viewing all applications
+  ///
+  /// In en, this message translates to:
+  /// **'All Applications'**
+  String get navAllApplications;
+
+  /// Navigation item for viewing recent applications
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get navRecent;
+
+  /// Navigation item for viewing favorite applications
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get navFavorites;
+
+  /// Navigation item for viewing applications currently in development
+  ///
+  /// In en, this message translates to:
+  /// **'In Development'**
+  String get navInDevelopment;
+
+  /// Title for the categories section in the sidebar
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesTitle;
+
+  /// Category for home management applications
+  ///
+  /// In en, this message translates to:
+  /// **'Home Management'**
+  String get categoryHomeManagement;
+
+  /// Category for finance applications
+  ///
+  /// In en, this message translates to:
+  /// **'Finance'**
+  String get categoryFinance;
+
+  /// Category for planning applications
+  ///
+  /// In en, this message translates to:
+  /// **'Planning'**
+  String get categoryPlanning;
+
+  /// Category for health and fitness applications
+  ///
+  /// In en, this message translates to:
+  /// **'Health & Fitness'**
+  String get categoryHealthFitness;
+
+  /// Category for education applications
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get categoryEducation;
+
+  /// Button text for creating a new application
+  ///
+  /// In en, this message translates to:
+  /// **'Create New App'**
+  String get buttonCreateNewApp;
+
+  /// Status indicator showing system is connected
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get statusConnected;
+
+  /// Status indicator showing system performance is degraded
+  ///
+  /// In en, this message translates to:
+  /// **'Degraded'**
+  String get statusDegraded;
+
+  /// Status indicator showing system is disconnected
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get statusDisconnected;
+
+  /// Status indicator showing system is attempting to connect
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get statusConnecting;
+
+  /// System status showing number of running and developing applications
+  ///
+  /// In en, this message translates to:
+  /// **'{activeApps} running • {developingApps} developing'**
+  String systemStatusRunningDeveloping(int activeApps, int developingApps);
+
+  /// Tooltip for the settings button
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get tooltipSettings;
+
+  /// Tooltip for the notifications button
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get tooltipNotifications;
+
+  /// Tooltip for the user profile button
+  ///
+  /// In en, this message translates to:
+  /// **'User Profile'**
+  String get tooltipUserProfile;
 }
 
 class _AppLocalizationsDelegate

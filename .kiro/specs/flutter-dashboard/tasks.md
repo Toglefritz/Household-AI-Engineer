@@ -15,31 +15,12 @@
   - Write unit tests for model serialization and validation
   - _Requirements: 1.2, 3.2, 2.1_
 
-- [ ] 3. Implement API client and HTTP service layer
-  - Create HTTP client service with base URL configuration and error handling
-  - Implement API endpoints for application CRUD operations
-  - Add WebSocket client for real-time progress updates
-  - Create response models and error handling for network operations
-  - Write unit tests for API client with mocked responses
-  - _Requirements: 3.1, 3.2, 6.5_
-
-- [ ] 4. Set up state management with Provider
-  - Create AppStateProvider for managing application list and metadata
-  - Implement UIStateProvider for managing interface state and navigation
-  - Create WebSocketStateProvider for real-time updates
-  - Add ConversationStateProvider for chat interface state
-  - Write unit tests for state management logic
-  - _Requirements: 1.1, 3.1, 6.3_
-
-- [ ] 5. Build main window structure and navigation
-  - Create MainWindow widget with native macOS window configuration
+- [x] 3. Build main window sidebar and status bar
   - Implement responsive layout with sidebar and main content area
-  - Add navigation state management and route handling
   - Create status bar with connection indicators and system status
-  - Write widget tests for main window layout and navigation
   - _Requirements: 8.1, 8.2, 6.1_
 
-- [ ] 6. Implement application tile component
+- [ ] 4. Implement application tile component
   - Create ApplicationTileWidget with status indicators and metadata display
   - Add hover states, selection states, and visual feedback
   - Implement context menu with right-click actions
@@ -47,7 +28,7 @@
   - Write widget tests for tile rendering and interactions
   - _Requirements: 1.1, 1.2, 1.4, 7.1_
 
-- [ ] 7. Build responsive application grid layout
+- [ ] 5. Build responsive application grid layout
   - Create ApplicationGridWidget with responsive grid system
   - Implement automatic tile sizing and spacing based on window size
   - Add virtualization for performance with large numbers of applications
@@ -55,7 +36,7 @@
   - Write widget tests for grid layout and responsiveness
   - _Requirements: 1.1, 1.6, 6.4, 9.5_
 
-- [ ] 8. Implement conversational interface foundation
+- [ ] 6. Implement conversational interface foundation
   - Create ConversationModal widget with chat-like interface
   - Build message thread display with scrollable conversation history
   - Implement message input field with validation and auto-complete
@@ -63,7 +44,7 @@
   - Write widget tests for conversation interface components
   - _Requirements: 2.1, 2.2, 2.6_
 
-- [ ] 9. Build conversation flow and message handling
+- [ ] 7. Build conversation flow and message handling
   - Implement conversation state management and message threading
   - Create suggestion chips for quick responses and common actions
   - Add conversation context preservation and history management
@@ -71,7 +52,7 @@
   - Write integration tests for conversation workflows
   - _Requirements: 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 10. Create progress monitoring components
+- [ ] 8. Create progress monitoring components
   - Build ProgressIndicatorWidget with animated progress bars
   - Implement phase indicator with current development stage display
   - Create expandable build log viewer with syntax highlighting
@@ -79,7 +60,7 @@
   - Write widget tests for progress visualization components
   - _Requirements: 3.1, 3.2, 3.3, 3.6_
 
-- [ ] 11. Implement real-time progress updates
+- [ ] 9. Implement real-time progress updates
   - Connect WebSocket client to progress monitoring components
   - Add real-time progress bar updates and phase transitions
   - Implement live build log streaming with auto-scroll
@@ -87,7 +68,7 @@
   - Write integration tests for real-time update handling
   - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-- [ ] 12. Build application launcher system
+- [ ] 10. Build application launcher system
   - Create WebView integration for web-based applications
   - Implement native window management for desktop applications
   - Add application process monitoring and health checking
