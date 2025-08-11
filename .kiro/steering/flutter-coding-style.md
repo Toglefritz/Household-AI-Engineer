@@ -137,6 +137,49 @@ Navigator.pushNamed(context, '/target');
 
 ## Code Style
 
+### Type Safety and Strong Typing
+- All variables must be explicitly typed, including local variables within function bodies
+- Never rely on type inference with `var` or `dynamic` unless absolutely necessary
+- Use specific types rather than generic types when possible
+- Prefer nullable types (`String?`) over dynamic when null values are expected
+
+**✅ Preferred strong typing:**
+```dart
+void processApplications() {
+  final List<Application> applications = getApplications();
+  final Map<String, int> statusCounts = <String, int>{};
+  final String defaultStatus = 'pending';
+  
+  for (final Application app in applications) {
+    final String status = app.status ?? defaultStatus;
+    final int currentCount = statusCounts[status] ?? 0;
+    statusCounts[status] = currentCount + 1;
+  }
+}
+```
+
+**❌ Avoid type inference and dynamic:**
+```dart
+void processApplications() {
+  var applications = getApplications(); // Type unclear
+  var statusCounts = {}; // Dynamic map
+  var defaultStatus = 'pending'; // Could be inferred as String, but be explicit
+  
+  for (var app in applications) { // Type unclear
+    var status = app.status ?? defaultStatus;
+    var currentCount = statusCounts[status] ?? 0;
+    statusCounts[status] = currentCount + 1;
+  }
+}
+```
+
+### Strong Typing Guidelines
+- Declare the full type for collections: `List<String>`, `Map<String, int>`, `Set<Application>`
+- Use explicit types for function parameters and return values
+- Type cast with `as` operator when necessary, but prefer strong typing to avoid casts
+- Use `late` keyword with explicit types for variables initialized after declaration
+- Document complex generic types with meaningful names
+
 ### Linting
 - Follow `very_good_analysis` linting rules
 - Prefer single quotes for strings
