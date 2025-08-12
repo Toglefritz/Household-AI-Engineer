@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../theme/insets.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/insets.dart';
 
 /// Right section component for the status bar.
 ///

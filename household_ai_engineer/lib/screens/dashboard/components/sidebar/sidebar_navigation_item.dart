@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../theme/insets.dart';
-import 'navigation_item_data.dart';
+import '../../../../theme/insets.dart';
+import '../../models/sidebar/navigation_item_data.dart';
 
 /// Individual navigation item widget for the sidebar.
 ///
-/// Creates a clickable navigation item that adapts its display based on the sidebar expansion state. Includes hover 
+/// Creates a clickable navigation item that adapts its display based on the sidebar expansion state. Includes hover
 /// effects and selection states.
 class SidebarNavigationItem extends StatelessWidget {
   /// Creates a sidebar navigation item widget.
@@ -36,9 +36,7 @@ class SidebarNavigationItem extends StatelessWidget {
         vertical: 2,
       ),
       child: Material(
-        color: item.isSelected
-            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
-            : Colors.transparent,
+        color: item.isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: () {
@@ -81,21 +79,19 @@ class _ExpandedNavigationContent extends StatelessWidget {
         Icon(
           item.icon,
           size: 20,
-          color: item.isSelected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurface,
+          color: item.isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
         ),
-        const Padding(
-          padding: EdgeInsets.only(left: Insets.small),
-        ),
-        Expanded(
-          child: Text(
-            item.label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: item.isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface,
-              fontWeight: item.isSelected ? FontWeight.w600 : FontWeight.normal,
+        Padding(
+          padding: const EdgeInsets.only(left: Insets.small),
+          child: Expanded(
+            child: Text(
+              item.label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: item.isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurface,
+                fontWeight: item.isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
             ),
           ),
         ),
@@ -147,9 +143,7 @@ class _CollapsedNavigationContent extends StatelessWidget {
           Icon(
             item.icon,
             size: 20,
-            color: item.isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface,
+            color: item.isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
           ),
 
           // Badge dot for collapsed state

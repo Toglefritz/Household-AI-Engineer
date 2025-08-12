@@ -55,16 +55,4 @@ class CategoryData {
       count: count ?? this.count,
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is CategoryData && other.icon == icon && other.label == label && other.count == count;
-  }
-
-  @override
-  int get hashCode => Object.hash(icon, label, count);
-
-  @override
-  String toString() => 'CategoryData(icon: $icon, label: $label, count: $count)';
 }

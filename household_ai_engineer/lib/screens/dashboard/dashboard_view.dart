@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/insets.dart';
-import 'components/dashboard_sidebar.dart';
-import 'components/dashboard_status_bar.dart';
+import 'components/sidebar/dashboard_sidebar.dart';
+import 'components/status_bar/dashboard_status_bar.dart';
 import 'dashboard_controller.dart';
 import 'dashboard_route.dart';
 

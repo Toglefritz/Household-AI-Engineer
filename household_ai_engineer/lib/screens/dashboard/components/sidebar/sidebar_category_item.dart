@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../theme/insets.dart';
-import 'sidebar_spacing.dart';
+import '../../../../theme/insets.dart';
+import '../../models/sidebar/sidebar_spacing.dart';
 
 /// Category item widget for the sidebar categories section.
 ///
-/// Creates a clickable category item for filtering applications. Adapts its
-/// presentation based on sidebar expansion state. In expanded state, shows
-/// the category name and count. In collapsed state, shows only the icon
-/// with a tooltip containing the category information.
+/// Creates a clickable category item for filtering applications. Adapts its presentation based on sidebar expansion
+/// state. In expanded state, shows the category name and count. In collapsed state, shows only the icon with a tooltip
+/// containing the category information.
 class SidebarCategoryItem extends StatelessWidget {
   /// Creates a sidebar category item widget.
   ///
@@ -25,32 +24,31 @@ class SidebarCategoryItem extends StatelessWidget {
 
   /// Icon representing the category.
   ///
-  /// Should be a recognizable icon that represents the category type.
-  /// Used in both expanded and collapsed states.
+  /// Should be a recognizable icon that represents the category type. Used in both expanded and collapsed states.
   final IconData icon;
 
   /// Category name to display.
   ///
-  /// Shown as text in expanded state and in tooltip for collapsed state.
-  /// Should be concise but descriptive of the category.
+  /// Shown as text in expanded state and in tooltip for collapsed state. Should be concise but descriptive of the
+  /// category.
   final String label;
 
   /// Number of applications in this category.
   ///
-  /// Used to show users how many items are available in each category.
-  /// Displayed as text in expanded state and in tooltip for collapsed state.
+  /// Used to show users how many items are available in each category. Displayed as text in expanded state and in
+  /// tooltip for collapsed state.
   final int count;
 
   /// Whether to show expanded content based on actual width during animation.
   ///
-  /// When true, shows full category item with icon, label, and count.
-  /// When false, shows only icon with tooltip containing category information.
+  /// When true, shows full category item with icon, label, and count. When false, shows only icon with tooltip
+  /// containing category information.
   final bool showExpandedContent;
 
   /// Handles category selection when the item is tapped.
   ///
-  /// Triggers category filtering functionality. In a full implementation,
-  /// this would filter the applications list to show only items in this category.
+  /// Triggers category filtering functionality. In a full implementation, this would filter the applications list to
+  /// show only items in this category.
   void _handleCategoryTap() {
     // TODO(Toglefritz): Implement category filtering
   }
@@ -102,11 +100,11 @@ class _ExpandedCategoryItem extends StatelessWidget {
   /// @param count Number of applications in this category
   /// @param onTap Callback function when the item is tapped
   const _ExpandedCategoryItem({
-    super.key,
     required this.icon,
     required this.label,
     required this.count,
     required this.onTap,
+    super.key,
   });
 
   /// Icon representing the category.
@@ -181,11 +179,11 @@ class _CollapsedCategoryItem extends StatelessWidget {
   /// @param count Number of applications for tooltip
   /// @param onTap Callback function when the item is tapped
   const _CollapsedCategoryItem({
-    super.key,
     required this.icon,
     required this.label,
     required this.count,
     required this.onTap,
+    super.key,
   });
 
   /// Icon representing the category.

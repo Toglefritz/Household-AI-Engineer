@@ -189,13 +189,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
     }
   }
 
-  @override
-  void dispose() {
-    _contentController.dispose();
-    _widthController.dispose();
-    super.dispose();
-  }
-
   /// Animates the sidebar to the specified expanded state.
   ///
   /// Coordinates two-stage animation with different sequences for expand vs collapse:
@@ -210,7 +203,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
       await _widthController.forward();
 
       // Small delay to ensure width has expanded
-      await Future.delayed(_widthTransitionDelay);
+      await Future<void>.delayed(_widthTransitionDelay);
 
       // Then show expanded content
       setState(() {
@@ -228,7 +221,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
       await _contentController.reverse();
 
       // Small delay to ensure content transition completes
-      await Future.delayed(_widthTransitionDelay);
+      await Future<void>.delayed(_widthTransitionDelay);
 
       await _widthController.reverse();
     }
@@ -262,5 +255,12 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+    _widthController.dispose();
+    super.dispose();
   }
 }

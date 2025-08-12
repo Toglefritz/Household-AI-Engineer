@@ -9,12 +9,6 @@ class SidebarSpacing {
   /// sidebar expansion state.
   static const double sectionHeight = 56.0;
 
-  /// Vertical spacing between major sidebar sections.
-  ///
-  /// Provides consistent visual separation between navigation, categories,
-  /// and action sections.
-  static const double sectionSpacing = 16.0;
-
   /// Height of individual category items.
   ///
   /// Ensures consistent spacing for category list items in both expanded

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../theme/insets.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/insets.dart';
 
 /// Header component for the dashboard sidebar.
 ///
-/// Contains the application title (when expanded) and the sidebar toggle button. Maintains consistent spacing and 
+/// Contains the application title (when expanded) and the sidebar toggle button. Maintains consistent spacing and
 /// follows macOS design patterns for header elements.
 class SidebarHeader extends StatelessWidget {
   /// Creates a sidebar header widget.
@@ -63,16 +63,16 @@ class SidebarHeader extends StatelessWidget {
 
           // Title (only shown when expanded)
           if (showExpandedContent) ...[
-            const Padding(
-              padding: EdgeInsets.only(left: Insets.xSmall),
-            ),
-            Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.sidebarTitle,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.xSmall),
+              child: Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.sidebarTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

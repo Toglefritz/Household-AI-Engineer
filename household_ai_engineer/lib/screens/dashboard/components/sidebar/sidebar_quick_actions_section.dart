@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../theme/insets.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/insets.dart';
 
 /// Quick actions section component for the dashboard sidebar.
 ///
@@ -26,25 +26,24 @@ class SidebarQuickActionsSection extends StatelessWidget {
       padding: const EdgeInsets.all(Insets.small),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: Insets.medium),
-          ),
-
-          // Create new app button with smooth transition
-          SizedBox(
-            width: double.infinity,
-            height: 40, // Fixed height to prevent layout shifts
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 100),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: showExpandedContent
-                  ? const _ExpandedCreateButton(key: ValueKey('expanded'))
-                  : const _CollapsedCreateButton(key: ValueKey('collapsed')),
+          Padding(
+            padding: const EdgeInsets.only(top: Insets.medium),
+            // Create new app button with smooth transition
+            child: SizedBox(
+              width: double.infinity,
+              height: 40, // Fixed height to prevent layout shifts
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 100),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                child: showExpandedContent
+                    ? const _ExpandedCreateButton(key: ValueKey('expanded'))
+                    : const _CollapsedCreateButton(key: ValueKey('collapsed')),
+              ),
             ),
           ),
         ],

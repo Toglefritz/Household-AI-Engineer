@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_navigation_content.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_navigation_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_quick_actions_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_section_spacing.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_content.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Widget tests for the SidebarNavigationContent component.
 ///
@@ -69,17 +68,6 @@ void main() {
         expect(find.byType(SidebarNavigationSection), findsOneWidget);
         expect(find.byType(SidebarCategoriesSection), findsOneWidget);
         expect(find.byType(SidebarQuickActionsSection), findsOneWidget);
-      });
-
-      /// Verifies that section spacing is properly applied between sections.
-      ///
-      /// Should include SidebarSectionSpacing widgets between major sections
-      /// to maintain consistent visual hierarchy and spacing.
-      testWidgets('should include proper section spacing', (WidgetTester tester) async {
-        await tester.pumpWidget(createTestWidget(showExpandedContent: true));
-
-        // Should have multiple spacing widgets between sections
-        expect(find.byType(SidebarSectionSpacing), findsNWidgets(3));
       });
 
       /// Verifies that ListView has proper padding configuration.
@@ -267,31 +255,6 @@ void main() {
 
         expect(expandedSectionCount, equals(collapsedSectionCount));
         expect(expandedSectionCount, equals(4)); // Search, Navigation, Categories, Quick Actions
-      });
-
-      /// Verifies that spacing remains consistent across states.
-      ///
-      /// Should maintain the same number of spacing widgets between
-      /// sections in both expanded and collapsed states.
-      testWidgets('should maintain consistent spacing across states', (WidgetTester tester) async {
-        // Test expanded state
-        await tester.pumpWidget(createTestWidget(showExpandedContent: true));
-        final int expandedSpacingCount = tester
-            .widgetList<SidebarSectionSpacing>(
-              find.byType(SidebarSectionSpacing),
-            )
-            .length;
-
-        // Test collapsed state
-        await tester.pumpWidget(createTestWidget(showExpandedContent: false));
-        final int collapsedSpacingCount = tester
-            .widgetList<SidebarSectionSpacing>(
-              find.byType(SidebarSectionSpacing),
-            )
-            .length;
-
-        expect(expandedSpacingCount, equals(collapsedSpacingCount));
-        expect(expandedSpacingCount, equals(3)); // Between 4 sections = 3 spacings
       });
     });
 

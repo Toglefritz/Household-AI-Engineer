@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/dashboard_sidebar.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_navigation_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_quick_actions_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_spacing.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/dashboard_sidebar.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Visual verification tests for sidebar layout consistency.
 ///
@@ -120,65 +119,6 @@ void main() {
                 'Expanded: $expandedHeight, Collapsed: $collapsedHeight, Diff: $heightDifference',
           );
         }
-      });
-
-      /// Verifies that spacing between sections remains consistent.
-      ///
-      /// Should ensure that the vertical gaps between sections don't change
-      /// when the sidebar state transitions, maintaining visual rhythm.
-      testWidgets('should maintain consistent spacing between sections', (WidgetTester tester) async {
-        // Calculate spacing in expanded state
-        await tester.pumpWidget(createTestApp(isExpanded: true));
-        await tester.pumpAndSettle();
-
-        final double searchBottom = tester.getBottomLeft(find.byType(SidebarSearchSection)).dy;
-        final double navTop = tester.getTopLeft(find.byType(SidebarNavigationSection)).dy;
-        final double navBottom = tester.getBottomLeft(find.byType(SidebarNavigationSection)).dy;
-        final double categoriesTop = tester.getTopLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double categoriesBottom = tester.getBottomLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double actionsTop = tester.getTopLeft(find.byType(SidebarQuickActionsSection)).dy;
-
-        final Map<String, double> expandedSpacing = {
-          'search-to-nav': navTop - searchBottom,
-          'nav-to-categories': categoriesTop - navBottom,
-          'categories-to-actions': actionsTop - categoriesBottom,
-        };
-
-        // Calculate spacing in collapsed state
-        await tester.pumpWidget(createTestApp(isExpanded: false));
-        await tester.pumpAndSettle();
-
-        final double collapsedSearchBottom = tester.getBottomLeft(find.byType(SidebarSearchSection)).dy;
-        final double collapsedNavTop = tester.getTopLeft(find.byType(SidebarNavigationSection)).dy;
-        final double collapsedNavBottom = tester.getBottomLeft(find.byType(SidebarNavigationSection)).dy;
-        final double collapsedCategoriesTop = tester.getTopLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double collapsedCategoriesBottom = tester.getBottomLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double collapsedActionsTop = tester.getTopLeft(find.byType(SidebarQuickActionsSection)).dy;
-
-        final Map<String, double> collapsedSpacing = {
-          'search-to-nav': collapsedNavTop - collapsedSearchBottom,
-          'nav-to-categories': collapsedCategoriesTop - collapsedNavBottom,
-          'categories-to-actions': collapsedActionsTop - collapsedCategoriesBottom,
-        };
-
-        // Verify that spacing is consistent
-        for (final String spacingKey in expandedSpacing.keys) {
-          final double expandedSpace = expandedSpacing[spacingKey]!;
-          final double collapsedSpace = collapsedSpacing[spacingKey]!;
-
-          expect(
-            expandedSpace,
-            equals(collapsedSpace),
-            reason:
-                'Spacing $spacingKey should be consistent between states. '
-                'Expanded: $expandedSpace, Collapsed: $collapsedSpace',
-          );
-        }
-
-        // Verify spacing matches expected values
-        expect(expandedSpacing['search-to-nav'], equals(SidebarSpacing.sectionSpacing));
-        expect(expandedSpacing['nav-to-categories'], equals(SidebarSpacing.sectionSpacing));
-        expect(expandedSpacing['categories-to-actions'], equals(SidebarSpacing.sectionSpacing));
       });
     });
 

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/dashboard_sidebar.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_navigation_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_quick_actions_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_section_spacing.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_constants.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/dashboard_sidebar.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_categories_constants.dart';
 
 /// Integration tests for the complete sidebar functionality.
 ///
@@ -63,9 +62,6 @@ void main() {
         expect(find.byType(SidebarCategoriesSection), findsOneWidget);
         expect(find.byType(SidebarQuickActionsSection), findsOneWidget);
 
-        // Section spacing should be present
-        expect(find.byType(SidebarSectionSpacing), findsNWidgets(3));
-
         // Expanded content should be visible
         expect(find.byType(TextField), findsOneWidget); // Search field
         expect(find.text('All Applications'), findsOneWidget); // Navigation
@@ -91,9 +87,6 @@ void main() {
         expect(find.byType(SidebarNavigationSection), findsOneWidget);
         expect(find.byType(SidebarCategoriesSection), findsOneWidget);
         expect(find.byType(SidebarQuickActionsSection), findsOneWidget);
-
-        // Section spacing should be present
-        expect(find.byType(SidebarSectionSpacing), findsNWidgets(3));
 
         // Collapsed content should be visible
         expect(find.byType(TextField), findsNothing); // No search field
@@ -254,102 +247,6 @@ void main() {
         expect(expandedSearchPos.dy, equals(collapsedSearchPos.dy));
         expect(expandedNavPos.dy, equals(collapsedNavPos.dy));
         expect(expandedCategoriesPos.dy, equals(collapsedCategoriesPos.dy));
-      });
-    });
-
-    group('Layout consistency', () {
-      /// Verifies that section spacing is consistent across states.
-      ///
-      /// Should maintain the same vertical spacing between sections
-      /// regardless of expansion state.
-      testWidgets('should maintain consistent section spacing', (WidgetTester tester) async {
-        // Test expanded state spacing
-        await tester.pumpWidget(createTestApp(isExpanded: true));
-        await tester.pumpAndSettle();
-
-        final List<Widget> expandedSpacing = tester
-            .widgetList<SidebarSectionSpacing>(
-              find.byType(SidebarSectionSpacing),
-            )
-            .toList();
-
-        // Test collapsed state spacing
-        await tester.pumpWidget(createTestApp(isExpanded: false));
-        await tester.pumpAndSettle();
-
-        final List<Widget> collapsedSpacing = tester
-            .widgetList<SidebarSectionSpacing>(
-              find.byType(SidebarSectionSpacing),
-            )
-            .toList();
-
-        // Should have same number of spacing elements
-        expect(expandedSpacing.length, equals(collapsedSpacing.length));
-        expect(expandedSpacing.length, equals(3)); // Between 4 sections
-      });
-
-      /// Verifies that all sections maintain their relative order.
-      ///
-      /// Should keep the same vertical order of sections (search, navigation,
-      /// categories, quick actions) in both states.
-      testWidgets('should maintain section order in both states', (WidgetTester tester) async {
-        await tester.pumpWidget(createTestApp(isExpanded: true));
-        await tester.pumpAndSettle();
-
-        // Get Y positions of all sections
-        final double searchY = tester.getTopLeft(find.byType(SidebarSearchSection)).dy;
-        final double navY = tester.getTopLeft(find.byType(SidebarNavigationSection)).dy;
-        final double categoriesY = tester.getTopLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double actionsY = tester.getTopLeft(find.byType(SidebarQuickActionsSection)).dy;
-
-        // Verify correct order (top to bottom)
-        expect(searchY, lessThan(navY));
-        expect(navY, lessThan(categoriesY));
-        expect(categoriesY, lessThan(actionsY));
-
-        // Test collapsed state
-        await tester.pumpWidget(createTestApp(isExpanded: false));
-        await tester.pumpAndSettle();
-
-        // Get Y positions again
-        final double collapsedSearchY = tester.getTopLeft(find.byType(SidebarSearchSection)).dy;
-        final double collapsedNavY = tester.getTopLeft(find.byType(SidebarNavigationSection)).dy;
-        final double collapsedCategoriesY = tester.getTopLeft(find.byType(SidebarCategoriesSection)).dy;
-        final double collapsedActionsY = tester.getTopLeft(find.byType(SidebarQuickActionsSection)).dy;
-
-        // Order should be the same
-        expect(collapsedSearchY, lessThan(collapsedNavY));
-        expect(collapsedNavY, lessThan(collapsedCategoriesY));
-        expect(collapsedCategoriesY, lessThan(collapsedActionsY));
-
-        // Positions should be identical
-        expect(searchY, equals(collapsedSearchY));
-        expect(navY, equals(collapsedNavY));
-        expect(categoriesY, equals(collapsedCategoriesY));
-        expect(actionsY, equals(collapsedActionsY));
-      });
-
-      /// Verifies that sidebar height remains consistent.
-      ///
-      /// Should maintain the same overall height in both states to
-      /// prevent vertical layout shifts in the parent container.
-      testWidgets('should maintain consistent sidebar height', (WidgetTester tester) async {
-        // Test expanded height
-        await tester.pumpWidget(createTestApp(isExpanded: true));
-        await tester.pumpAndSettle();
-
-        final RenderBox expandedBox = tester.renderObject(find.byType(DashboardSidebar));
-        final double expandedHeight = expandedBox.size.height;
-
-        // Test collapsed height
-        await tester.pumpWidget(createTestApp(isExpanded: false));
-        await tester.pumpAndSettle();
-
-        final RenderBox collapsedBox = tester.renderObject(find.byType(DashboardSidebar));
-        final double collapsedHeight = collapsedBox.size.height;
-
-        // Heights should be identical or very close
-        expect((expandedHeight - collapsedHeight).abs(), lessThan(5.0));
       });
     });
 

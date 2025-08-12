@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../theme/insets.dart';
-import '../dashboard_controller.dart';
+import '../../../../theme/insets.dart';
+import '../../dashboard_controller.dart';
 import 'status_bar_connection_indicator.dart';
 import 'status_bar_system_status.dart';
 

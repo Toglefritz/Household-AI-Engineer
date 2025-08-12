@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_spacing.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
+import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_spacing.dart';
 
 /// Widget tests for the SidebarCategoryItem component.
 ///

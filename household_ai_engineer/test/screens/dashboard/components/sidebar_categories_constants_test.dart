@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/category_data.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_constants.dart';
+import 'package:household_ai_engineer/screens/dashboard/models/sidebar/category_data.dart';
+import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_categories_constants.dart';
 
 /// Unit tests for the SidebarCategoriesConstants class.
 ///

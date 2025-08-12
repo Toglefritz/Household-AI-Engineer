@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../theme/insets.dart';
-import 'sidebar_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/insets.dart';
+import '../../models/sidebar/sidebar_spacing.dart';
 
 /// Search section component for the dashboard sidebar.
 ///
-/// Provides search functionality in both expanded and collapsed sidebar states.
-/// In expanded state, shows a full search input field. In collapsed state,
-/// shows a search icon button that maintains the same vertical space to
+/// Provides search functionality in both expanded and collapsed sidebar states. In expanded state, shows a full
+/// search input field. In collapsed state, shows a search icon button that maintains the same vertical space to
 /// prevent layout shifts during state transitions.
 class SidebarSearchSection extends StatelessWidget {
   /// Creates a sidebar search section widget.
