@@ -159,10 +159,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
       vsync: this,
     );
 
-    // Set initial state
+    // Set initial state based on widget state
     _showExpandedContent = widget.isExpanded;
     _currentWidth = widget.isExpanded ? _expandedWidth : _collapsedWidth;
 
+    // Set animation controller values to match initial state
     if (widget.isExpanded) {
       _contentController.value = 1.0;
       _widthController.value = 1.0;

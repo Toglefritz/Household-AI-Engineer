@@ -403,7 +403,7 @@ void main() {
       testWidgets('should maintain layout across different pixel densities', (WidgetTester tester) async {
         final List<double> pixelRatios = [1.0, 1.5, 2.0, 3.0];
 
-        Map<double, Map<Type, Offset>>? baselinePositions;
+        Map<Type, Offset>? baselinePositions;
 
         for (final double pixelRatio in pixelRatios) {
           await tester.binding.setSurfaceSize(Size(800 * pixelRatio, 600 * pixelRatio));

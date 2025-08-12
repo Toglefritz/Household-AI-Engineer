@@ -41,12 +41,12 @@ void main() {
       /// performance and memory usage.
       test('should support const constructor', () {
         const CategoryData category = CategoryData(
-          icon: Icons.test,
+          icon: Icons.star,
           label: 'Const Category',
           count: 10,
         );
 
-        expect(category.icon, Icons.test);
+        expect(category.icon, Icons.star);
         expect(category.label, 'Const Category');
         expect(category.count, 10);
       });

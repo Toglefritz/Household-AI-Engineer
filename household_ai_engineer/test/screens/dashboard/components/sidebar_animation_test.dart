@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
 
 /// Tests for sidebar animation behavior and performance.
 ///
@@ -63,18 +63,18 @@ void main() {
       /// Should animate between expanded and collapsed states without
       /// jarring jumps or visual artifacts.
       testWidgets('should transition smoothly between states', (WidgetTester tester) async {
-        Widget buildSearchSection(bool expanded) {
+        Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
           );
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildSearchSection(true));
+        await tester.pumpWidget(buildSearchSection(expanded: true));
         expect(find.byType(TextField), findsOneWidget);
 
         // Change to collapsed state and pump animation
-        await tester.pumpWidget(buildSearchSection(false));
+        await tester.pumpWidget(buildSearchSection(expanded: false));
         await tester.pump(const Duration(milliseconds: 125)); // Mid-animation
         await tester.pumpAndSettle();
 

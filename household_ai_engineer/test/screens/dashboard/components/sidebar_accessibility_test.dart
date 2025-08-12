@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_category_item.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar_search_section.dart';
 
 /// Tests for sidebar accessibility features and compliance.
 ///
@@ -385,7 +385,7 @@ void main() {
         for (final Tooltip tooltip in tooltips) {
           expect(tooltip.message, isNotNull);
           expect(tooltip.message, isNotEmpty);
-          expect(tooltip.message.length, greaterThan(3)); // Should be descriptive
+          expect(tooltip.message?.length ?? 0, greaterThan(3)); // Should be descriptive
         }
       });
 
