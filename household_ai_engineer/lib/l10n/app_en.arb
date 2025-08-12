@@ -109,5 +109,9 @@
   "tooltipUserProfile": "User Profile",
   "@tooltipUserProfile": {
     "description": "Tooltip for the user profile button"
+  },
+  "buttonCancel": "Cancel",
+  "@buttonCancel": {
+    "description": "Text for a cancel button"
   }
 }

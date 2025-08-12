@@ -4,7 +4,7 @@ import '../../../theme/insets.dart';
 
 /// Quick actions section component for the dashboard sidebar.
 ///
-/// Provides quick access to frequently used actions like creating new applications. Adapts display based on sidebar 
+/// Provides quick access to frequently used actions like creating new applications. Adapts display based on sidebar
 /// expansion state.
 class SidebarQuickActionsSection extends StatelessWidget {
   /// Creates a sidebar quick actions section widget.
@@ -30,12 +30,22 @@ class SidebarQuickActionsSection extends StatelessWidget {
             padding: EdgeInsets.only(top: Insets.medium),
           ),
 
-          // Create new app button
+          // Create new app button with smooth transition
           SizedBox(
             width: double.infinity,
-            child: showExpandedContent
-                ? const _ExpandedCreateButton()
-                : const _CollapsedCreateButton(),
+            height: 40, // Fixed height to prevent layout shifts
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 100),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: showExpandedContent
+                  ? const _ExpandedCreateButton(key: ValueKey('expanded'))
+                  : const _CollapsedCreateButton(key: ValueKey('collapsed')),
+            ),
           ),
         ],
       ),
@@ -48,7 +58,7 @@ class SidebarQuickActionsSection extends StatelessWidget {
 /// Shows the full button with icon and label.
 class _ExpandedCreateButton extends StatelessWidget {
   /// Creates an expanded create button.
-  const _ExpandedCreateButton();
+  const _ExpandedCreateButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,24 +86,26 @@ class _ExpandedCreateButton extends StatelessWidget {
 /// Shows only the icon in a compact button format.
 class _CollapsedCreateButton extends StatelessWidget {
   /// Creates a collapsed create button.
-  const _CollapsedCreateButton();
+  const _CollapsedCreateButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // TODO(Toglefritz): Implement create new app functionality
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        padding: const EdgeInsets.all(Insets.xSmall),
-        minimumSize: const Size(48, 40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          // TODO(Toglefritz): Implement create new app functionality
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          padding: const EdgeInsets.all(Insets.xSmall),
+          minimumSize: const Size(40, 40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
+        child: const Icon(Icons.add, size: 18),
       ),
-      child: const Icon(Icons.add, size: 18),
     );
   }
 }

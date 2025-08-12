@@ -243,6 +243,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User Profile'**
   String get tooltipUserProfile;
+
+  /// Text for a cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get buttonCancel;
 }
 
 class _AppLocalizationsDelegate

@@ -142,6 +142,19 @@ Column(
 )
 ```
 
+**❌ Also Avoid Padding without a child for spacing:**
+```dart
+Column(
+  children: [
+    Text('First item'),
+    const Padding(padding: EdgeInsets.only(bottom: 16.0)),
+    Text('Second item'),
+    const Padding(padding: EdgeInsets.only(bottom: 16.0)),
+    Text('Third item'),
+  ],
+)
+```
+
 ## Navigation
 
 ### Use MaterialApp Navigator

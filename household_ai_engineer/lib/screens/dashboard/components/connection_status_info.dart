@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Data class containing visual information for connection status display.
 ///
-/// Encapsulates the color, icon, and label information needed to display a connection status in the status bar with 
+/// Encapsulates the color, icon, and label information needed to display a connection status in the status bar with
 /// consistent styling.
 class ConnectionStatusInfo {
   /// Creates connection status information with the specified properties.

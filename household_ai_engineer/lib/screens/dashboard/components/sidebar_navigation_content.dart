@@ -5,11 +5,13 @@ import 'sidebar_categories_section.dart';
 import 'sidebar_navigation_section.dart';
 import 'sidebar_quick_actions_section.dart';
 import 'sidebar_search_section.dart';
+import 'sidebar_section_spacing.dart';
 
 /// Main navigation content component for the dashboard sidebar.
 ///
-/// Contains navigation items, filters, and other interactive elements.  Adapts content based on expansion state to 
-/// provide appropriate level of detail and functionality.
+/// Contains navigation items, filters, and other interactive elements.
+/// All sections are always present to prevent layout shifts during state
+/// transitions. Each section adapts its presentation based on expansion state.
 class SidebarNavigationContent extends StatelessWidget {
   /// Creates a sidebar navigation content widget.
   ///
@@ -22,6 +24,7 @@ class SidebarNavigationContent extends StatelessWidget {
   /// Whether to show expanded content based on actual width during animation.
   ///
   /// Prevents content from appearing/disappearing abruptly during transitions.
+  /// Passed to all child sections to coordinate their presentation state.
   final bool showExpandedContent;
 
   @override
@@ -29,21 +32,31 @@ class SidebarNavigationContent extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: Insets.small),
       children: [
-        // Search section (placeholder)
-        if (showExpandedContent) const SidebarSearchSection(),
+        // Search section - always present, changes representation
+        SidebarSearchSection(
+          showExpandedContent: showExpandedContent,
+        ),
 
-        // Navigation items
+        // Section spacing
+        const SidebarSectionSpacing(),
+
+        // Navigation items - already handles both states
         SidebarNavigationSection(
           showExpandedContent: showExpandedContent,
         ),
 
-        // Categories section
-        if (showExpandedContent)
-          SidebarCategoriesSection(
-            showExpandedContent: showExpandedContent,
-          ),
+        // Section spacing
+        const SidebarSectionSpacing(),
 
-        // Quick actions
+        // Categories section - always present, changes representation
+        SidebarCategoriesSection(
+          showExpandedContent: showExpandedContent,
+        ),
+
+        // Section spacing
+        const SidebarSectionSpacing(),
+
+        // Quick actions - already handles both states
         SidebarQuickActionsSection(
           showExpandedContent: showExpandedContent,
         ),

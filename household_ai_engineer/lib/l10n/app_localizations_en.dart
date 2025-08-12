@@ -84,4 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tooltipUserProfile => 'User Profile';
+
+  @override
+  String get buttonCancel => 'Cancel';
 }
