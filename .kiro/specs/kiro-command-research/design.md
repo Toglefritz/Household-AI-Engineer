@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Kiro Command Research Tool is a VS Code extension that systematically investigates Kiro IDE commands to enable remote orchestration. It provides command introspection, safe testing capabilities, workflow analysis, and comprehensive documentation generation for integration with the Household AI Engineer orchestration layer.
+The Kiro Command Research Tool is a simplified VS Code extension that discovers and documents Kiro IDE commands for remote orchestration. It focuses on command discovery, basic analysis, and JSON-based documentation generation for integration with the Household AI Engineer orchestration layer.
 
 ## Architecture
 
@@ -36,7 +36,7 @@ graph TB
 
 ### Data Models
 
-#### Command Metadata
+#### Simplified Command Metadata
 ```typescript
 interface CommandMetadata {
   id: string;
@@ -44,47 +44,23 @@ interface CommandMetadata {
   subcategory: string;
   displayName: string;
   description?: string;
-  signature: CommandSignature;
-  examples: CommandExample[];
-  dependencies: string[];
   riskLevel: 'safe' | 'moderate' | 'destructive';
-  lastTested: Date;
-  testResults: TestResult[];
-}
-
-interface CommandSignature {
-  parameters: Parameter[];
-  returnType: TypeDefinition;
-  async: boolean;
   contextRequirements: string[];
+  discoveredAt: Date;
 }
 
-interface Parameter {
-  name: string;
-  type: TypeDefinition;
-  required: boolean;
-  description?: string;
-  defaultValue?: any;
-  validation?: ValidationRule[];
-}
-```
-
-#### Test Results
-```typescript
-interface TestResult {
-  timestamp: Date;
-  parameters: Record<string, any>;
-  success: boolean;
-  result?: any;
-  error?: ErrorInfo;
-  executionTime: number;
-  sideEffects: SideEffect[];
-}
-
-interface SideEffect {
-  type: 'file_created' | 'file_modified' | 'view_opened' | 'state_changed';
-  description: string;
-  details: Record<string, any>;
+interface DiscoveryResults {
+  totalCommands: number;
+  kiroAgentCommands: number;
+  kiroCommands: number;
+  commands: CommandMetadata[];
+  discoveryTimestamp: Date;
+  statistics: {
+    safeCommands: number;
+    moderateCommands: number;
+    destructiveCommands: number;
+    subcategories: string[];
+  };
 }
 ```
 
@@ -96,104 +72,45 @@ interface SideEffect {
 
 **Key Methods**:
 - `scanCommandRegistry()`: Discovers all registered commands
-- `introspectCommand(commandId: string)`: Attempts to determine command signature
 - `categorizeCommand(commandId: string)`: Assigns functional categories
-- `updateCommandMetadata(commandId: string)`: Refreshes command information
+- `assessRiskLevel(commandId: string)`: Determines command safety level
+- `saveResults(results: DiscoveryResults)`: Saves results to JSON file
 
 **Implementation Strategy**:
 - Use VS Code's `vscode.commands.getCommands()` to list all commands
 - Filter for commands starting with 'kiro' or 'kiroAgent'
-- Attempt signature discovery through TypeScript definition files
-- Fall back to manual documentation for undiscoverable signatures
-
-### Testing Framework
-
-**Purpose**: Provide safe, controlled testing of Kiro commands with parameter validation and result capture.
-
-**Key Methods**:
-- `validateParameters(commandId: string, params: any[])`: Validates input parameters
-- `executeCommand(commandId: string, params: any[])`: Safely executes command
-- `captureResults(execution: CommandExecution)`: Records execution results
-- `detectSideEffects(beforeState: WorkspaceState, afterState: WorkspaceState)`: Identifies changes
-
-**Safety Features**:
-- Pre-execution validation of parameter types and values
-- Workspace state snapshots before destructive operations
-- Confirmation dialogs for high-risk commands
-- Execution timeout and cancellation support
-- Automatic rollback for failed operations where possible
+- Categorize commands by analyzing their structure and naming patterns
+- Store results in simple JSON files for easy access and sharing
 
 ### Documentation Generator
 
-**Purpose**: Generate comprehensive API documentation in multiple formats for integration use.
+**Purpose**: Generate simple documentation formats for integration use.
 
 **Output Formats**:
-- **JSON Schema**: Machine-readable command definitions
-- **TypeScript Definitions**: Type-safe interfaces for development
-- **Markdown Documentation**: Human-readable reference
-- **OpenAPI Specification**: REST-like API documentation for WebSocket bridge
+- **JSON Export**: Complete command metadata for programmatic access
+- **Markdown Documentation**: Human-readable reference with categorization
+- **TypeScript Definitions**: Basic type definitions for development
 
 **Key Methods**:
-- `generateSchema(commands: CommandMetadata[])`: Creates JSON schema
-- `generateTypeDefinitions(commands: CommandMetadata[])`: Creates TypeScript types
+- `exportToJSON(commands: CommandMetadata[])`: Creates JSON export
 - `generateMarkdownDocs(commands: CommandMetadata[])`: Creates documentation
-- `exportDocumentation(format: ExportFormat, destination: string)`: Exports docs
-
-### Workflow Analyzer
-
-**Purpose**: Analyze command dependencies and generate workflow templates for common development tasks.
-
-**Analysis Capabilities**:
-- **Dependency Detection**: Identify commands that must run in sequence
-- **State Requirements**: Document workspace state needed for command execution
-- **Common Patterns**: Identify frequently used command combinations
-- **Template Generation**: Create reusable workflow templates
-
-**Key Methods**:
-- `analyzeDependencies(commandId: string)`: Maps command prerequisites
-- `detectWorkflows(executionHistory: TestResult[])`: Identifies patterns
-- `generateTemplate(workflow: CommandSequence)`: Creates workflow template
-- `validateWorkflow(template: WorkflowTemplate)`: Tests workflow validity
+- `generateTypeDefinitions(commands: CommandMetadata[])`: Creates basic TypeScript types
 
 ## Data Models
 
-### Command Storage
-Commands and their metadata will be stored in a local SQLite database with the following schema:
+### File-Based Storage
+Commands and their metadata will be stored in simple JSON files in the extension's workspace:
 
-```sql
--- Commands table
-CREATE TABLE commands (
-    id TEXT PRIMARY KEY,
-    category TEXT NOT NULL,
-    subcategory TEXT,
-    display_name TEXT,
-    description TEXT,
-    signature JSON,
-    risk_level TEXT DEFAULT 'safe',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Test results table
-CREATE TABLE test_results (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    command_id TEXT REFERENCES commands(id),
-    parameters JSON,
-    success BOOLEAN,
-    result JSON,
-    error JSON,
-    execution_time INTEGER,
-    side_effects JSON,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Command dependencies table
-CREATE TABLE command_dependencies (
-    command_id TEXT REFERENCES commands(id),
-    depends_on TEXT REFERENCES commands(id),
-    dependency_type TEXT, -- 'prerequisite', 'sequence', 'context'
-    PRIMARY KEY (command_id, depends_on)
-);
+```
+.kiro/command-research/
+├── discovery-results.json     # Latest discovery results
+├── commands/                  # Individual command files (optional)
+├── exports/                   # Generated documentation
+│   ├── commands.json         # Full JSON export
+│   ├── commands.md           # Markdown documentation
+│   └── commands.d.ts         # TypeScript definitions
+└── logs/                     # Discovery logs
+    └── discovery-YYYY-MM-DD.log
 ```
 
 ## Error Handling

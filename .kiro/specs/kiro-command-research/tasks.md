@@ -7,7 +7,7 @@
   - _Requirements: 1.1, 4.4_
 
 - [ ] 2. Implement command discovery engine
-- [ ] 2.1 Create command registry scanner
+- [x] 2.1 Create command registry scanner
   - Write CommandRegistryScanner class to discover all VS Code commands
   - Implement filtering logic to identify Kiro-related commands
   - Create categorization system for kiroAgent vs kiro commands

@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Core type definitions for Kiro command metadata and research data.
+ * Simplified type definitions for Kiro command research data.
  *
  * These interfaces define the structure for storing and manipulating
  * command information discovered through the research process.
