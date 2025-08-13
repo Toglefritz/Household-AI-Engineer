@@ -1,11 +1,10 @@
 /**
  * Kiro Command Logger Extension
  * 
- * This extension monitors and logs all VS Code commands executed during
- * Kiro AI agent interactions to help understand programmatic interface patterns.
- * 
- * The extension operates as a passive observer, capturing command execution
- * events and outputting structured logs to the debug console for analysis.
+ * This simple extension discovers and logs all VS Code/Kiro IDE commands associated with
+ * the Kiro AI agent. The extension obtains a list of all VS Code commands related to Kiro
+ * and analyzes these commands by organizing them into categories. The resulting analysis
+ * is provided in the "Output" panel.
  */
 
 const vscode = require('vscode');
@@ -232,35 +231,6 @@ function onDocumentChanged(event) {
 }
 
 /**
- * Handles document open events from VS Code.
- * 
- * @param {vscode.TextDocument} document - The opened document
- */
-function onDocumentOpened(document) {
-    try {
-        const fileName = document.fileName;
-        
-        // Filter out output channels and log files
-        if (fileName && (
-            fileName.includes('kiro-command-logger') ||
-            fileName.includes('extension-output-') ||
-            fileName.includes('Output - ') ||
-            document.languageId === 'log'
-        )) {
-            return;
-        }
-        
-        processAndLogEvent('document.opened', {
-            fileName: fileName,
-            language: document.languageId,
-            lineCount: document.lineCount
-        });
-    } catch (error) {
-        console.error('Error processing document open:', error);
-    }
-}
-
-/**
  * Handles document save events from VS Code.
  * 
  * @param {vscode.TextDocument} document - The saved document
@@ -286,45 +256,6 @@ function onDocumentSaved(document) {
         });
     } catch (error) {
         console.error('Error processing document save:', error);
-    }
-}
-
-/**
- * Handles window state change events from VS Code.
- * 
- * @param {vscode.WindowState} windowState - The window state
- */
-function onWindowStateChanged(windowState) {
-    try {
-        processAndLogEvent('window.stateChanged', {
-            focused: windowState.focused
-        });
-    } catch (error) {
-        console.error('Error processing window state change:', error);
-    }
-}
-
-/**
- * Handles active editor change events from VS Code.
- * 
- * @param {vscode.TextEditor} editor - The new active editor
- */
-function onActiveEditorChanged(editor) {
-    try {
-        if (editor) {
-            processAndLogEvent('editor.activeChanged', {
-                fileName: editor.document.fileName,
-                language: editor.document.languageId,
-                selection: editor.selection
-            });
-        } else {
-            processAndLogEvent('editor.activeChanged', {
-                fileName: null,
-                message: 'No active editor'
-            });
-        }
-    } catch (error) {
-        console.error('Error processing active editor change:', error);
     }
 }
 
