@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import { FileStorageManager } from './storage/file-storage-manager';
 import { CommandRegistryScanner } from './discovery/command-registry-scanner';
+import { ParameterResearcher, CommandSignature, ParameterResearchStatistics } from './discovery/parameter-researcher';
 import { CommandMetadata, DiscoveryResults, DiscoveryStatistics } from './types/command-metadata';
 
 /**
@@ -18,13 +19,14 @@ import { CommandMetadata, DiscoveryResults, DiscoveryStatistics } from './types/
  */
 class ExtensionState {
   private static instance: ExtensionState | null = null;
-  
+
   private constructor(
     public readonly context: vscode.ExtensionContext,
     public readonly storageManager: FileStorageManager,
-    public readonly commandScanner: CommandRegistryScanner
-  ) {}
-  
+    public readonly commandScanner: CommandRegistryScanner,
+    public readonly parameterResearcher: ParameterResearcher
+  ) { }
+
   /**
    * Initializes the extension state singleton.
    * 
@@ -35,16 +37,17 @@ class ExtensionState {
     if (ExtensionState.instance) {
       throw new Error('Extension state already initialized');
     }
-    
+
     const storageManager: FileStorageManager = new FileStorageManager(context);
     await storageManager.initialize();
-    
+
     const commandScanner: CommandRegistryScanner = new CommandRegistryScanner();
-    
-    ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner);
+    const parameterResearcher: ParameterResearcher = new ParameterResearcher();
+
+    ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher);
     return ExtensionState.instance;
   }
-  
+
   /**
    * Gets the current extension state instance.
    * 
@@ -57,7 +60,7 @@ class ExtensionState {
     }
     return ExtensionState.instance;
   }
-  
+
   /**
    * Cleans up extension resources.
    * 
@@ -67,7 +70,7 @@ class ExtensionState {
     // No cleanup needed for file storage
     ExtensionState.instance = null;
   }
-  
+
   /**
    * Gets the current extension state instance if it exists.
    * 
@@ -89,23 +92,23 @@ class ExtensionState {
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   try {
     console.log('Activating Kiro Command Research Tool v0.5.0 (Simplified)...');
-    
+
     console.log('Initializing file storage...');
     // Initialize extension state
     const extensionState: ExtensionState = await ExtensionState.initialize(context);
     console.log('Extension state initialized successfully');
-    
+
     console.log('Setting context variables...');
     // Set context variable to enable views
     await vscode.commands.executeCommand('setContext', 'kiroCommandResearch.active', true);
-    
+
     console.log('Registering commands...');
     // Register commands
     registerCommands(context);
-    
+
     // Show activation message
     vscode.window.showInformationMessage('Kiro Command Research Tool v0.5.0 (Simplified) activated successfully!');
-    
+
     console.log('Kiro Command Research Tool v0.5.0 (Simplified) activated successfully');
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
@@ -125,16 +128,16 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 export async function deactivate(): Promise<void> {
   try {
     console.log('Deactivating Kiro Command Research Tool...');
-    
+
     // Clean up extension state
     const extensionState: ExtensionState | null = ExtensionState.getCurrentInstance();
     if (extensionState) {
       await extensionState.dispose();
     }
-    
+
     // Clear context variable
     await vscode.commands.executeCommand('setContext', 'kiroCommandResearch.active', false);
-    
+
     console.log('Kiro Command Research Tool deactivated successfully');
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
@@ -152,7 +155,7 @@ export async function deactivate(): Promise<void> {
  */
 function registerCommands(context: vscode.ExtensionContext): void {
   console.log('Starting command registration...');
-  
+
   // Command: Discover Kiro Commands
   console.log('Registering kiroCommandResearch.discoverCommands...');
   const discoverCommandsDisposable: vscode.Disposable = vscode.commands.registerCommand(
@@ -168,7 +171,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
     }
   );
   console.log('kiroCommandResearch.discoverCommands registered successfully');
-  
+
   // Command: Test Command
   const testCommandDisposable: vscode.Disposable = vscode.commands.registerCommand(
     'kiroCommandResearch.testCommand',
@@ -181,7 +184,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
       }
     }
   );
-  
+
   // Command: Generate Documentation
   const generateDocsDisposable: vscode.Disposable = vscode.commands.registerCommand(
     'kiroCommandResearch.generateDocs',
@@ -194,7 +197,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
       }
     }
   );
-  
+
   // Command: Open Command Explorer
   const openExplorerDisposable: vscode.Disposable = vscode.commands.registerCommand(
     'kiroCommandResearch.openExplorer',
@@ -220,16 +223,30 @@ function registerCommands(context: vscode.ExtensionContext): void {
       }
     }
   );
-  
+
+  // Command: Research Command Parameters
+  const researchParametersDisposable: vscode.Disposable = vscode.commands.registerCommand(
+    'kiroCommandResearch.researchParameters',
+    async () => {
+      try {
+        await handleResearchParameters();
+      } catch (error: unknown) {
+        const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+        vscode.window.showErrorMessage(`Parameter research failed: ${errorMessage}`);
+      }
+    }
+  );
+
   // Register disposables for cleanup
   context.subscriptions.push(
     discoverCommandsDisposable,
     testCommandDisposable,
     generateDocsDisposable,
     openExplorerDisposable,
-    viewResultsDisposable
+    viewResultsDisposable,
+    researchParametersDisposable
   );
-  
+
   console.log('All commands registered successfully. Total subscriptions:', context.subscriptions.length);
 }
 
@@ -241,7 +258,7 @@ function registerCommands(context: vscode.ExtensionContext): void {
  */
 async function handleDiscoverCommands(): Promise<void> {
   const extensionState: ExtensionState = ExtensionState.getInstance();
-  
+
   // Show progress indicator
   await vscode.window.withProgress(
     {
@@ -252,28 +269,28 @@ async function handleDiscoverCommands(): Promise<void> {
     async (progress) => {
       try {
         progress.report({ message: 'Scanning command registry...' });
-        
+
         // Discover Kiro commands
         const discoveredCommands: CommandMetadata[] = await extensionState.commandScanner.discoverKiroCommands();
-        
+
         progress.report({ message: 'Generating statistics...' });
-        
+
         // Create discovery results
         const results: DiscoveryResults = extensionState.commandScanner.createDiscoveryResults(discoveredCommands);
-        
+
         progress.report({ message: 'Saving results...' });
-        
+
         // Save results to file
         await extensionState.storageManager.saveDiscoveryResults(results);
         await extensionState.storageManager.logActivity(`Discovered ${results.totalCommands} commands`);
-        
+
         // Show detailed results
         const message: string = `Discovery completed! Found ${results.totalCommands} commands (${results.kiroAgentCommands} kiroAgent, ${results.kiroCommands} kiro). Risk levels: ${results.statistics.safeCommands} safe, ${results.statistics.moderateCommands} moderate, ${results.statistics.destructiveCommands} destructive.`;
-        
+
         vscode.window.showInformationMessage(message);
-        
+
         console.log('Command discovery completed successfully:', results);
-        
+
       } catch (error: unknown) {
         const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
         console.error('Command discovery failed:', error);
@@ -298,7 +315,7 @@ async function handleTestCommand(commandId?: string): Promise<void> {
     vscode.window.showInformationMessage('Command testing interface will be implemented in task 7.2');
     return;
   }
-  
+
   // TODO: Open testing interface for specific command
   // This will be implemented in task 7.2
   vscode.window.showInformationMessage(`Testing interface for command '${commandId}' will be implemented in task 7.2`);
@@ -320,19 +337,19 @@ async function handleGenerateDocumentation(): Promise<void> {
     },
     async (progress) => {
       progress.report({ message: 'Loading command metadata...' });
-      
+
       // TODO: Implement documentation generation logic
       // This will be implemented in task 5.1 and 5.2
       await new Promise(resolve => setTimeout(resolve, 1500)); // Placeholder
-      
+
       progress.report({ message: 'Generating schemas and types...' });
       await new Promise(resolve => setTimeout(resolve, 1000)); // Placeholder
-      
+
       progress.report({ message: 'Exporting documentation...' });
       await new Promise(resolve => setTimeout(resolve, 500)); // Placeholder
     }
   );
-  
+
   vscode.window.showInformationMessage('Documentation generation completed successfully!');
 }
 
@@ -345,7 +362,7 @@ async function handleGenerateDocumentation(): Promise<void> {
 async function handleOpenExplorer(): Promise<void> {
   // Focus the command explorer view
   await vscode.commands.executeCommand('kiroCommandExplorer.focus');
-  
+
   // TODO: Populate explorer with discovered commands
   // This will be implemented in task 7.1
   vscode.window.showInformationMessage('Command explorer interface will be implemented in task 7.1');
@@ -359,7 +376,7 @@ async function handleOpenExplorer(): Promise<void> {
  */
 async function handleViewResults(): Promise<void> {
   const extensionState: ExtensionState = ExtensionState.getInstance();
-  
+
   try {
     // Check if results exist
     if (!extensionState.storageManager.hasDiscoveryResults()) {
@@ -368,7 +385,7 @@ async function handleViewResults(): Promise<void> {
         'Run Discovery',
         'Cancel'
       );
-      
+
       if (runDiscovery === 'Run Discovery') {
         await handleDiscoverCommands();
       }
@@ -378,13 +395,13 @@ async function handleViewResults(): Promise<void> {
     // Get storage info
     const storageInfo = extensionState.storageManager.getStorageInfo();
     const resultsPath = `${storageInfo.storageDir}/discovery-results.json`;
-    
+
     // Try to open the results file
     try {
       const resultsUri = vscode.Uri.file(resultsPath);
       const document = await vscode.workspace.openTextDocument(resultsUri);
       await vscode.window.showTextDocument(document);
-      
+
       // Load and show summary
       const results = await extensionState.storageManager.loadDiscoveryResults();
       if (results) {
@@ -396,7 +413,7 @@ async function handleViewResults(): Promise<void> {
 • Moderate Risk: ${results.statistics.moderateCommands}
 • Destructive Commands: ${results.statistics.destructiveCommands}
 • Discovery Date: ${new Date(results.discoveryTimestamp).toLocaleString()}`;
-        
+
         vscode.window.showInformationMessage(summary);
       }
     } catch (error) {
@@ -413,5 +430,112 @@ async function handleViewResults(): Promise<void> {
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
     vscode.window.showErrorMessage(`Failed to view results: ${errorMessage}`);
+  }
+}
+
+/**
+ * Handles the research command parameters operation.
+ * 
+ * This function researches parameters for discovered commands and
+ * updates the stored results with signature information.
+ */
+async function handleResearchParameters(): Promise<void> {
+  const extensionState: ExtensionState = ExtensionState.getInstance();
+  
+  try {
+    // Check if discovery results exist
+    if (!extensionState.storageManager.hasDiscoveryResults()) {
+      const runDiscovery = await vscode.window.showInformationMessage(
+        'No discovery results found. Would you like to run command discovery first?',
+        'Run Discovery',
+        'Cancel'
+      );
+      
+      if (runDiscovery === 'Run Discovery') {
+        await handleDiscoverCommands();
+        // Continue with parameter research after discovery
+      } else {
+        return;
+      }
+    }
+
+    // Load existing discovery results
+    const discoveryResults = await extensionState.storageManager.loadDiscoveryResults();
+    if (!discoveryResults) {
+      vscode.window.showErrorMessage('Failed to load discovery results');
+      return;
+    }
+
+    // Show progress indicator
+    await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: 'Researching Command Parameters',
+        cancellable: false
+      },
+      async (progress) => {
+        try {
+          progress.report({ message: 'Analyzing command signatures...' });
+          
+          // Extract command IDs from discovery results
+          const commandIds: string[] = discoveryResults.commands.map((cmd: any) => cmd.id);
+          
+          // Research parameters for all commands
+          const signatures: CommandSignature[] = await extensionState.parameterResearcher.researchCommands(commandIds);
+          
+          progress.report({ message: 'Updating command metadata...' });
+          
+          // Update commands with signature information
+          const updatedCommands = discoveryResults.commands.map((cmd: any) => {
+            const signature = signatures.find(s => s.commandId === cmd.id);
+            return {
+              ...cmd,
+              signature: signature ? {
+                parameters: signature.parameters,
+                returnType: signature.returnType,
+                async: signature.async,
+                confidence: signature.confidence,
+                sources: signature.sources,
+                researchedAt: signature.researchedAt
+              } : undefined
+            };
+          });
+          
+          // Update discovery results with parameter information
+          const updatedResults = {
+            ...discoveryResults,
+            commands: updatedCommands,
+            parameterResearch: {
+              researchedAt: new Date(),
+              statistics: extensionState.parameterResearcher.getResearchStatistics(signatures)
+            }
+          };
+          
+          progress.report({ message: 'Saving updated results...' });
+          
+          // Save updated results
+          await extensionState.storageManager.saveDiscoveryResults(updatedResults);
+          await extensionState.storageManager.logActivity(`Researched parameters for ${signatures.length} commands`);
+          
+          // Generate statistics
+          const stats: ParameterResearchStatistics = extensionState.parameterResearcher.getResearchStatistics(signatures);
+          
+          // Show detailed results
+          const message: string = `Parameter research completed! Analyzed ${stats.totalCommands} commands. Confidence levels: ${stats.highConfidence} high, ${stats.mediumConfidence} medium, ${stats.lowConfidence} low. Found parameters for ${stats.withParameters} commands.`;
+          
+          vscode.window.showInformationMessage(message);
+          
+          console.log('Parameter research completed successfully:', stats);
+          
+        } catch (error: unknown) {
+          const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+          console.error('Parameter research failed:', error);
+          throw new Error(`Parameter research failed: ${errorMessage}`);
+        }
+      }
+    );
+  } catch (error: unknown) {
+    const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+    vscode.window.showErrorMessage(`Failed to research parameters: ${errorMessage}`);
   }
 }

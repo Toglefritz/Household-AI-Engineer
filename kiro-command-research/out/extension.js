@@ -33,6 +33,7 @@ exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const file_storage_manager_1 = require("./storage/file-storage-manager");
 const command_registry_scanner_1 = require("./discovery/command-registry-scanner");
+const parameter_researcher_1 = require("./discovery/parameter-researcher");
 /**
  * Extension context and global state management.
  *
@@ -40,10 +41,11 @@ const command_registry_scanner_1 = require("./discovery/command-registry-scanner
  * access to shared resources like the database manager.
  */
 class ExtensionState {
-    constructor(context, storageManager, commandScanner) {
+    constructor(context, storageManager, commandScanner, parameterResearcher) {
         this.context = context;
         this.storageManager = storageManager;
         this.commandScanner = commandScanner;
+        this.parameterResearcher = parameterResearcher;
     }
     /**
      * Initializes the extension state singleton.
@@ -58,7 +60,8 @@ class ExtensionState {
         const storageManager = new file_storage_manager_1.FileStorageManager(context);
         await storageManager.initialize();
         const commandScanner = new command_registry_scanner_1.CommandRegistryScanner();
-        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner);
+        const parameterResearcher = new parameter_researcher_1.ParameterResearcher();
+        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher);
         return ExtensionState.instance;
     }
     /**
@@ -213,8 +216,18 @@ function registerCommands(context) {
             vscode.window.showErrorMessage(`Failed to view results: ${errorMessage}`);
         }
     });
+    // Command: Research Command Parameters
+    const researchParametersDisposable = vscode.commands.registerCommand('kiroCommandResearch.researchParameters', async () => {
+        try {
+            await handleResearchParameters();
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            vscode.window.showErrorMessage(`Parameter research failed: ${errorMessage}`);
+        }
+    });
     // Register disposables for cleanup
-    context.subscriptions.push(discoverCommandsDisposable, testCommandDisposable, generateDocsDisposable, openExplorerDisposable, viewResultsDisposable);
+    context.subscriptions.push(discoverCommandsDisposable, testCommandDisposable, generateDocsDisposable, openExplorerDisposable, viewResultsDisposable, researchParametersDisposable);
     console.log('All commands registered successfully. Total subscriptions:', context.subscriptions.length);
 }
 /**
@@ -361,6 +374,92 @@ async function handleViewResults() {
     catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         vscode.window.showErrorMessage(`Failed to view results: ${errorMessage}`);
+    }
+}
+/**
+ * Handles the research command parameters operation.
+ *
+ * This function researches parameters for discovered commands and
+ * updates the stored results with signature information.
+ */
+async function handleResearchParameters() {
+    const extensionState = ExtensionState.getInstance();
+    try {
+        // Check if discovery results exist
+        if (!extensionState.storageManager.hasDiscoveryResults()) {
+            const runDiscovery = await vscode.window.showInformationMessage('No discovery results found. Would you like to run command discovery first?', 'Run Discovery', 'Cancel');
+            if (runDiscovery === 'Run Discovery') {
+                await handleDiscoverCommands();
+                // Continue with parameter research after discovery
+            }
+            else {
+                return;
+            }
+        }
+        // Load existing discovery results
+        const discoveryResults = await extensionState.storageManager.loadDiscoveryResults();
+        if (!discoveryResults) {
+            vscode.window.showErrorMessage('Failed to load discovery results');
+            return;
+        }
+        // Show progress indicator
+        await vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: 'Researching Command Parameters',
+            cancellable: false
+        }, async (progress) => {
+            try {
+                progress.report({ message: 'Analyzing command signatures...' });
+                // Extract command IDs from discovery results
+                const commandIds = discoveryResults.commands.map((cmd) => cmd.id);
+                // Research parameters for all commands
+                const signatures = await extensionState.parameterResearcher.researchCommands(commandIds);
+                progress.report({ message: 'Updating command metadata...' });
+                // Update commands with signature information
+                const updatedCommands = discoveryResults.commands.map((cmd) => {
+                    const signature = signatures.find(s => s.commandId === cmd.id);
+                    return {
+                        ...cmd,
+                        signature: signature ? {
+                            parameters: signature.parameters,
+                            returnType: signature.returnType,
+                            async: signature.async,
+                            confidence: signature.confidence,
+                            sources: signature.sources,
+                            researchedAt: signature.researchedAt
+                        } : undefined
+                    };
+                });
+                // Update discovery results with parameter information
+                const updatedResults = {
+                    ...discoveryResults,
+                    commands: updatedCommands,
+                    parameterResearch: {
+                        researchedAt: new Date(),
+                        statistics: extensionState.parameterResearcher.getResearchStatistics(signatures)
+                    }
+                };
+                progress.report({ message: 'Saving updated results...' });
+                // Save updated results
+                await extensionState.storageManager.saveDiscoveryResults(updatedResults);
+                await extensionState.storageManager.logActivity(`Researched parameters for ${signatures.length} commands`);
+                // Generate statistics
+                const stats = extensionState.parameterResearcher.getResearchStatistics(signatures);
+                // Show detailed results
+                const message = `Parameter research completed! Analyzed ${stats.totalCommands} commands. Confidence levels: ${stats.highConfidence} high, ${stats.mediumConfidence} medium, ${stats.lowConfidence} low. Found parameters for ${stats.withParameters} commands.`;
+                vscode.window.showInformationMessage(message);
+                console.log('Parameter research completed successfully:', stats);
+            }
+            catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                console.error('Parameter research failed:', error);
+                throw new Error(`Parameter research failed: ${errorMessage}`);
+            }
+        });
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        vscode.window.showErrorMessage(`Failed to research parameters: ${errorMessage}`);
     }
 }
 //# sourceMappingURL=extension.js.map

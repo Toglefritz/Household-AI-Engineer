@@ -35,6 +35,55 @@ export interface CommandMetadata {
   
   /** When this command was discovered */
   readonly discoveredAt: Date;
+  
+  /** Command signature information (if researched) */
+  readonly signature?: CommandSignature;
+}
+
+/**
+ * Information about a command parameter.
+ */
+export interface ParameterInfo {
+  /** Parameter name */
+  readonly name: string;
+  
+  /** Parameter type (inferred) */
+  readonly type: string;
+  
+  /** Whether parameter is required */
+  readonly required: boolean;
+  
+  /** Parameter description if available */
+  readonly description?: string;
+  
+  /** Default value if known */
+  readonly defaultValue?: any;
+  
+  /** How this parameter info was discovered */
+  readonly source: 'typescript' | 'documentation' | 'inference' | 'manual';
+}
+
+/**
+ * Command signature information.
+ */
+export interface CommandSignature {
+  /** Parameters for this command */
+  readonly parameters: ParameterInfo[];
+  
+  /** Return type if known */
+  readonly returnType?: string;
+  
+  /** Whether command is async */
+  readonly async: boolean;
+  
+  /** Confidence level in this signature */
+  readonly confidence: 'high' | 'medium' | 'low';
+  
+  /** Sources used to determine signature */
+  readonly sources: string[];
+  
+  /** When signature was researched */
+  readonly researchedAt: Date;
 }
 
 /**
