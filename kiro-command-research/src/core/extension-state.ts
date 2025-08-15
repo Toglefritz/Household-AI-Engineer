@@ -18,6 +18,7 @@ import { DocumentationExporter } from '../export/documentation-exporter';
 import { DocumentationViewer } from '../documentation/documentation-viewer';
 import { Dashboard } from '../ui/dashboard';
 import { DashboardProvider } from '../ui/dashboard-provider';
+import { ManualParameterEditor } from '../ui/manual-parameter-editor';
 
 /**
  * Extension context and global state management.
@@ -40,7 +41,8 @@ export class ExtensionState {
     public readonly documentationManager: DocumentationManager,
     public readonly documentationViewer: DocumentationViewer,
     public readonly dashboard: Dashboard,
-    public readonly dashboardProvider: DashboardProvider
+    public readonly dashboardProvider: DashboardProvider,
+    public readonly manualParameterEditor: ManualParameterEditor
   ) { }
 
   /**
@@ -109,6 +111,17 @@ export class ExtensionState {
     // Register the dashboard tree data provider
     vscode.window.registerTreeDataProvider('kiroDashboard', dashboardProvider);
 
+    const manualParameterEditor: ManualParameterEditor = new ManualParameterEditor(
+      context,
+      storageManager,
+      {
+        showAdvancedOptions: true,
+        validateTypes: true,
+        showExamples: true,
+        maxParameters: 20
+      }
+    );
+
     ExtensionState.instance = new ExtensionState(
       context, 
       storageManager, 
@@ -121,7 +134,8 @@ export class ExtensionState {
       documentationManager,
       documentationViewer,
       dashboard,
-      dashboardProvider
+      dashboardProvider,
+      manualParameterEditor
     );
     return ExtensionState.instance;
   }
@@ -151,6 +165,7 @@ export class ExtensionState {
     this.documentationManager.dispose();
     this.documentationViewer.dispose();
     this.dashboard.dispose();
+    this.manualParameterEditor.dispose();
     
     ExtensionState.instance = null;
   }

@@ -43,6 +43,7 @@ const documentation_exporter_1 = require("../export/documentation-exporter");
 const documentation_viewer_1 = require("../documentation/documentation-viewer");
 const dashboard_1 = require("../ui/dashboard");
 const dashboard_provider_1 = require("../ui/dashboard-provider");
+const manual_parameter_editor_1 = require("../ui/manual-parameter-editor");
 /**
  * Extension context and global state management.
  *
@@ -50,7 +51,7 @@ const dashboard_provider_1 = require("../ui/dashboard-provider");
  * access to shared resources like the storage manager and UI components.
  */
 class ExtensionState {
-    constructor(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider) {
+    constructor(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider, manualParameterEditor) {
         this.context = context;
         this.storageManager = storageManager;
         this.commandScanner = commandScanner;
@@ -63,6 +64,7 @@ class ExtensionState {
         this.documentationViewer = documentationViewer;
         this.dashboard = dashboard;
         this.dashboardProvider = dashboardProvider;
+        this.manualParameterEditor = manualParameterEditor;
     }
     /**
      * Initializes the extension state singleton.
@@ -107,7 +109,13 @@ class ExtensionState {
         const dashboardProvider = new dashboard_provider_1.DashboardProvider();
         // Register the dashboard tree data provider
         vscode.window.registerTreeDataProvider('kiroDashboard', dashboardProvider);
-        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider);
+        const manualParameterEditor = new manual_parameter_editor_1.ManualParameterEditor(context, storageManager, {
+            showAdvancedOptions: true,
+            validateTypes: true,
+            showExamples: true,
+            maxParameters: 20
+        });
+        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider, manualParameterEditor);
         return ExtensionState.instance;
     }
     /**
@@ -134,6 +142,7 @@ class ExtensionState {
         this.documentationManager.dispose();
         this.documentationViewer.dispose();
         this.dashboard.dispose();
+        this.manualParameterEditor.dispose();
         ExtensionState.instance = null;
     }
     /**

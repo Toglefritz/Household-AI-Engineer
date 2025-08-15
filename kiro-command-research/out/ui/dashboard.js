@@ -83,6 +83,9 @@ class Dashboard {
                         await vscode.commands.executeCommand('kiroCommandResearch.researchParameters');
                         await this.refreshDashboardState();
                         break;
+                    case 'editParameters':
+                        await vscode.commands.executeCommand('kiroCommandResearch.editParameters');
+                        break;
                     case 'testCommand':
                         await vscode.commands.executeCommand('kiroCommandResearch.testCommand');
                         break;
@@ -371,11 +374,18 @@ class Dashboard {
           </div>
           
           <div class="section-actions">
-            <button class="action-btn primary" onclick="researchParameters()" ${!canResearch ? 'disabled' : ''}
-                    title="Analyze command signatures and parameters (Ctrl+Shift+K 2)"
-                    aria-label="Research Parameters - Analyze command signatures and parameters">
-              🔬 Research Parameters
-            </button>
+            <div class="action-row">
+              <button class="action-btn primary" onclick="researchParameters()" ${!canResearch ? 'disabled' : ''}
+                      title="Analyze command signatures and parameters (Ctrl+Shift+K 2)"
+                      aria-label="Research Parameters - Analyze command signatures and parameters">
+                🔬 Research Parameters
+              </button>
+              <button class="action-btn secondary" onclick="editParameters()" ${!canResearch ? 'disabled' : ''}
+                      title="Manually add parameter information"
+                      aria-label="Edit Parameters - Manually add parameter information">
+                ✏️ Edit Parameters
+              </button>
+            </div>
             ${research.lastResearch ? `
               <div class="last-activity">
                 Last research: ${research.lastResearch.toLocaleString()}
@@ -995,6 +1005,10 @@ class Dashboard {
         vscode.postMessage({ command: 'researchParameters' });
       }
       
+      function editParameters() {
+        vscode.postMessage({ command: 'editParameters' });
+      }
+      
       function testCommand() {
         vscode.postMessage({ command: 'testCommand' });
       }
@@ -1042,25 +1056,6 @@ class Dashboard {
           position: fixed;
           top: 20px;
           right: 20px;
-          background: var(--vscode-errorForeground);
-          color: var(--vscode-errorBackground);
-          padding: 12px 16px;
-          border-radius: 4px;
-          z-index: 1000;
-          max-width: 300px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        \`;
-        errorDiv.textContent = message;
-        
-        document.body.appendChild(errorDiv);
-        
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-          if (errorDiv.parentNode) {
-            errorDiv.parentNode.removeChild(errorDiv);
-          }
-        }, 5000);
-      }
           background: var(--vscode-inputValidation-errorBackground);
           color: var(--vscode-inputValidation-errorForeground);
           border: 1px solid var(--vscode-inputValidation-errorBorder);
@@ -1068,6 +1063,7 @@ class Dashboard {
           border-radius: 6px;
           z-index: 1000;
           max-width: 400px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         \`;
         errorDiv.textContent = \`Error: \${message}\`;
         

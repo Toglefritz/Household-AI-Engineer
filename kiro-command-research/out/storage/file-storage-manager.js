@@ -188,6 +188,47 @@ class FileStorageManager {
         return fs.existsSync(filePath);
     }
     /**
+     * Saves arbitrary data to a JSON file.
+     *
+     * @param filename Name of the file to save to
+     * @param data Data to save (will be JSON stringified)
+     * @returns Promise that resolves when save is complete
+     */
+    async saveData(filename, data) {
+        try {
+            const filePath = path.join(this.storageDir, filename);
+            fs.writeFileSync(filePath, data, 'utf8');
+            console.log(`FileStorageManager: Saved data to ${filename}`);
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`FileStorageManager: Failed to save data to ${filename}:`, errorMessage);
+            throw error;
+        }
+    }
+    /**
+     * Loads arbitrary data from a JSON file.
+     *
+     * @param filename Name of the file to load from
+     * @returns Promise that resolves to file content or null if not found
+     */
+    async loadData(filename) {
+        try {
+            const filePath = path.join(this.storageDir, filename);
+            if (!fs.existsSync(filePath)) {
+                return null;
+            }
+            const content = fs.readFileSync(filePath, 'utf8');
+            console.log(`FileStorageManager: Loaded data from ${filename}`);
+            return content;
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`FileStorageManager: Failed to load data from ${filename}:`, errorMessage);
+            return null;
+        }
+    }
+    /**
      * Gets information about stored files.
      *
      * @returns Object with file information and statistics

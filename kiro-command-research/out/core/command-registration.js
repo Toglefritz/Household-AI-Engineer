@@ -123,6 +123,43 @@ function registerCommands(context) {
                 const extensionState = ExtensionState.getInstance();
                 await extensionState.dashboard.openDashboard();
             }
+        },
+        {
+            id: 'kiroCommandResearch.editParameters',
+            handler: async (item) => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                let command = null;
+                if (item && item.commandMetadata) {
+                    // Called from command explorer
+                    command = item.commandMetadata;
+                }
+                else {
+                    // Called from command palette - show command picker
+                    const discoveryResults = await extensionState.storageManager.loadDiscoveryResults();
+                    if (!discoveryResults || discoveryResults.commands.length === 0) {
+                        vscode.window.showWarningMessage('No commands discovered yet. Please run command discovery first.');
+                        return;
+                    }
+                    const commandItems = discoveryResults.commands.map((cmd) => ({
+                        label: cmd.displayName,
+                        description: cmd.id,
+                        detail: cmd.description || 'No description available',
+                        command: cmd
+                    }));
+                    const selectedItem = await vscode.window.showQuickPick(commandItems, {
+                        placeHolder: 'Select a command to edit parameters for',
+                        matchOnDescription: true,
+                        matchOnDetail: true
+                    });
+                    if (selectedItem) {
+                        command = selectedItem.command;
+                    }
+                }
+                if (command) {
+                    await extensionState.manualParameterEditor.openEditor(command);
+                }
+            }
         }
     ];
     for (const command of commands) {

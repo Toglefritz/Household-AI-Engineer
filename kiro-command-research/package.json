@@ -92,6 +92,12 @@
         "title": "Open Dashboard",
         "category": "Kiro Research",
         "icon": "$(dashboard)"
+      },
+      {
+        "command": "kiroCommandResearch.editParameters",
+        "title": "Edit Parameters Manually",
+        "category": "Kiro Research",
+        "icon": "$(edit)"
       }
     ],
     "views": {
@@ -193,6 +199,11 @@
           "command": "kiroCommandResearch.showCommandDetails",
           "when": "view == kiroCommandExplorer && viewItem =~ /^command-/",
           "group": "1_actions"
+        },
+        {
+          "command": "kiroCommandResearch.editParameters",
+          "when": "view == kiroCommandExplorer && viewItem =~ /^command-/",
+          "group": "2_edit"
         }
       ]
     }
