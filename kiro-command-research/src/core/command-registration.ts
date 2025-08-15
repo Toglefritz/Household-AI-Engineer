@@ -160,6 +160,40 @@ export function registerCommands(context: vscode.ExtensionContext): void {
           await extensionState.manualParameterEditor.openEditor(command);
         }
       }
+    },
+    {
+      id: 'kiroCommandResearch.viewDocumentation',
+      handler: async () => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        
+        // Load discovery results to pass to the viewer
+        const discoveryResults = await extensionState.storageManager.loadDiscoveryResults();
+        const commands = discoveryResults?.commands || [];
+        
+        if (commands.length === 0) {
+          vscode.window.showWarningMessage('No commands available for documentation viewing. Please run command discovery first.');
+          return;
+        }
+        
+        await extensionState.documentationViewer.openViewer(commands, []);
+      }
+    },
+    {
+      id: 'kiroCommandResearch.openExportDirectory',
+      handler: async () => {
+        const { DocumentationExporter } = await import('../export/documentation-exporter');
+        const exporter = new DocumentationExporter();
+        const exportDir = exporter.getExportDirectory();
+        
+        try {
+          const uri = vscode.Uri.file(exportDir);
+          await vscode.commands.executeCommand('vscode.openFolder', uri, { forceNewWindow: false });
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          vscode.window.showErrorMessage(`Failed to open export directory: ${errorMessage}`);
+        }
+      }
     }
   ];
 

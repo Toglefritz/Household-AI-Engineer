@@ -8,6 +8,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 import { CommandMetadata } from '../types/command-metadata';
 import { TestResult } from '../testing/result-capture';
 import { SchemaGenerator, JsonSchema, TypeScriptDefinition, OpenApiSpec } from '../documentation/schema-generator';
@@ -177,7 +178,14 @@ export class DocumentationExporter {
   private readonly schemaGenerator: SchemaGenerator;
   
   constructor(config: Partial<ExportConfig> = {}) {
-    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    // Get workspace root or fallback to a safe directory
+    let workspaceRoot: string;
+    if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+      workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+    } else {
+      // Fallback to user's home directory if no workspace is open
+      workspaceRoot = path.join(os.homedir(), 'kiro-command-research');
+    }
     
     this.config = {
       outputDirectory: path.join(workspaceRoot, '.kiro', 'command-research', 'exports'),
@@ -1300,15 +1308,28 @@ import { CommandMetadata, CommandRegistry } from './types';
   }
   
   /**
+   * Gets the export directory path.
+   * 
+   * @returns The configured export directory path
+   */
+  public getExportDirectory(): string {
+    return this.config.outputDirectory;
+  }
+
+  /**
    * Ensures output directory exists.
    * 
    * @returns Promise that resolves when directory exists
    */
   private async ensureOutputDirectory(): Promise<void> {
     try {
+      console.log(`DocumentationExporter: Creating output directory: ${this.config.outputDirectory}`);
       await fs.promises.mkdir(this.config.outputDirectory, { recursive: true });
-    } catch (error) {
-      console.warn('Failed to create output directory:', error);
+      console.log(`DocumentationExporter: Output directory created successfully`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error(`DocumentationExporter: Failed to create output directory: ${errorMessage}`);
+      throw new Error(`Failed to create output directory: ${errorMessage}`);
     }
   }
 }

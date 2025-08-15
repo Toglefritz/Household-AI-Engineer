@@ -33,6 +33,7 @@ exports.DocumentationExporter = void 0;
 const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+const os = __importStar(require("os"));
 const schema_generator_1 = require("../documentation/schema-generator");
 /**
  * Exports command documentation in multiple formats with version tracking.
@@ -42,7 +43,15 @@ const schema_generator_1 = require("../documentation/schema-generator");
  */
 class DocumentationExporter {
     constructor(config = {}) {
-        const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+        // Get workspace root or fallback to a safe directory
+        let workspaceRoot;
+        if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+            workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        }
+        else {
+            // Fallback to user's home directory if no workspace is open
+            workspaceRoot = path.join(os.homedir(), 'kiro-command-research');
+        }
         this.config = {
             outputDirectory: path.join(workspaceRoot, '.kiro', 'command-research', 'exports'),
             formats: ['markdown', 'json', 'typescript'],
@@ -1046,16 +1055,28 @@ import { CommandMetadata, CommandRegistry } from './types';
         return summary || 'No changes detected.';
     }
     /**
+     * Gets the export directory path.
+     *
+     * @returns The configured export directory path
+     */
+    getExportDirectory() {
+        return this.config.outputDirectory;
+    }
+    /**
      * Ensures output directory exists.
      *
      * @returns Promise that resolves when directory exists
      */
     async ensureOutputDirectory() {
         try {
+            console.log(`DocumentationExporter: Creating output directory: ${this.config.outputDirectory}`);
             await fs.promises.mkdir(this.config.outputDirectory, { recursive: true });
+            console.log(`DocumentationExporter: Output directory created successfully`);
         }
         catch (error) {
-            console.warn('Failed to create output directory:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`DocumentationExporter: Failed to create output directory: ${errorMessage}`);
+            throw new Error(`Failed to create output directory: ${errorMessage}`);
         }
     }
 }

@@ -33,6 +33,7 @@ exports.DocumentationViewer = void 0;
 const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+const os = __importStar(require("os"));
 const documentation_exporter_1 = require("../export/documentation-exporter");
 /**
  * Interactive documentation viewer for browsing generated command documentation.
@@ -43,7 +44,15 @@ const documentation_exporter_1 = require("../export/documentation-exporter");
 class DocumentationViewer {
     constructor(context, config = {}) {
         this.context = context;
-        const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+        // Get workspace root or fallback to a safe directory (same logic as DocumentationExporter)
+        let workspaceRoot;
+        if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+            workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        }
+        else {
+            // Fallback to user's home directory if no workspace is open
+            workspaceRoot = path.join(os.homedir(), 'kiro-command-research');
+        }
         this.config = {
             documentationDirectory: path.join(workspaceRoot, '.kiro', 'command-research', 'exports'),
             autoRefresh: true,
@@ -202,11 +211,46 @@ class DocumentationViewer {
             let commands = [];
             let testResults = [];
             let metadata;
+            console.log(`DocumentationViewer: Looking for commands.json at: ${commandsPath}`);
             if (fs.existsSync(commandsPath)) {
+                console.log(`DocumentationViewer: Found commands.json, loading data...`);
                 const commandsData = JSON.parse(await fs.promises.readFile(commandsPath, 'utf8'));
                 commands = commandsData.commands || [];
                 testResults = commandsData.testResults || [];
                 metadata = commandsData.metadata;
+                // Convert date strings back to Date objects
+                if (metadata && metadata.generatedAt) {
+                    metadata = {
+                        ...metadata,
+                        generatedAt: new Date(metadata.generatedAt)
+                    };
+                }
+                // Convert command discovery dates
+                commands = commands.map(cmd => ({
+                    ...cmd,
+                    discoveredAt: cmd.discoveredAt ? new Date(cmd.discoveredAt) : cmd.discoveredAt,
+                    signature: cmd.signature ? {
+                        ...cmd.signature,
+                        researchedAt: cmd.signature.researchedAt ? new Date(cmd.signature.researchedAt) : cmd.signature.researchedAt
+                    } : cmd.signature
+                }));
+                // Convert test result timestamps
+                testResults = testResults.map(result => ({
+                    ...result,
+                    timestamp: result.timestamp ? new Date(result.timestamp) : result.timestamp
+                }));
+                console.log(`DocumentationViewer: Loaded ${commands.length} commands from JSON file`);
+            }
+            else {
+                console.log(`DocumentationViewer: commands.json not found, checking directory exists...`);
+                if (fs.existsSync(this.config.documentationDirectory)) {
+                    console.log(`DocumentationViewer: Directory exists, listing files...`);
+                    const files = fs.readdirSync(this.config.documentationDirectory);
+                    console.log(`DocumentationViewer: Found files: ${files.join(', ')}`);
+                }
+                else {
+                    console.log(`DocumentationViewer: Documentation directory does not exist: ${this.config.documentationDirectory}`);
+                }
             }
             // Scan for generated files
             const files = [];
@@ -326,7 +370,7 @@ class DocumentationViewer {
             <div class="header-info">
                 <span>Version: ${metadata.version}</span>
                 <span>Commands: ${metadata.commandCount}</span>
-                <span>Generated: ${metadata.generatedAt.toLocaleDateString()}</span>
+                <span>Generated: ${metadata.generatedAt instanceof Date ? metadata.generatedAt.toLocaleDateString() : new Date(metadata.generatedAt).toLocaleDateString()}</span>
             </div>
         </header>
         
@@ -621,7 +665,7 @@ class DocumentationViewer {
             <div class="example-meta">
               <span class="command-id">${result.commandId}</span>
               <span class="duration">${result.executionResult.duration}ms</span>
-              <span class="timestamp">${result.timestamp.toLocaleDateString()}</span>
+              <span class="timestamp">${result.timestamp instanceof Date ? result.timestamp.toLocaleDateString() : new Date(result.timestamp).toLocaleDateString()}</span>
             </div>
             
             ${Object.keys(result.parameters).length > 0 ? `

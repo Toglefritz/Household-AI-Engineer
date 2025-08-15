@@ -86,6 +86,12 @@ class Dashboard {
                     case 'editParameters':
                         await vscode.commands.executeCommand('kiroCommandResearch.editParameters');
                         break;
+                    case 'viewDocumentation':
+                        await vscode.commands.executeCommand('kiroCommandResearch.viewDocumentation');
+                        break;
+                    case 'openExportDirectory':
+                        await vscode.commands.executeCommand('kiroCommandResearch.openExportDirectory');
+                        break;
                     case 'testCommand':
                         await vscode.commands.executeCommand('kiroCommandResearch.testCommand');
                         break;
@@ -158,12 +164,8 @@ class Dashboard {
                 failedTests: 0,
                 lastTest: null
             };
-            // TODO: Load documentation status when implemented
-            const documentation = {
-                hasDocumentation: false,
-                exportFormats: [],
-                lastGenerated: null
-            };
+            // Load documentation status
+            const documentation = await this.loadDocumentationStatus();
             this.currentState = {
                 discovery,
                 research,
@@ -180,7 +182,7 @@ class Dashboard {
                 discovery: { totalCommands: 0, safeCommands: 0, moderateCommands: 0, destructiveCommands: 0, lastDiscovery: null },
                 research: { commandsWithSignatures: 0, highConfidence: 0, mediumConfidence: 0, lowConfidence: 0, lastResearch: null },
                 testing: { totalTests: 0, successfulTests: 0, failedTests: 0, lastTest: null },
-                documentation: { hasDocumentation: false, exportFormats: [], lastGenerated: null }
+                documentation: { hasDocumentation: false, exportFormats: [], lastGenerated: null, exportDirectory: null, fileCount: 0 }
             };
         }
     }
@@ -192,6 +194,70 @@ class Dashboard {
             return;
         }
         this.panel.webview.html = this.generateDashboardHtml();
+    }
+    /**
+     * Loads documentation status by checking the export directory.
+     */
+    async loadDocumentationStatus() {
+        try {
+            const { DocumentationExporter } = await Promise.resolve().then(() => __importStar(require('../export/documentation-exporter')));
+            const exporter = new DocumentationExporter();
+            const exportDir = exporter.getExportDirectory();
+            // Check if export directory exists and has files
+            const fs = await Promise.resolve().then(() => __importStar(require('fs')));
+            const path = await Promise.resolve().then(() => __importStar(require('path')));
+            if (!fs.existsSync(exportDir)) {
+                return {
+                    hasDocumentation: false,
+                    exportFormats: [],
+                    lastGenerated: null,
+                    exportDirectory: exportDir,
+                    fileCount: 0
+                };
+            }
+            const files = fs.readdirSync(exportDir);
+            const docFiles = files.filter(file => file.endsWith('.md') ||
+                file.endsWith('.json') ||
+                file.endsWith('.ts') ||
+                file.endsWith('.html'));
+            let lastGenerated = null;
+            const exportFormats = [];
+            if (docFiles.length > 0) {
+                // Get the most recent file modification time
+                const fileTimes = docFiles.map(file => {
+                    const filePath = path.join(exportDir, file);
+                    const stats = fs.statSync(filePath);
+                    return stats.mtime;
+                });
+                lastGenerated = new Date(Math.max(...fileTimes.map(d => d.getTime())));
+                // Determine export formats based on file extensions
+                if (docFiles.some(f => f.endsWith('.md')))
+                    exportFormats.push('markdown');
+                if (docFiles.some(f => f.endsWith('.json')))
+                    exportFormats.push('json');
+                if (docFiles.some(f => f.endsWith('.ts')))
+                    exportFormats.push('typescript');
+                if (docFiles.some(f => f.endsWith('.html')))
+                    exportFormats.push('html');
+            }
+            return {
+                hasDocumentation: docFiles.length > 0,
+                exportFormats,
+                lastGenerated,
+                exportDirectory: exportDir,
+                fileCount: docFiles.length
+            };
+        }
+        catch (error) {
+            console.error('Dashboard: Failed to load documentation status:', error);
+            return {
+                hasDocumentation: false,
+                exportFormats: [],
+                lastGenerated: null,
+                exportDirectory: null,
+                fileCount: 0
+            };
+        }
     }
     /**
      * Starts auto-refresh timer.
@@ -501,21 +567,54 @@ class Dashboard {
         <div class="section-content">
           <div class="stats-grid">
             <div class="stat-card">
+              <div class="stat-number">${documentation.fileCount}</div>
+              <div class="stat-label">Files Generated</div>
+            </div>
+            <div class="stat-card">
               <div class="stat-number">${documentation.exportFormats.length}</div>
               <div class="stat-label">Export Formats</div>
             </div>
             <div class="stat-card">
               <div class="stat-number">${hasDocumentation ? '✅' : '❌'}</div>
-              <div class="stat-label">Generated</div>
+              <div class="stat-label">Available</div>
             </div>
           </div>
           
+          ${hasDocumentation ? `
+          <div class="documentation-info">
+            <div class="export-formats">
+              <strong>Available formats:</strong> ${documentation.exportFormats.join(', ')}
+            </div>
+            <div class="export-location">
+              <strong>Location:</strong> <code>${documentation.exportDirectory}</code>
+            </div>
+          </div>
+          ` : ''}
+          
           <div class="section-actions">
-            <button class="action-btn primary" onclick="generateDocs()" ${!canDocument ? 'disabled' : ''}
-                    title="Generate comprehensive documentation (Ctrl+Shift+K 4)"
-                    aria-label="Generate Documentation - Generate comprehensive documentation">
-              📚 Generate Documentation
-            </button>
+            <div class="action-row">
+              <button class="action-btn primary" onclick="generateDocs()" ${!canDocument ? 'disabled' : ''}
+                      title="Generate comprehensive documentation (Ctrl+Shift+K 4)"
+                      aria-label="Generate Documentation - Generate comprehensive documentation">
+                📚 Generate Documentation
+              </button>
+              ${hasDocumentation ? `
+              <button class="action-btn secondary" onclick="viewDocumentation()"
+                      title="View generated documentation"
+                      aria-label="View Documentation - View generated documentation">
+                👁️ View Documentation
+              </button>
+              ` : ''}
+            </div>
+            ${hasDocumentation ? `
+            <div class="action-row">
+              <button class="action-btn secondary" onclick="openExportDirectory()"
+                      title="Open export directory in file explorer"
+                      aria-label="Open Export Directory - Open export directory in file explorer">
+                📁 Open Export Directory
+              </button>
+            </div>
+            ` : ''}
             ${documentation.lastGenerated ? `
               <div class="last-activity">
                 Last generated: ${documentation.lastGenerated.toLocaleString()}
@@ -842,6 +941,30 @@ class Dashboard {
         margin: 0;
       }
       
+      .documentation-info {
+        background: var(--vscode-editor-background);
+        padding: 16px;
+        border-radius: 6px;
+        border: 1px solid var(--vscode-panel-border);
+        margin-bottom: 16px;
+      }
+      
+      .export-formats,
+      .export-location {
+        margin-bottom: 8px;
+        font-size: 0.9em;
+      }
+      
+      .export-location code {
+        background: var(--vscode-textCodeBlock-background);
+        color: var(--vscode-textPreformat-foreground);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.85em;
+        word-break: break-all;
+      }
+      
       .guidance-section {
         background: var(--vscode-panel-background);
         padding: 24px;
@@ -1007,6 +1130,14 @@ class Dashboard {
       
       function editParameters() {
         vscode.postMessage({ command: 'editParameters' });
+      }
+      
+      function viewDocumentation() {
+        vscode.postMessage({ command: 'viewDocumentation' });
+      }
+      
+      function openExportDirectory() {
+        vscode.postMessage({ command: 'openExportDirectory' });
       }
       
       function testCommand() {

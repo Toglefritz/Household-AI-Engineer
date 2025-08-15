@@ -98,6 +98,18 @@
         "title": "Edit Parameters Manually",
         "category": "Kiro Research",
         "icon": "$(edit)"
+      },
+      {
+        "command": "kiroCommandResearch.viewDocumentation",
+        "title": "View Generated Documentation",
+        "category": "Kiro Research",
+        "icon": "$(book)"
+      },
+      {
+        "command": "kiroCommandResearch.openExportDirectory",
+        "title": "Open Export Directory",
+        "category": "Kiro Research",
+        "icon": "$(folder-opened)"
       }
     ],
     "views": {

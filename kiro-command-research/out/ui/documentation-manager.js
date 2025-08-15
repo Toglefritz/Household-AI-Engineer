@@ -111,9 +111,17 @@ class DocumentationManager {
      */
     async loadCurrentData() {
         try {
+            console.log('DocumentationManager: Loading discovery results...');
             const discoveryResults = await this.storageManager.loadDiscoveryResults();
+            if (!discoveryResults) {
+                console.log('DocumentationManager: No discovery results found');
+                this.currentCommands = [];
+            }
+            else {
+                console.log(`DocumentationManager: Found discovery results with ${discoveryResults.commands?.length || 0} commands`);
+                this.currentCommands = discoveryResults.commands || [];
+            }
             const testResults = []; // TODO: Implement loadTestResults in FileStorageManager
-            this.currentCommands = discoveryResults?.commands || [];
             this.currentTestResults = testResults || [];
             console.log(`DocumentationManager: Loaded ${this.currentCommands.length} commands and ${this.currentTestResults.length} test results`);
         }
@@ -129,6 +137,17 @@ class DocumentationManager {
       */
     async handleExportDocumentation(exportConfig) {
         try {
+            // Check if we have commands to export
+            if (!this.currentCommands || this.currentCommands.length === 0) {
+                const message = 'No commands available for documentation export. Please run command discovery first.';
+                this.panel?.webview.postMessage({
+                    command: 'exportError',
+                    error: message
+                });
+                vscode.window.showWarningMessage(message);
+                return;
+            }
+            console.log(`DocumentationManager: Starting export of ${this.currentCommands.length} commands`);
             this.panel?.webview.postMessage({
                 command: 'exportStarted'
             });
