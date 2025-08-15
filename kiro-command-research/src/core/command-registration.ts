@@ -1,0 +1,94 @@
+/**
+ * Command registration for the Kiro Command Research Tool.
+ * 
+ * This module handles the registration of all VS Code commands
+ * provided by the extension.
+ */
+
+import * as vscode from 'vscode';
+import { 
+  handleDiscoverCommands, 
+  handleTestCommand, 
+  handleGenerateDocumentation, 
+  handleOpenExplorer,
+  handleViewResults,
+  handleResearchParameters
+} from '../handlers/command-handlers';
+import { 
+  handleValidateParameters, 
+  handleExecuteCommand 
+} from '../handlers/advanced-handlers';
+
+/**
+ * Command definition interface for type safety.
+ */
+interface CommandDefinition {
+  readonly id: string;
+  readonly handler: (...args: any[]) => Promise<void>;
+}
+
+/**
+ * Registers all extension commands with VS Code.
+ * 
+ * This function sets up command handlers for all user-facing
+ * functionality provided by the extension.
+ * 
+ * @param context VS Code extension context for command registration
+ */
+export function registerCommands(context: vscode.ExtensionContext): void {
+  console.log('Starting command registration...');
+
+  const commands: CommandDefinition[] = [
+    {
+      id: 'kiroCommandResearch.discoverCommands',
+      handler: handleDiscoverCommands
+    },
+    {
+      id: 'kiroCommandResearch.testCommand',
+      handler: handleTestCommand
+    },
+    {
+      id: 'kiroCommandResearch.generateDocs',
+      handler: handleGenerateDocumentation
+    },
+    {
+      id: 'kiroCommandResearch.openExplorer',
+      handler: handleOpenExplorer
+    },
+    {
+      id: 'kiroCommandResearch.viewResults',
+      handler: handleViewResults
+    },
+    {
+      id: 'kiroCommandResearch.researchParameters',
+      handler: handleResearchParameters
+    },
+    {
+      id: 'kiroCommandResearch.validateParameters',
+      handler: handleValidateParameters
+    },
+    {
+      id: 'kiroCommandResearch.executeCommand',
+      handler: handleExecuteCommand
+    }
+  ];
+
+  for (const command of commands) {
+    console.log(`Registering ${command.id}...`);
+    const disposable = vscode.commands.registerCommand(
+      command.id,
+      async (...args: any[]) => {
+        try {
+          await command.handler(...args);
+        } catch (error: unknown) {
+          const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+          console.error(`Command ${command.id} failed:`, error);
+          vscode.window.showErrorMessage(`Command failed: ${errorMessage}`);
+        }
+      }
+    );
+    context.subscriptions.push(disposable);
+  }
+
+  console.log(`All commands registered successfully. Total subscriptions: ${context.subscriptions.length}`);
+}

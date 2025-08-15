@@ -2,8 +2,9 @@
   "name": "kiro-command-research",
   "displayName": "Kiro Command Research Tool",
   "description": "Research and document Kiro IDE commands for remote orchestration",
-  "version": "0.6.1",
+  "version": "0.8.0",
   "publisher": "household-ai-engineer",
+  "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -44,6 +45,16 @@
       {
         "command": "kiroCommandResearch.researchParameters",
         "title": "Research Command Parameters",
+        "category": "Kiro Research"
+      },
+      {
+        "command": "kiroCommandResearch.validateParameters",
+        "title": "Validate Command Parameters",
+        "category": "Kiro Research"
+      },
+      {
+        "command": "kiroCommandResearch.executeCommand",
+        "title": "Execute Command Safely",
         "category": "Kiro Research"
       }
     ],

@@ -1,0 +1,331 @@
+{
+    "clientName": "CodeWhispererStreamingClient",
+    "commandName": "GenerateAssistantResponseCommand",
+    "input": {
+        "conversationState": {
+            "conversationId": "ee688d78-b924-42c8-bd95-0fc3494e7e38",
+            "agentContinuationId": "fafde4ab-6fa8-4130-b309-7c3ae2e9dc71",
+            "agentTaskType": "vibe",
+            "currentMessage": {
+                "userInputMessage": {
+                    "content": "***SensitiveInformation***",
+                    "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                    "origin": "AI_EDITOR",
+                    "userInputMessageContext": {
+                        "tools": [
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            },
+                            {
+                                "toolSpecification": {
+                                    "name": "***SensitiveInformation***",
+                                    "description": "***SensitiveInformation***",
+                                    "inputSchema": {
+                                        "json": "***SensitiveInformation***"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "history": [
+                {
+                    "userInputMessage": {
+                        "content": "***SensitiveInformation***",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR"
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***",
+                        "toolUses": [
+                            {
+                                "toolUseId": "tooluse_fileTree",
+                                "name": "***SensitiveInformation***",
+                                "input": "***SensitiveInformation***"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "",
+                        "origin": "AI_EDITOR",
+                        "userInputMessageContext": {
+                            "toolResults": [
+                                {
+                                    "toolUseId": "tooluse_fileTree",
+                                    "content": [
+                                        {
+                                            "text": "***SensitiveInformation***"
+                                        }
+                                    ],
+                                    "status": "error"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***"
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "***SensitiveInformation***",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR"
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***"
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "***SensitiveInformation***",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR"
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***"
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "***SensitiveInformation***",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR"
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***"
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "***SensitiveInformation***",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR"
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***",
+                        "toolUses": [
+                            {
+                                "toolUseId": "tooluse_-2Pwirj9TGuDB6HrKHsf3Q",
+                                "name": "***SensitiveInformation***",
+                                "input": "***SensitiveInformation***"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR",
+                        "userInputMessageContext": {
+                            "toolResults": [
+                                {
+                                    "toolUseId": "tooluse_-2Pwirj9TGuDB6HrKHsf3Q",
+                                    "content": [
+                                        {
+                                            "text": "***SensitiveInformation***"
+                                        }
+                                    ],
+                                    "status": "success"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "",
+                        "toolUses": [
+                            {
+                                "toolUseId": "tooluse_jpi1YmhuRwu-eGFtf18hMw",
+                                "name": "***SensitiveInformation***",
+                                "input": "***SensitiveInformation***"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR",
+                        "userInputMessageContext": {
+                            "toolResults": [
+                                {
+                                    "toolUseId": "tooluse_jpi1YmhuRwu-eGFtf18hMw",
+                                    "content": [
+                                        {
+                                            "text": "***SensitiveInformation***"
+                                        }
+                                    ],
+                                    "status": "success"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "",
+                        "toolUses": [
+                            {
+                                "toolUseId": "tooluse_KbejaLW3TDCflDz8hdy2UQ",
+                                "name": "***SensitiveInformation***",
+                                "input": "***SensitiveInformation***"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "userInputMessage": {
+                        "content": "",
+                        "modelId": "CLAUDE_SONNET_4_20250514_V1_0",
+                        "origin": "AI_EDITOR",
+                        "userInputMessageContext": {
+                            "toolResults": [
+                                {
+                                    "toolUseId": "tooluse_KbejaLW3TDCflDz8hdy2UQ",
+                                    "content": [
+                                        {
+                                            "text": "***SensitiveInformation***"
+                                        }
+                                    ],
+                                    "status": "success"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "assistantResponseMessage": {
+                        "content": "***SensitiveInformation***"
+                    }
+                }
+            ],
+            "chatTriggerType": "MANUAL"
+        },
+        "profileArn": "arn:aws:codewhisperer:us-east-1:699475941385:profile/EHGA3GRVQMUK"
+    },
+    "output": {
+        "conversationId": "",
+        "generateAssistantResponseResponse": "STREAMING_CONTENT"
+    },
+    "metadata": {
+        "httpStatusCode": 200,
+        "requestId": "b59abb46-e64d-4d52-82f8-296c131e4d68",
+        "attempts": 1,
+        "totalRetryDelay": 0
+    }
+}
