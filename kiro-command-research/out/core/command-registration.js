@@ -75,6 +75,54 @@ function registerCommands(context) {
         {
             id: 'kiroCommandResearch.executeCommand',
             handler: advanced_handlers_1.handleExecuteCommand
+        },
+        {
+            id: 'kiroCommandResearch.refreshExplorer',
+            handler: async () => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                await extensionState.commandExplorer.refresh();
+            }
+        },
+        {
+            id: 'kiroCommandResearch.searchCommands',
+            handler: async () => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                await extensionState.commandExplorer.showSearchInput();
+            }
+        },
+        {
+            id: 'kiroCommandResearch.changeGrouping',
+            handler: async () => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                await extensionState.commandExplorer.showGroupingOptions();
+            }
+        },
+        {
+            id: 'kiroCommandResearch.showCommandDetails',
+            handler: async (command) => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                await extensionState.commandExplorer.showCommandDetails(command);
+            }
+        },
+        {
+            id: 'kiroCommandResearch.testCommandFromExplorer',
+            handler: async (item) => {
+                if (item && item.commandMetadata) {
+                    await (0, command_handlers_1.handleTestCommand)(item.commandMetadata);
+                }
+            }
+        },
+        {
+            id: 'kiroCommandResearch.openDashboard',
+            handler: async () => {
+                const { ExtensionState } = await Promise.resolve().then(() => __importStar(require('../core/extension-state')));
+                const extensionState = ExtensionState.getInstance();
+                await extensionState.dashboard.openDashboard();
+            }
         }
     ];
     for (const command of commands) {

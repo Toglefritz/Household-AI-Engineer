@@ -726,6 +726,72 @@ class TestingInterface {
         padding: 20px;
       }
       
+      .result-summary {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      
+      .result-summary.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        border: 1px solid #4CAF50;
+        color: #4CAF50;
+      }
+      
+      .result-summary.failure {
+        background-color: rgba(244, 67, 54, 0.1);
+        border: 1px solid #f44336;
+        color: #f44336;
+      }
+      
+      .result-summary h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+      }
+      
+      .result-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: var(--vscode-editor-background);
+        border-radius: 6px;
+        border: 1px solid var(--vscode-panel-border);
+      }
+      
+      .result-section h4 {
+        margin: 0 0 10px 0;
+        color: var(--vscode-textLink-foreground);
+      }
+      
+      .result-data, .error-stack {
+        background-color: var(--vscode-textCodeBlock-background);
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      
+      .side-effects-list {
+        list-style: none;
+        padding: 0;
+      }
+      
+      .side-effects-list li {
+        padding: 8px;
+        margin-bottom: 8px;
+        background-color: var(--vscode-list-inactiveSelectionBackground);
+        border-radius: 4px;
+        border-left: 3px solid var(--vscode-textLink-foreground);
+      }
+      
+      .side-effects-list small {
+        color: var(--vscode-descriptionForeground);
+        font-style: italic;
+      }
+      
       @media (max-width: 768px) {
         .content {
           grid-template-columns: 1fr;

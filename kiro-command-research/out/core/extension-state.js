@@ -5,8 +5,32 @@
  * This module manages the global state of the extension and provides
  * access to shared resources and components.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExtensionState = void 0;
+const vscode = __importStar(require("vscode"));
 const file_storage_manager_1 = require("../storage/file-storage-manager");
 const command_registry_scanner_1 = require("../discovery/command-registry-scanner");
 const parameter_researcher_1 = require("../discovery/parameter-researcher");
@@ -17,6 +41,8 @@ const testing_interface_1 = require("../ui/testing-interface");
 const documentation_manager_1 = require("../ui/documentation-manager");
 const documentation_exporter_1 = require("../export/documentation-exporter");
 const documentation_viewer_1 = require("../documentation/documentation-viewer");
+const dashboard_1 = require("../ui/dashboard");
+const dashboard_provider_1 = require("../ui/dashboard-provider");
 /**
  * Extension context and global state management.
  *
@@ -24,7 +50,7 @@ const documentation_viewer_1 = require("../documentation/documentation-viewer");
  * access to shared resources like the storage manager and UI components.
  */
 class ExtensionState {
-    constructor(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer) {
+    constructor(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider) {
         this.context = context;
         this.storageManager = storageManager;
         this.commandScanner = commandScanner;
@@ -35,6 +61,8 @@ class ExtensionState {
         this.testingInterface = testingInterface;
         this.documentationManager = documentationManager;
         this.documentationViewer = documentationViewer;
+        this.dashboard = dashboard;
+        this.dashboardProvider = dashboardProvider;
     }
     /**
      * Initializes the extension state singleton.
@@ -70,7 +98,16 @@ class ExtensionState {
             enableVersionTracking: true
         });
         const documentationViewer = new documentation_viewer_1.DocumentationViewer(context);
-        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer);
+        const dashboard = new dashboard_1.Dashboard(context, storageManager, {
+            showGuidance: true,
+            autoRefresh: true,
+            refreshInterval: 30000,
+            showDetailedStats: true
+        });
+        const dashboardProvider = new dashboard_provider_1.DashboardProvider();
+        // Register the dashboard tree data provider
+        vscode.window.registerTreeDataProvider('kiroDashboard', dashboardProvider);
+        ExtensionState.instance = new ExtensionState(context, storageManager, commandScanner, parameterResearcher, parameterValidator, commandExecutor, commandExplorer, testingInterface, documentationManager, documentationViewer, dashboard, dashboardProvider);
         return ExtensionState.instance;
     }
     /**
@@ -96,6 +133,7 @@ class ExtensionState {
         this.testingInterface.dispose();
         this.documentationManager.dispose();
         this.documentationViewer.dispose();
+        this.dashboard.dispose();
         ExtensionState.instance = null;
     }
     /**

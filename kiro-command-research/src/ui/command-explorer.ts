@@ -407,46 +407,13 @@ export class CommandExplorer {
   
   /**
    * Sets up VS Code commands for the explorer.
+   * 
+   * Note: Commands are now registered centrally in command-registration.ts
+   * This method is kept for future explorer-specific setup if needed.
    */
   private setupCommands(): void {
-    // Refresh command
-    const refreshCommand = vscode.commands.registerCommand(
-      'kiroCommandResearch.refreshExplorer',
-      () => this.refresh()
-    );
-    this.disposables.push(refreshCommand);
-    
-    // Search command
-    const searchCommand = vscode.commands.registerCommand(
-      'kiroCommandResearch.searchCommands',
-      () => this.showSearchInput()
-    );
-    this.disposables.push(searchCommand);
-    
-    // Change grouping command
-    const groupingCommand = vscode.commands.registerCommand(
-      'kiroCommandResearch.changeGrouping',
-      () => this.showGroupingOptions()
-    );
-    this.disposables.push(groupingCommand);
-    
-    // Show command details command
-    const detailsCommand = vscode.commands.registerCommand(
-      'kiroCommandResearch.showCommandDetails',
-      (command: CommandMetadata) => this.showCommandDetails(command)
-    );
-    this.disposables.push(detailsCommand);
-    
-    // Test command
-    const testCommand = vscode.commands.registerCommand(
-      'kiroCommandResearch.testCommandFromExplorer',
-      (item: CommandTreeItem) => {
-        if (item.command) {
-          vscode.commands.executeCommand('kiroCommandResearch.testCommand', item.command);
-        }
-      }
-    );
-    this.disposables.push(testCommand);
+    // Commands are now registered centrally in command-registration.ts
+    // This avoids duplicate registration issues
   }
   
   /**
@@ -472,9 +439,18 @@ export class CommandExplorer {
   private async loadCommands(): Promise<void> {
     try {
       const discoveryResults = await this.storageManager.loadDiscoveryResults();
-      const testResults: any[] = []; // TODO: Implement loadTestResults in FileStorageManager
+      // Load test results if available
+      let testResults: TestResult[] = [];
+      try {
+        // For now, we'll use an empty array since test results storage isn't implemented yet
+        // This can be enhanced later when test result storage is added
+        testResults = [];
+      } catch (error) {
+        console.warn('Failed to load test results:', error);
+        testResults = [];
+      }
       
-      await this.provider.refresh(discoveryResults?.commands || [], testResults || []);
+      await this.provider.refresh(discoveryResults?.commands || [], testResults);
       
       // Update tree view title with count
       const commandCount = discoveryResults?.commands?.length || 0;
@@ -499,7 +475,7 @@ export class CommandExplorer {
   /**
    * Shows search input dialog.
    */
-  private async showSearchInput(): Promise<void> {
+  public async showSearchInput(): Promise<void> {
     const query = await vscode.window.showInputBox({
       prompt: 'Search commands by name, ID, or description',
       placeHolder: 'Enter search query...'
@@ -519,7 +495,7 @@ export class CommandExplorer {
   /**
    * Shows grouping options.
    */
-  private async showGroupingOptions(): Promise<void> {
+  public async showGroupingOptions(): Promise<void> {
     const options = [
       { label: 'Category', value: 'category' as const },
       { label: 'Subcategory', value: 'subcategory' as const },
@@ -542,7 +518,7 @@ export class CommandExplorer {
    * 
    * @param command Command to show details for
    */
-  private async showCommandDetails(command: CommandMetadata): Promise<void> {
+  public async showCommandDetails(command: CommandMetadata): Promise<void> {
     const panel = vscode.window.createWebviewPanel(
       'commandDetails',
       `Command: ${command.displayName}`,

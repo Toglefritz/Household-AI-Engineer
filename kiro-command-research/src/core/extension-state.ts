@@ -16,6 +16,8 @@ import { TestingInterface } from '../ui/testing-interface';
 import { DocumentationManager } from '../ui/documentation-manager';
 import { DocumentationExporter } from '../export/documentation-exporter';
 import { DocumentationViewer } from '../documentation/documentation-viewer';
+import { Dashboard } from '../ui/dashboard';
+import { DashboardProvider } from '../ui/dashboard-provider';
 
 /**
  * Extension context and global state management.
@@ -36,7 +38,9 @@ export class ExtensionState {
     public readonly commandExplorer: CommandExplorer,
     public readonly testingInterface: TestingInterface,
     public readonly documentationManager: DocumentationManager,
-    public readonly documentationViewer: DocumentationViewer
+    public readonly documentationViewer: DocumentationViewer,
+    public readonly dashboard: Dashboard,
+    public readonly dashboardProvider: DashboardProvider
   ) { }
 
   /**
@@ -88,6 +92,22 @@ export class ExtensionState {
     );
     
     const documentationViewer: DocumentationViewer = new DocumentationViewer(context);
+    
+    const dashboard: Dashboard = new Dashboard(
+      context,
+      storageManager,
+      {
+        showGuidance: true,
+        autoRefresh: true,
+        refreshInterval: 30000,
+        showDetailedStats: true
+      }
+    );
+
+    const dashboardProvider: DashboardProvider = new DashboardProvider();
+    
+    // Register the dashboard tree data provider
+    vscode.window.registerTreeDataProvider('kiroDashboard', dashboardProvider);
 
     ExtensionState.instance = new ExtensionState(
       context, 
@@ -99,7 +119,9 @@ export class ExtensionState {
       commandExplorer,
       testingInterface,
       documentationManager,
-      documentationViewer
+      documentationViewer,
+      dashboard,
+      dashboardProvider
     );
     return ExtensionState.instance;
   }
@@ -128,6 +150,7 @@ export class ExtensionState {
     this.testingInterface.dispose();
     this.documentationManager.dispose();
     this.documentationViewer.dispose();
+    this.dashboard.dispose();
     
     ExtensionState.instance = null;
   }

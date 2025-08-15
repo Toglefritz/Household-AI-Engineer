@@ -70,6 +70,54 @@ export function registerCommands(context: vscode.ExtensionContext): void {
     {
       id: 'kiroCommandResearch.executeCommand',
       handler: handleExecuteCommand
+    },
+    {
+      id: 'kiroCommandResearch.refreshExplorer',
+      handler: async () => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        await extensionState.commandExplorer.refresh();
+      }
+    },
+    {
+      id: 'kiroCommandResearch.searchCommands',
+      handler: async () => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        await extensionState.commandExplorer.showSearchInput();
+      }
+    },
+    {
+      id: 'kiroCommandResearch.changeGrouping',
+      handler: async () => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        await extensionState.commandExplorer.showGroupingOptions();
+      }
+    },
+    {
+      id: 'kiroCommandResearch.showCommandDetails',
+      handler: async (command: any) => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        await extensionState.commandExplorer.showCommandDetails(command);
+      }
+    },
+    {
+      id: 'kiroCommandResearch.testCommandFromExplorer',
+      handler: async (item: any) => {
+        if (item && item.commandMetadata) {
+          await handleTestCommand(item.commandMetadata);
+        }
+      }
+    },
+    {
+      id: 'kiroCommandResearch.openDashboard',
+      handler: async () => {
+        const { ExtensionState } = await import('../core/extension-state');
+        const extensionState = ExtensionState.getInstance();
+        await extensionState.dashboard.openDashboard();
+      }
     }
   ];
 

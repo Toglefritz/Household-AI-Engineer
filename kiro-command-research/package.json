@@ -12,7 +12,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -56,23 +56,146 @@
         "command": "kiroCommandResearch.executeCommand",
         "title": "Execute Command Safely",
         "category": "Kiro Research"
+      },
+      {
+        "command": "kiroCommandResearch.refreshExplorer",
+        "title": "Refresh Command Explorer",
+        "category": "Kiro Research",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "kiroCommandResearch.searchCommands",
+        "title": "Search Commands",
+        "category": "Kiro Research",
+        "icon": "$(search)"
+      },
+      {
+        "command": "kiroCommandResearch.changeGrouping",
+        "title": "Change Command Grouping",
+        "category": "Kiro Research",
+        "icon": "$(group-by-ref-type)"
+      },
+      {
+        "command": "kiroCommandResearch.showCommandDetails",
+        "title": "Show Command Details",
+        "category": "Kiro Research",
+        "icon": "$(info)"
+      },
+      {
+        "command": "kiroCommandResearch.testCommandFromExplorer",
+        "title": "Test Command from Explorer",
+        "category": "Kiro Research",
+        "icon": "$(play)"
+      },
+      {
+        "command": "kiroCommandResearch.openDashboard",
+        "title": "Open Dashboard",
+        "category": "Kiro Research",
+        "icon": "$(dashboard)"
       }
     ],
     "views": {
+      "kiroCommandResearch": [
+        {
+          "id": "kiroDashboard",
+          "name": "Dashboard"
+        }
+      ],
       "explorer": [
         {
           "id": "kiroCommandExplorer",
-          "name": "Kiro Commands",
-          "when": "kiroCommandResearch.active"
+          "name": "Kiro Commands"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kiroCommandResearch",
+          "title": "Kiro Command Research",
+          "icon": "$(microscope)"
         }
       ]
     },
     "viewsWelcome": [
       {
+        "view": "kiroDashboard",
+        "contents": "Welcome to Kiro Command Research!\n[Open Dashboard](command:kiroCommandResearch.openDashboard)\n[Discover Commands](command:kiroCommandResearch.discoverCommands)"
+      },
+      {
         "view": "kiroCommandExplorer",
         "contents": "No Kiro commands discovered yet.\n[Discover Commands](command:kiroCommandResearch.discoverCommands)"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "kiroCommandResearch.openDashboard",
+        "key": "ctrl+shift+k d",
+        "mac": "cmd+shift+k d",
+        "when": "kiroCommandResearch.active"
+      },
+      {
+        "command": "kiroCommandResearch.discoverCommands",
+        "key": "ctrl+shift+k 1",
+        "mac": "cmd+shift+k 1",
+        "when": "kiroCommandResearch.active"
+      },
+      {
+        "command": "kiroCommandResearch.researchParameters",
+        "key": "ctrl+shift+k 2",
+        "mac": "cmd+shift+k 2",
+        "when": "kiroCommandResearch.active"
+      },
+      {
+        "command": "kiroCommandResearch.testCommand",
+        "key": "ctrl+shift+k 3",
+        "mac": "cmd+shift+k 3",
+        "when": "kiroCommandResearch.active"
+      },
+      {
+        "command": "kiroCommandResearch.generateDocs",
+        "key": "ctrl+shift+k 4",
+        "mac": "cmd+shift+k 4",
+        "when": "kiroCommandResearch.active"
+      },
+      {
+        "command": "kiroCommandResearch.openExplorer",
+        "key": "ctrl+shift+k e",
+        "mac": "cmd+shift+k e",
+        "when": "kiroCommandResearch.active"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "kiroCommandResearch.refreshExplorer",
+          "when": "view == kiroCommandExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kiroCommandResearch.searchCommands",
+          "when": "view == kiroCommandExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kiroCommandResearch.changeGrouping",
+          "when": "view == kiroCommandExplorer",
+          "group": "1_grouping"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "kiroCommandResearch.testCommandFromExplorer",
+          "when": "view == kiroCommandExplorer && viewItem =~ /^command-/",
+          "group": "1_actions"
+        },
+        {
+          "command": "kiroCommandResearch.showCommandDetails",
+          "when": "view == kiroCommandExplorer && viewItem =~ /^command-/",
+          "group": "1_actions"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
