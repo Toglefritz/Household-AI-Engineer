@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Tests for sidebar animation behavior and performance.
 ///
@@ -87,17 +87,17 @@ void main() {
       /// Should handle multiple quick state changes without errors
       /// or animation conflicts.
       testWidgets('should handle rapid state changes gracefully', (WidgetTester tester) async {
-        Widget buildSearchSection(bool expanded) {
+        Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
           );
         }
 
         // Rapid state changes
-        await tester.pumpWidget(buildSearchSection(true));
-        await tester.pumpWidget(buildSearchSection(false));
-        await tester.pumpWidget(buildSearchSection(true));
-        await tester.pumpWidget(buildSearchSection(false));
+        await tester.pumpWidget(buildSearchSection(expanded: true));
+        await tester.pumpWidget(buildSearchSection(expanded: false));
+        await tester.pumpWidget(buildSearchSection(expanded: true));
+        await tester.pumpWidget(buildSearchSection(expanded: false));
         await tester.pumpAndSettle();
 
         // Should end up in collapsed state without errors
@@ -158,7 +158,7 @@ void main() {
       /// Should animate between expanded (icon + label + count) and
       /// collapsed (icon only) states smoothly.
       testWidgets('should transition smoothly between states', (WidgetTester tester) async {
-        Widget buildCategoryItem(bool expanded) {
+        Widget buildCategoryItem({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoryItem(
               icon: testIcon,
@@ -170,12 +170,12 @@ void main() {
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildCategoryItem(true));
+        await tester.pumpWidget(buildCategoryItem(expanded: true));
         expect(find.text(testLabel), findsOneWidget);
         expect(find.text(testCount.toString()), findsOneWidget);
 
         // Change to collapsed state and pump animation
-        await tester.pumpWidget(buildCategoryItem(false));
+        await tester.pumpWidget(buildCategoryItem(expanded: false));
         await tester.pump(const Duration(milliseconds: 125)); // Mid-animation
         await tester.pumpAndSettle();
 
@@ -189,7 +189,7 @@ void main() {
       /// Should keep the same height throughout the transition to prevent
       /// layout shifts in the sidebar.
       testWidgets('should maintain consistent height during animation', (WidgetTester tester) async {
-        Widget buildCategoryItem(bool expanded) {
+        Widget buildCategoryItem({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoryItem(
               icon: testIcon,
@@ -201,12 +201,12 @@ void main() {
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildCategoryItem(true));
+        await tester.pumpWidget(buildCategoryItem(expanded: true));
         final RenderBox expandedBox = tester.renderObject(find.byType(SidebarCategoryItem));
         final double expandedHeight = expandedBox.size.height;
 
         // Change to collapsed state
-        await tester.pumpWidget(buildCategoryItem(false));
+        await tester.pumpWidget(buildCategoryItem(expanded: false));
         await tester.pumpAndSettle();
         final RenderBox collapsedBox = tester.renderObject(find.byType(SidebarCategoryItem));
         final double collapsedHeight = collapsedBox.size.height;
@@ -235,18 +235,18 @@ void main() {
       /// Should animate the header appearance/disappearance while
       /// maintaining consistent spacing.
       testWidgets('should transition header smoothly between states', (WidgetTester tester) async {
-        Widget buildCategoriesSection(bool expanded) {
+        Widget buildCategoriesSection({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoriesSection(showExpandedContent: expanded),
           );
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildCategoriesSection(true));
+        await tester.pumpWidget(buildCategoriesSection(expanded: true));
         expect(find.text('Categories'), findsOneWidget);
 
         // Change to collapsed state and pump animation
-        await tester.pumpWidget(buildCategoriesSection(false));
+        await tester.pumpWidget(buildCategoriesSection(expanded: false));
         await tester.pump(const Duration(milliseconds: 125)); // Mid-animation
         await tester.pumpAndSettle();
 
@@ -258,19 +258,19 @@ void main() {
       /// Should keep the same overall structure and spacing even when
       /// individual category items are animating.
       testWidgets('should maintain layout during category item animations', (WidgetTester tester) async {
-        Widget buildCategoriesSection(bool expanded) {
+        Widget buildCategoriesSection({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoriesSection(showExpandedContent: expanded),
           );
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildCategoriesSection(true));
+        await tester.pumpWidget(buildCategoriesSection(expanded: true));
         final RenderBox expandedBox = tester.renderObject(find.byType(SidebarCategoriesSection));
         final double expandedHeight = expandedBox.size.height;
 
         // Change to collapsed state
-        await tester.pumpWidget(buildCategoriesSection(false));
+        await tester.pumpWidget(buildCategoriesSection(expanded: false));
         await tester.pumpAndSettle();
         final RenderBox collapsedBox = tester.renderObject(find.byType(SidebarCategoriesSection));
         final double collapsedHeight = collapsedBox.size.height;
@@ -298,7 +298,7 @@ void main() {
 
         // Test the transition builder
         final Widget testChild = Container();
-        final Animation<double> testAnimation = AlwaysStoppedAnimation<double>(1.0);
+        const Animation<double> testAnimation = AlwaysStoppedAnimation<double>(1.0);
         final Widget result = switcher.transitionBuilder(testChild, testAnimation);
 
         expect(result, isA<FadeTransition>());
@@ -309,18 +309,18 @@ void main() {
       /// Should complete all animations within the specified 250ms duration
       /// plus a small buffer for processing time.
       testWidgets('should complete animations within expected timeframe', (WidgetTester tester) async {
-        Widget buildSearchSection(bool expanded) {
+        Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
           );
         }
 
-        await tester.pumpWidget(buildSearchSection(true));
+        await tester.pumpWidget(buildSearchSection(expanded: true));
 
         final Stopwatch stopwatch = Stopwatch()..start();
 
         // Trigger state change
-        await tester.pumpWidget(buildSearchSection(false));
+        await tester.pumpWidget(buildSearchSection(expanded: false));
         await tester.pumpAndSettle();
 
         stopwatch.stop();
@@ -334,7 +334,7 @@ void main() {
       /// Should handle multiple components animating at the same time
       /// without significant performance degradation.
       testWidgets('should handle multiple simultaneous animations', (WidgetTester tester) async {
-        Widget buildMultipleComponents(bool expanded) {
+        Widget buildMultipleComponents({required bool expanded}) {
           return createTestApp(
             child: Column(
               children: [
@@ -351,10 +351,10 @@ void main() {
           );
         }
 
-        await tester.pumpWidget(buildMultipleComponents(true));
+        await tester.pumpWidget(buildMultipleComponents(expanded: true));
 
         // Trigger multiple animations simultaneously
-        await tester.pumpWidget(buildMultipleComponents(false));
+        await tester.pumpWidget(buildMultipleComponents(expanded: false));
         await tester.pumpAndSettle();
 
         // Should complete without errors

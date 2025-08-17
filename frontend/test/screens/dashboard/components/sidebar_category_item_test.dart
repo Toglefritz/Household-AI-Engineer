@@ -234,12 +234,12 @@ void main() {
       testWidgets('should maintain interactivity across states', (WidgetTester tester) async {
         // Test expanded state interactivity
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
-        InkWell expandedInkWell = tester.widget<InkWell>(find.byType(InkWell));
+        final InkWell expandedInkWell = tester.widget<InkWell>(find.byType(InkWell));
         expect(expandedInkWell.onTap, isNotNull);
 
         // Test collapsed state interactivity
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
-        InkWell collapsedInkWell = tester.widget<InkWell>(find.byType(InkWell));
+        final InkWell collapsedInkWell = tester.widget<InkWell>(find.byType(InkWell));
         expect(collapsedInkWell.onTap, isNotNull);
       });
 

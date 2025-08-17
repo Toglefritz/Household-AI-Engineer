@@ -14,6 +14,7 @@ linter:
       avoid_catches_without_on_clauses: false
       document_ignores: false
       prefer_int_literals: false
+      no_default_cases: false
 
 formatter:
   trailing_commas: preserve

@@ -81,9 +81,9 @@ class _ExpandedNavigationContent extends StatelessWidget {
           size: 20,
           color: item.isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: Insets.small),
-          child: Expanded(
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
             child: Text(
               item.label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

@@ -63,9 +63,9 @@ class SidebarHeader extends StatelessWidget {
 
           // Title (only shown when expanded)
           if (showExpandedContent) ...[
-            Padding(
-              padding: const EdgeInsets.only(left: Insets.xSmall),
-              child: Expanded(
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: Insets.xSmall),
                 child: Text(
                   AppLocalizations.of(context)!.sidebarTitle,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(

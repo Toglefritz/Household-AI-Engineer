@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Tests for sidebar accessibility features and compliance.
 ///
@@ -257,7 +257,7 @@ void main() {
 
         // Should have header semantic
         final List<Semantics> semanticsWidgets = tester.widgetList<Semantics>(find.byType(Semantics)).toList();
-        final bool hasHeader = semanticsWidgets.any((Semantics s) => s.properties.header == true);
+        final bool hasHeader = semanticsWidgets.any((Semantics s) => s.properties.header ?? false);
         expect(hasHeader, isTrue);
       });
 
@@ -344,8 +344,8 @@ void main() {
       testWidgets('should have proper semantic labels for interactive elements', (WidgetTester tester) async {
         await tester.pumpWidget(
           createTestApp(
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 SidebarSearchSection(showExpandedContent: false),
                 SidebarCategoriesSection(showExpandedContent: false),
               ],
@@ -357,7 +357,7 @@ void main() {
         final List<Semantics> semanticsWidgets = tester.widgetList<Semantics>(find.byType(Semantics)).toList();
 
         for (final Semantics semantics in semanticsWidgets) {
-          if (semantics.properties.button == true) {
+          if (semantics.properties.button ?? false) {
             expect(semantics.properties.label, isNotNull);
           }
         }
@@ -370,8 +370,8 @@ void main() {
       testWidgets('should provide meaningful tooltips', (WidgetTester tester) async {
         await tester.pumpWidget(
           createTestApp(
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 SidebarSearchSection(showExpandedContent: false),
                 SidebarCategoriesSection(showExpandedContent: false),
               ],
@@ -420,7 +420,7 @@ void main() {
       /// Should preserve accessibility information even during state
       /// transitions and animations.
       testWidgets('should maintain semantic structure during animations', (WidgetTester tester) async {
-        Widget buildTestWidget(bool expanded) {
+        Widget buildTestWidget({required bool expanded}) {
           return createTestApp(
             child: Column(
               children: [
@@ -432,11 +432,11 @@ void main() {
         }
 
         // Start with expanded state
-        await tester.pumpWidget(buildTestWidget(true));
+        await tester.pumpWidget(buildTestWidget(expanded: true));
         final int expandedSemanticsCount = tester.widgetList<Semantics>(find.byType(Semantics)).length;
 
         // Change to collapsed state
-        await tester.pumpWidget(buildTestWidget(false));
+        await tester.pumpWidget(buildTestWidget(expanded: false));
         await tester.pumpAndSettle();
         final int collapsedSemanticsCount = tester.widgetList<Semantics>(find.byType(Semantics)).length;
 

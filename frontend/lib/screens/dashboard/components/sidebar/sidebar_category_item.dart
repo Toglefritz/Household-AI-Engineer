@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/insets.dart';
 import '../../models/sidebar/sidebar_spacing.dart';
 
@@ -204,8 +205,8 @@ class _CollapsedCategoryItem extends StatelessWidget {
       child: Tooltip(
         message: '$label ($count)',
         child: Semantics(
-          label: '$label category',
-          hint: '$count applications. Double tap to filter by this category.',
+          label: AppLocalizations.of(context)!.sidebarCategoryLabel(label),
+          hint: AppLocalizations.of(context)!.sidebarCategoryHint(count),
           button: true,
           child: Material(
             color: Colors.transparent,

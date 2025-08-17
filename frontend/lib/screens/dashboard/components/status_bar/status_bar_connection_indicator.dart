@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/insets.dart';
-import '../../dashboard_controller.dart';
+import '../../models/status_bar/connection_status.dart';
 import '../../models/status_bar/connection_status_info.dart';
 
 /// Connection status indicator component for the status bar.

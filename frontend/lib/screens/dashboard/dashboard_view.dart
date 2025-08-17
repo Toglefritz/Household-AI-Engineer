@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/insets.dart';
+import 'components/applications/application_grid.dart';
 import 'components/sidebar/dashboard_sidebar.dart';
 import 'components/status_bar/dashboard_status_bar.dart';
 import 'dashboard_controller.dart';
@@ -80,30 +81,13 @@ class DashboardView extends StatelessWidget {
                               ),
                             ),
 
-                            // Placeholder for future application grid
+                            // Application grid
                             Expanded(
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.apps,
-                                      size: 64,
-                                      color: Theme.of(context).colorScheme.tertiary,
-                                    ),
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: Insets.large),
-                                      child: Text(
-                                        'Application grid will be implemented in future tasks',
-                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                          color: Theme.of(context).colorScheme.tertiary,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: ApplicationGrid(
+                                applications: state.applications,
+                                selectedApplicationIds: state.selectedApplicationIds,
+                                onApplicationTap: state.onApplicationTap,
+                                onApplicationSecondaryTap: state.onApplicationSecondaryTap,
                               ),
                             ),
                           ],

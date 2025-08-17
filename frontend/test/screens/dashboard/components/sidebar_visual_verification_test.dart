@@ -3,10 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/dashboard_sidebar.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Visual verification tests for sidebar layout consistency.
 ///
@@ -398,8 +398,9 @@ void main() {
         await tester.pumpWidget(createTestApp(isExpanded: false));
 
         while (tester.binding.hasScheduledFrame) {
-          frameStopwatch.reset();
-          frameStopwatch.start();
+          frameStopwatch
+            ..reset()
+            ..start();
           await tester.pump(const Duration(milliseconds: 16));
           frameStopwatch.stop();
           frameTimes.add(frameStopwatch.elapsed);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:household_ai_engineer/l10n/app_localizations.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
 import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_categories_constants.dart';
 import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_spacing.dart';
-import 'package:household_ai_engineer/l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 /// Widget tests for the SidebarCategoriesSection component.
 ///

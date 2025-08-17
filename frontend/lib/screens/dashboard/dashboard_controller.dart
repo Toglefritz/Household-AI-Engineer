@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../models/models.dart';
+import '../../services/sample_data_service.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
+import 'models/status_bar/connection_status.dart';
 
 /// Controller for [DashboardRoute].
 ///
@@ -23,6 +26,18 @@ class DashboardController extends State<DashboardRoute> {
   /// and inform users of system availability.
   ConnectionStatus _connectionStatus = ConnectionStatus.connected;
 
+  /// List of all applications currently managed by this controller.
+  ///
+  /// Applications are loaded from the sample data service for now,
+  /// but will be replaced with real data from the backend in future tasks.
+  List<UserApplication> _applications = [];
+
+  /// Set of currently selected application IDs.
+  ///
+  /// Used for multi-selection operations and visual feedback
+  /// in the application grid.
+  final Set<String> _selectedApplicationIds = <String>{};
+
   /// Whether the sidebar is currently expanded.
   ///
   /// Used by the view to determine sidebar layout and animation states.
@@ -33,6 +48,26 @@ class DashboardController extends State<DashboardRoute> {
   /// Provides real-time feedback about backend service availability
   /// and helps users understand system state.
   ConnectionStatus get connectionStatus => _connectionStatus;
+
+  /// List of all applications for display in the grid.
+  ///
+  /// Returns an immutable view of the applications to prevent
+  /// external modification of the internal state.
+  List<UserApplication> get applications => List.unmodifiable(_applications);
+
+  /// Set of currently selected application IDs.
+  ///
+  /// Used by the application grid to show selection states
+  /// and enable multi-selection operations.
+  Set<String> get selectedApplicationIds => Set.unmodifiable(_selectedApplicationIds);
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Load the user applications.
+    _loadApplications();
+  }
 
   /// Toggles the sidebar expansion state.
   ///
@@ -56,32 +91,89 @@ class DashboardController extends State<DashboardRoute> {
     });
   }
 
+  /// Handles application tile tap events.
+  ///
+  /// Called when a user taps on an application tile. Behavior depends
+  /// on the application status - ready/running apps are launched,
+  /// others show details or status information.
+  ///
+  /// @param application The application that was tapped
+  void onApplicationTap(UserApplication application) {
+    debugPrint('Application tapped: ${application.title} (${application.status.displayName})');
+
+    if (application.canLaunch) {
+      _launchApplication(application);
+    } else {
+      _showApplicationDetails(application);
+    }
+  }
+
+  /// Handles application tile secondary tap (right-click) events.
+  ///
+  /// Shows a context menu with application management options
+  /// based on the current application status and capabilities.
+  ///
+  /// @param application The application that was right-clicked
+  void onApplicationSecondaryTap(UserApplication application) {
+    debugPrint('Application right-clicked: ${application.title}');
+
+    _showApplicationContextMenu(application);
+  }
+
+  /// Launches the specified application.
+  ///
+  /// Handles launching applications based on their launch configuration.
+  /// For now, this is a placeholder that will be implemented in future tasks.
+  ///
+  /// @param application The application to launch
+  void _launchApplication(UserApplication application) {
+    debugPrint('Launching application: ${application.title}');
+    // TODO(Scott): Implement actual application launching in future tasks
+
+    // For now, simulate launching by updating the status to running
+    setState(() {
+      final int index = _applications.indexWhere((UserApplication app) => app.id == application.id);
+      if (index != -1 && application.status == ApplicationStatus.ready) {
+        _applications[index] = application.copyWith(
+          status: ApplicationStatus.running,
+          updatedAt: DateTime.now(),
+        );
+      }
+    });
+  }
+
+  /// Shows detailed information about the specified application.
+  ///
+  /// Displays application details, progress information, and available
+  /// actions in a modal or detail view.
+  ///
+  /// @param application The application to show details for
+  void _showApplicationDetails(UserApplication application) {
+    debugPrint('Showing details for application: ${application.title}');
+    // TODO(Scott): Implement application details view in future tasks
+  }
+
+  /// Shows a context menu for the specified application.
+  ///
+  /// Displays available management actions based on the application
+  /// status and user permissions.
+  ///
+  /// @param application The application to show context menu for
+  void _showApplicationContextMenu(UserApplication application) {
+    debugPrint('Showing context menu for application: ${application.title}');
+    // TODO(Scott): Implement context menu in future tasks
+  }
+
+  /// Loads applications from the sample data service.
+  ///
+  /// In future tasks, this will be replaced with actual API calls
+  /// to load applications from the backend service.
+  void _loadApplications() {
+    setState(() {
+      _applications = SampleDataService.getSampleApplications();
+    });
+  }
+
   @override
   Widget build(BuildContext context) => DashboardView(this);
-}
-
-/// Represents the current connection status to backend services.
-///
-/// Used by the status bar to display appropriate indicators and
-/// provide users with feedback about system availability.
-enum ConnectionStatus {
-  /// All services are connected and functioning normally.
-  ///
-  /// Displays green indicators and allows full functionality.
-  connected,
-
-  /// Some services are experiencing issues or delays.
-  ///
-  /// Displays yellow indicators and may show degraded functionality warnings.
-  degraded,
-
-  /// Services are disconnected or unavailable.
-  ///
-  /// Displays red indicators and shows offline mode or error messages.
-  disconnected,
-
-  /// Currently attempting to establish or restore connection.
-  ///
-  /// Displays animated indicators to show connection attempts in progress.
-  connecting,
 }

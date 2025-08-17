@@ -87,4 +87,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buttonCancel => 'Cancel';
+
+  @override
+  String get applicationStatusRequested => 'Queued';
+
+  @override
+  String get applicationStatusDeveloping => 'Developing';
+
+  @override
+  String get applicationStatusTesting => 'Testing';
+
+  @override
+  String get applicationStatusReady => 'Ready';
+
+  @override
+  String get applicationStatusRunning => 'Running';
+
+  @override
+  String get applicationStatusFailed => 'Failed';
+
+  @override
+  String get applicationStatusUpdating => 'Updating';
+
+  @override
+  String get emptyStateTitle => 'No Applications Yet';
+
+  @override
+  String get emptyStateMessage =>
+      'Create your first application to get started';
+
+  @override
+  String progressPercentagePhase(int percentage, String phase) {
+    return '$percentage% • $phase';
+  }
+
+  @override
+  String get noApplications => 'No Applications Yet';
+
+  @override
+  String get createApplicationPrompt =>
+      'Create your first application to get started';
+
+  @override
+  String get ready => 'Ready';
+
+  @override
+  String get queued => 'Queued';
+
+  @override
+  String get running => 'Running';
+
+  @override
+  String get failed => 'Failed';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get searchApplicationsDialog => 'Search applications dialog';
+
+  @override
+  String searchingFor(String query) {
+    return 'Searching for: $query';
+  }
+
+  @override
+  String get openSearchDialogHint => 'Double tap to open search dialog';
+
+  @override
+  String sidebarCategoryLabel(String label) {
+    return '$label category';
+  }
+
+  @override
+  String sidebarCategoryHint(int count) {
+    return '$count applications. Double tap to filter by this category.';
+  }
 }

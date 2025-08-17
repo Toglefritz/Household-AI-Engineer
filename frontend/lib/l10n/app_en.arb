@@ -113,5 +113,126 @@
   "buttonCancel": "Cancel",
   "@buttonCancel": {
     "description": "Text for a cancel button"
+  },
+  "applicationStatusRequested": "Queued",
+  "@applicationStatusRequested": {
+    "description": "Status label for applications that have been requested but not started"
+  },
+  "applicationStatusDeveloping": "Developing",
+  "@applicationStatusDeveloping": {
+    "description": "Status label for applications currently being developed"
+  },
+  "applicationStatusTesting": "Testing",
+  "@applicationStatusTesting": {
+    "description": "Status label for applications currently being tested"
+  },
+  "applicationStatusReady": "Ready",
+  "@applicationStatusReady": {
+    "description": "Status label for applications that are ready to launch"
+  },
+  "applicationStatusRunning": "Running",
+  "@applicationStatusRunning": {
+    "description": "Status label for applications that are currently running"
+  },
+  "applicationStatusFailed": "Failed",
+  "@applicationStatusFailed": {
+    "description": "Status label for applications that have failed to build or deploy"
+  },
+  "applicationStatusUpdating": "Updating",
+  "@applicationStatusUpdating": {
+    "description": "Status label for applications that are being updated"
+  },
+  "emptyStateTitle": "No Applications Yet",
+  "@emptyStateTitle": {
+    "description": "Title shown when no applications are available"
+  },
+  "emptyStateMessage": "Create your first application to get started",
+  "@emptyStateMessage": {
+    "description": "Message shown when no applications are available"
+  },
+  "progressPercentagePhase": "{percentage}% • {phase}",
+  "@progressPercentagePhase": {
+    "description": "Format for showing development progress percentage and current phase",
+    "placeholders": {
+      "percentage": {
+        "type": "int",
+        "description": "Development progress percentage"
+      },
+      "phase": {
+        "type": "String",
+        "description": "Current development phase"
+      }
+    }
+  },
+  "noApplications": "No Applications Yet",
+  "@noApplications": {
+    "description": "A message displayed to the user when they have not yet added an application"
+  },
+  "createApplicationPrompt": "Create your first application to get started",
+  "@createApplicationPrompt": {
+    "description": "A message to the user asking that they create an application to get started"
+  },
+  "ready": "Ready",
+  "@ready": {
+    "description": "A generic message indicating that a system is ready"
+  },
+  "queued": "Queued",
+  "@queued": {
+    "describes": "Describes the status of an entity that is awaiting further action"
+  },
+  "running": "Running",
+  "@running": {
+    "description": "Describes the status of a system that is currently operational"
+  },
+  "failed": "Failed",
+  "@failed": {
+    "description": "Describes an operation that has not completed successfully"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Indicates functionality related to finding entities"
+  },
+  "clearSearch": "Clear search",
+  "@clearSearch": {
+    "description": "Text for a button used to clear a search field"
+  },
+  "searchApplicationsDialog": "Search applications dialog",
+  "@searchApplicationsDialog": {
+    "description": "Semantic label for a button associated with the application search functionality"
+  },
+  "searchingFor": "Searching for: {query}",
+  "@searchingFor": {
+    "description": "An indicator of the query for which a search is being conducted",
+    "placeholders": {
+      "query": {
+        "type": "String",
+        "example": "Budget"
+      }
+    }
+  },
+  "openSearchDialogHint": "Double tap to open search dialog",
+  "@openSearchDialogHint": {
+    "description": "A hint for how to open the search dialog"
+  },
+  "sidebarCategoryLabel": "{label} category",
+  "@sidebarCategoryLabel": {
+    "description": "Semantics label for a sidebar category icon when the sidebar is collapsed.",
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Utilities"
+      }
+    }
+  },
+
+  "sidebarCategoryHint": "{count} applications. Double tap to filter by this category.",
+  "@sidebarCategoryHint": {
+    "description": "Semantics hint for a sidebar category icon in collapsed state. Tells the user how many apps are in the category and the action.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
   }
 }

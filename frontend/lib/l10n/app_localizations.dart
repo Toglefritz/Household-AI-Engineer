@@ -249,6 +249,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get buttonCancel;
+
+  /// Status label for applications that have been requested but not started
+  ///
+  /// In en, this message translates to:
+  /// **'Queued'**
+  String get applicationStatusRequested;
+
+  /// Status label for applications currently being developed
+  ///
+  /// In en, this message translates to:
+  /// **'Developing'**
+  String get applicationStatusDeveloping;
+
+  /// Status label for applications currently being tested
+  ///
+  /// In en, this message translates to:
+  /// **'Testing'**
+  String get applicationStatusTesting;
+
+  /// Status label for applications that are ready to launch
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get applicationStatusReady;
+
+  /// Status label for applications that are currently running
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get applicationStatusRunning;
+
+  /// Status label for applications that have failed to build or deploy
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get applicationStatusFailed;
+
+  /// Status label for applications that are being updated
+  ///
+  /// In en, this message translates to:
+  /// **'Updating'**
+  String get applicationStatusUpdating;
+
+  /// Title shown when no applications are available
+  ///
+  /// In en, this message translates to:
+  /// **'No Applications Yet'**
+  String get emptyStateTitle;
+
+  /// Message shown when no applications are available
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first application to get started'**
+  String get emptyStateMessage;
+
+  /// Format for showing development progress percentage and current phase
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% • {phase}'**
+  String progressPercentagePhase(int percentage, String phase);
+
+  /// A message displayed to the user when they have not yet added an application
+  ///
+  /// In en, this message translates to:
+  /// **'No Applications Yet'**
+  String get noApplications;
+
+  /// A message to the user asking that they create an application to get started
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first application to get started'**
+  String get createApplicationPrompt;
+
+  /// A generic message indicating that a system is ready
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get ready;
+
+  /// No description provided for @queued.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued'**
+  String get queued;
+
+  /// Describes the status of a system that is currently operational
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running;
+
+  /// Describes an operation that has not completed successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get failed;
+
+  /// Indicates functionality related to finding entities
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// Text for a button used to clear a search field
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// Semantic label for a button associated with the application search functionality
+  ///
+  /// In en, this message translates to:
+  /// **'Search applications dialog'**
+  String get searchApplicationsDialog;
+
+  /// An indicator of the query for which a search is being conducted
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for: {query}'**
+  String searchingFor(String query);
+
+  /// A hint for how to open the search dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to open search dialog'**
+  String get openSearchDialogHint;
+
+  /// Semantics label for a sidebar category icon when the sidebar is collapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} category'**
+  String sidebarCategoryLabel(String label);
+
+  /// Semantics hint for a sidebar category icon in collapsed state. Tells the user how many apps are in the category and the action.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications. Double tap to filter by this category.'**
+  String sidebarCategoryHint(int count);
 }
 
 class _AppLocalizationsDelegate

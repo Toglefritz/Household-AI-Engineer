@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_content.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_search_section.dart';
 
 /// Widget tests for the SidebarNavigationContent component.
 ///
@@ -277,14 +277,14 @@ void main() {
       testWidgets('should make all sections accessible through scrolling', (WidgetTester tester) async {
         // Create a constrained height to force scrolling
         await tester.pumpWidget(
-          MaterialApp(
-            localizationsDelegates: const [
+          const MaterialApp(
+            localizationsDelegates: [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [Locale('en')],
+            supportedLocales: [Locale('en')],
             home: Scaffold(
               body: SizedBox(
                 height: 300, // Constrained height
