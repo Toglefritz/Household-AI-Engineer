@@ -1,0 +1,128 @@
+{
+  "name": "kiro-orchestration-extension",
+  "displayName": "Kiro Orchestration Extension",
+  "description": "Orchestrates Kiro IDE for automated application development in the Household Software Engineer system",
+  "version": "0.1.0",
+  "publisher": "household-ai-engineer",
+  "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:**/apps/**/metadata.json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kiroOrchestration.startServer",
+        "title": "Start Orchestration Server",
+        "category": "Kiro Orchestration"
+      },
+      {
+        "command": "kiroOrchestration.stopServer",
+        "title": "Stop Orchestration Server",
+        "category": "Kiro Orchestration"
+      },
+      {
+        "command": "kiroOrchestration.viewStatus",
+        "title": "View Server Status",
+        "category": "Kiro Orchestration"
+      },
+      {
+        "command": "kiroOrchestration.viewJobs",
+        "title": "View Active Jobs",
+        "category": "Kiro Orchestration"
+      },
+      {
+        "command": "kiroOrchestration.openAppsDirectory",
+        "title": "Open Apps Directory",
+        "category": "Kiro Orchestration"
+      }
+    ],
+    "configuration": {
+      "title": "Kiro Orchestration",
+      "properties": {
+        "kiroOrchestration.api.port": {
+          "type": "number",
+          "default": 3001,
+          "description": "Port for the HTTP API server"
+        },
+        "kiroOrchestration.api.host": {
+          "type": "string",
+          "default": "localhost",
+          "description": "Host address to bind the API server to"
+        },
+        "kiroOrchestration.api.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for authentication (leave empty to generate automatically)"
+        },
+        "kiroOrchestration.websocket.port": {
+          "type": "number",
+          "default": 3002,
+          "description": "Port for the WebSocket server"
+        },
+        "kiroOrchestration.workspace.appsDirectory": {
+          "type": "string",
+          "default": "./apps",
+          "description": "Directory where application workspaces are created"
+        },
+        "kiroOrchestration.jobs.maxConcurrentJobs": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum number of concurrent development jobs"
+        },
+        "kiroOrchestration.jobs.defaultTimeoutMs": {
+          "type": "number",
+          "default": 1800000,
+          "description": "Default job timeout in milliseconds (30 minutes)"
+        },
+        "kiroOrchestration.logging.level": {
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "default": "info",
+          "description": "Logging level"
+        },
+        "kiroOrchestration.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start orchestration servers when the extension activates"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@types/ws": "^8.5.10",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  }
+}

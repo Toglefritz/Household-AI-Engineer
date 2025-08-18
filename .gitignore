@@ -1,3 +1,5 @@
 /kiro-command-research/node_modules/.bin
 /kiro-command-research/node_modules
 *.vsix
+/kiro-orchestration-extension/node_modules
+/kiro-orchestration-extension/out
