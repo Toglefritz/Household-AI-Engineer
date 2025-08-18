@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/categories/sidebar_categories.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/categories/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/dashboard_sidebar.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/navigation/sidebar_navigation_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/quick_actions/sidebar_quick_actions.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/models/sidebar/sidebar_categories_constants.dart';
 
 /// Integration tests for the complete sidebar functionality.
@@ -33,6 +33,7 @@ void main() {
               DashboardSidebar(
                 isExpanded: isExpanded,
                 onToggle: () {}, // No-op for testing
+                openNewApplicationConversation: () {},
               ),
               const Expanded(
                 child: Center(
@@ -401,6 +402,7 @@ void main() {
               body: DashboardSidebar(
                 isExpanded: true,
                 onToggle: () {},
+                openNewApplicationConversation: () {},
               ),
             ),
           ),
@@ -431,6 +433,7 @@ void main() {
               body: DashboardSidebar(
                 isExpanded: true,
                 onToggle: () {},
+                openNewApplicationConversation: () {},
               ),
             ),
           ),
@@ -453,6 +456,7 @@ void main() {
               body: DashboardSidebar(
                 isExpanded: true,
                 onToggle: () {},
+                openNewApplicationConversation: () {},
               ),
             ),
           ),

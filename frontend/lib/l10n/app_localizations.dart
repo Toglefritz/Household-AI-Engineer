@@ -310,6 +310,54 @@ abstract class AppLocalizations {
   /// **'{percentage}% • {phase}'**
   String progressPercentagePhase(int percentage, String phase);
 
+  /// Title for the conversation modal when creating a new application
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Application'**
+  String get conversationTitleCreate;
+
+  /// Title for the conversation modal when modifying an application
+  ///
+  /// In en, this message translates to:
+  /// **'Modify {applicationName}'**
+  String conversationTitleModify(String applicationName);
+
+  /// Subtitle text for the conversation modal
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what you need and I\'ll help you build it'**
+  String get conversationSubtitle;
+
+  /// Placeholder text for the conversation input field
+  ///
+  /// In en, this message translates to:
+  /// **'Type your message...'**
+  String get conversationInputPlaceholder;
+
+  /// Placeholder text when the system is processing
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get conversationInputPlaceholderWaiting;
+
+  /// Message shown when no conversation messages exist yet
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation'**
+  String get conversationStartMessage;
+
+  /// Tooltip for the send message button
+  ///
+  /// In en, this message translates to:
+  /// **'Send message'**
+  String get tooltipSendMessage;
+
+  /// Tooltip for the close conversation button
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get tooltipCloseConversation;
+
   /// A message displayed to the user when they have not yet added an application
   ///
   /// In en, this message translates to:
@@ -387,6 +435,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} applications. Double tap to filter by this category.'**
   String sidebarCategoryHint(int count);
+
+  /// A generic message requesting that the user wait for a loading operation to complete
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get pleaseWait;
+
+  /// Placeholder text for the field used to collect user input in the application creation flow
+  ///
+  /// In en, this message translates to:
+  /// **'Type your message...'**
+  String get typeMessage;
+
+  /// Title shown when modifying an existing application
+  ///
+  /// In en, this message translates to:
+  /// **'Modify {title}'**
+  String modifyApplication(String title);
+
+  /// A title for the dialog forming the main part of the application creation flow
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Application'**
+  String get createNewApplication;
+
+  /// A description for the application creation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what you need and I\'ll help you build it'**
+  String get applicationCreationDescription;
+
+  /// A generic message for dismissing an interface in the application
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// A prompt nto the user to start the application creation flow
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation'**
+  String get startConversation;
+
+  /// A tooltip for the interface allowing the user to send a message to the agent
+  ///
+  /// In en, this message translates to:
+  /// **'Send message'**
+  String get sendMessage;
 }
 
 class _AppLocalizationsDelegate

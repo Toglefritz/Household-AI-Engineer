@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../models/sidebar/navigation_item_data.dart';
-import 'sidebar_navigation_item.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../models/sidebar/navigation_item_data.dart';
+import 'sidebar_navigation.dart';
 
 /// Navigation section component for the dashboard sidebar.
 ///

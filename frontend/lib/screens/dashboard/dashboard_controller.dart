@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/sample_data_service.dart';
+import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
 import 'models/status_bar/connection_status.dart';
@@ -162,6 +163,84 @@ class DashboardController extends State<DashboardRoute> {
   void _showApplicationContextMenu(UserApplication application) {
     debugPrint('Showing context menu for application: ${application.title}');
     // TODO(Scott): Implement context menu in future tasks
+  }
+
+  /// Opens the conversation modal for creating a new application.
+  ///
+  /// Shows the conversational interface that guides users through
+  /// the application creation process.
+  void openNewApplicationConversation() {
+    debugPrint('Opening new application conversation');
+    _showConversationModal();
+  }
+
+  /// Opens the conversation modal for modifying an existing application.
+  ///
+  /// @param application The application to modify
+  void openModifyApplicationConversation(UserApplication application) {
+    debugPrint('Opening modify conversation for: ${application.title}');
+    _showConversationModal(applicationToModify: application);
+  }
+
+  /// Shows the conversation modal with optional parameters.
+  ///
+  /// @param initialConversation Optional conversation to load
+  /// @param applicationToModify Optional application to modify
+  void _showConversationModal({
+    ConversationThread? initialConversation,
+    UserApplication? applicationToModify,
+  }) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ConversationModal(
+          initialConversation: initialConversation,
+          applicationToModify: applicationToModify,
+          onConversationComplete: _onConversationComplete,
+        );
+      },
+    );
+  }
+
+  /// Handles conversation completion.
+  ///
+  /// Called when a conversation is successfully completed and an application
+  /// specification has been generated and submitted.
+  ///
+  /// @param conversation The completed conversation thread
+  void _onConversationComplete(ConversationThread conversation) {
+    debugPrint('Conversation completed: ${conversation.id}');
+
+    // In a real implementation, this would trigger the application creation
+    // process and add the new application to the list
+
+    // For now, simulate adding a new application in development
+    if (conversation.context.isCreatingApplication) {
+      final UserApplication newApplication = UserApplication(
+        id: 'app_new_${DateTime.now().millisecondsSinceEpoch}',
+        title: 'New Application', // Would be extracted from conversation
+        description: 'Application created through conversation',
+        status: ApplicationStatus.developing,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        launchConfig: const LaunchConfiguration(
+          type: LaunchType.web,
+          url: 'http://localhost:3000',
+        ),
+        tags: ['conversation-created'],
+        progress: DevelopmentProgress(
+          percentage: 5.0,
+          currentPhase: 'Analyzing Requirements',
+          milestones: [],
+          lastUpdated: DateTime.now(),
+        ),
+      );
+
+      setState(() {
+        _applications.add(newApplication);
+      });
+    }
   }
 
   /// Loads applications from the sample data service.

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/categories/sidebar_categories.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/categories/sidebar_categories_section.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_category_item.dart';
 
 /// Tests for sidebar animation behavior and performance.
 ///

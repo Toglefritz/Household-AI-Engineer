@@ -164,6 +164,44 @@
       }
     }
   },
+  "conversationTitleCreate": "Create New Application",
+  "@conversationTitleCreate": {
+    "description": "Title for the conversation modal when creating a new application"
+  },
+  "conversationTitleModify": "Modify {applicationName}",
+  "@conversationTitleModify": {
+    "description": "Title for the conversation modal when modifying an application",
+    "placeholders": {
+      "applicationName": {
+        "type": "String",
+        "description": "Name of the application being modified"
+      }
+    }
+  },
+  "conversationSubtitle": "Describe what you need and I'll help you build it",
+  "@conversationSubtitle": {
+    "description": "Subtitle text for the conversation modal"
+  },
+  "conversationInputPlaceholder": "Type your message...",
+  "@conversationInputPlaceholder": {
+    "description": "Placeholder text for the conversation input field"
+  },
+  "conversationInputPlaceholderWaiting": "Please wait...",
+  "@conversationInputPlaceholderWaiting": {
+    "description": "Placeholder text when the system is processing"
+  },
+  "conversationStartMessage": "Start the conversation",
+  "@conversationStartMessage": {
+    "description": "Message shown when no conversation messages exist yet"
+  },
+  "tooltipSendMessage": "Send message",
+  "@tooltipSendMessage": {
+    "description": "Tooltip for the send message button"
+  },
+  "tooltipCloseConversation": "Close",
+  "@tooltipCloseConversation": {
+    "description": "Tooltip for the close conversation button"
+  },
   "noApplications": "No Applications Yet",
   "@noApplications": {
     "description": "A message displayed to the user when they have not yet added an application"
@@ -224,7 +262,6 @@
       }
     }
   },
-
   "sidebarCategoryHint": "{count} applications. Double tap to filter by this category.",
   "@sidebarCategoryHint": {
     "description": "Semantics hint for a sidebar category icon in collapsed state. Tells the user how many apps are in the category and the action.",
@@ -234,5 +271,43 @@
         "example": "5"
       }
     }
+  },
+  "pleaseWait": "Please wait...",
+  "@pleaseWait": {
+    "description": "A generic message requesting that the user wait for a loading operation to complete"
+  },
+  "typeMessage": "Type your message...",
+  "@typeMessage": {
+    "description": "Placeholder text for the field used to collect user input in the application creation flow"
+  },
+  "modifyApplication": "Modify {title}",
+  "@modifyApplication": {
+    "description": "Title shown when modifying an existing application",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Chore Tracker"
+      }
+    }
+  },
+  "createNewApplication": "Create New Application",
+  "@createNewApplication": {
+    "description": "A title for the dialog forming the main part of the application creation flow"
+  },
+  "applicationCreationDescription": "Describe what you need and I'll help you build it",
+  "@applicationCreationDescription": {
+    "description": "A description for the application creation dialog"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "A generic message for dismissing an interface in the application"
+  },
+  "startConversation": "Start the conversation",
+  "@startConversation": {
+    "description": "A prompt nto the user to start the application creation flow"
+  },
+  "sendMessage": "Send message",
+  "@sendMessage": {
+    "description": "A tooltip for the interface allowing the user to send a message to the agent"
   }
 }

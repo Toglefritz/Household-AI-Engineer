@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../theme/insets.dart';
-import 'search/sidebar_search.dart';
-import 'sidebar_categories_section.dart';
+import '../../../../../theme/insets.dart';
+import '../categories/sidebar_categories_section.dart';
+import '../quick_actions/sidebar_quick_actions.dart';
+import '../search/sidebar_search.dart';
 import 'sidebar_navigation_section.dart';
-import 'sidebar_quick_actions_section.dart';
 
 /// Main navigation content component for the dashboard sidebar.
 ///
@@ -16,6 +16,7 @@ class SidebarNavigationContent extends StatelessWidget {
   /// @param showExpandedContent Whether to show expanded content based on actual width
   const SidebarNavigationContent({
     required this.showExpandedContent,
+    required this.openNewApplicationConversation,
     super.key,
   });
 
@@ -23,6 +24,9 @@ class SidebarNavigationContent extends StatelessWidget {
   ///
   /// Prevents content from appearing/disappearing abruptly during transitions.
   final bool showExpandedContent;
+
+  /// A callback for when the button to create a new application is tapped.
+  final VoidCallback openNewApplicationConversation;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +62,7 @@ class SidebarNavigationContent extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: Insets.medium),
           child: SidebarQuickActionsSection(
             showExpandedContent: showExpandedContent,
+            openNewApplicationConversation: openNewApplicationConversation,
           ),
         ),
       ],

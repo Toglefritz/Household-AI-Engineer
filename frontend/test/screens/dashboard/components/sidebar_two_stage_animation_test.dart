@@ -24,6 +24,7 @@ void main() {
           body: DashboardSidebar(
             isExpanded: isExpanded,
             onToggle: onToggle ?? () {},
+            openNewApplicationConversation: () {},
           ),
         ),
       );

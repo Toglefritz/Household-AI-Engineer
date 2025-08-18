@@ -19,3 +19,11 @@ export 'launch_configuration/launch_type.dart';
 export 'development_progress/development_milestone.dart';
 export 'development_progress/development_progress.dart';
 export 'development_progress/milestone_status.dart';
+
+// Conversation models
+export 'conversation/conversation_context.dart';
+export 'conversation/conversation_message.dart';
+export 'conversation/conversation_status.dart';
+export 'conversation/conversation_thread.dart';
+export 'conversation/message_action.dart';
+export 'conversation/message_sender.dart';

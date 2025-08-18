@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/l10n/app_localizations.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/categories/sidebar_categories_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/navigation/sidebar_navigation_content.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/navigation/sidebar_navigation_section.dart';
+import 'package:household_ai_engineer/screens/dashboard/components/sidebar/quick_actions/sidebar_quick_actions.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/sidebar/search/sidebar_search.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_categories_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_content.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_navigation_section.dart';
-import 'package:household_ai_engineer/screens/dashboard/components/sidebar/sidebar_quick_actions_section.dart';
 
 /// Widget tests for the SidebarNavigationContent component.
 ///
@@ -31,6 +31,7 @@ void main() {
         home: Scaffold(
           body: SidebarNavigationContent(
             showExpandedContent: showExpandedContent,
+            openNewApplicationConversation: () {},
           ),
         ),
       );
@@ -277,19 +278,20 @@ void main() {
       testWidgets('should make all sections accessible through scrolling', (WidgetTester tester) async {
         // Create a constrained height to force scrolling
         await tester.pumpWidget(
-          const MaterialApp(
-            localizationsDelegates: [
+          MaterialApp(
+            localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: [Locale('en')],
+            supportedLocales: const [Locale('en')],
             home: Scaffold(
               body: SizedBox(
                 height: 300, // Constrained height
                 child: SidebarNavigationContent(
                   showExpandedContent: true,
+                  openNewApplicationConversation: () {},
                 ),
               ),
             ),

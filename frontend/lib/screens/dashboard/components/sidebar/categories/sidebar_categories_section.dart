@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/insets.dart';
-import '../../models/sidebar/category_data.dart';
-import '../../models/sidebar/sidebar_categories_constants.dart';
-import '../../models/sidebar/sidebar_spacing.dart';
-import 'sidebar_category_item.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../theme/insets.dart';
+import '../../../models/sidebar/category_data.dart';
+import '../../../models/sidebar/sidebar_categories_constants.dart';
+import '../../../models/sidebar/sidebar_spacing.dart';
+import 'sidebar_categories.dart';
 
 /// Categories section component for the dashboard sidebar.
 ///

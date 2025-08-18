@@ -122,6 +122,33 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get conversationTitleCreate => 'Create New Application';
+
+  @override
+  String conversationTitleModify(String applicationName) {
+    return 'Modify $applicationName';
+  }
+
+  @override
+  String get conversationSubtitle =>
+      'Describe what you need and I\'ll help you build it';
+
+  @override
+  String get conversationInputPlaceholder => 'Type your message...';
+
+  @override
+  String get conversationInputPlaceholderWaiting => 'Please wait...';
+
+  @override
+  String get conversationStartMessage => 'Start the conversation';
+
+  @override
+  String get tooltipSendMessage => 'Send message';
+
+  @override
+  String get tooltipCloseConversation => 'Close';
+
+  @override
   String get noApplications => 'No Applications Yet';
 
   @override
@@ -166,4 +193,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String sidebarCategoryHint(int count) {
     return '$count applications. Double tap to filter by this category.';
   }
+
+  @override
+  String get pleaseWait => 'Please wait...';
+
+  @override
+  String get typeMessage => 'Type your message...';
+
+  @override
+  String modifyApplication(String title) {
+    return 'Modify $title';
+  }
+
+  @override
+  String get createNewApplication => 'Create New Application';
+
+  @override
+  String get applicationCreationDescription =>
+      'Describe what you need and I\'ll help you build it';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get startConversation => 'Start the conversation';
+
+  @override
+  String get sendMessage => 'Send message';
 }

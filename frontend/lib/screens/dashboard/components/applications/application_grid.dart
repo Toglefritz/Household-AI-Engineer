@@ -16,11 +16,13 @@ class ApplicationGrid extends StatelessWidget {
   /// @param applications List of applications to display
   /// @param onApplicationTap Callback when an application tile is tapped
   /// @param onApplicationSecondaryTap Callback when an application tile is right-clicked
+  /// @param onCreateNewApplication Callback when the create new application button is tapped
   /// @param selectedApplicationIds Set of currently selected application IDs
   const ApplicationGrid({
     required this.applications,
     this.onApplicationTap,
     this.onApplicationSecondaryTap,
+    this.onCreateNewApplication,
     this.selectedApplicationIds = const {},
     super.key,
   });
@@ -42,6 +44,11 @@ class ApplicationGrid extends StatelessWidget {
   /// Receives the right-clicked application as a parameter.
   /// Used for showing context menus with management options.
   final void Function(UserApplication application)? onApplicationSecondaryTap;
+
+  /// Callback invoked when the create new application button is tapped.
+  ///
+  /// Used to open the conversational interface for creating new applications.
+  final VoidCallback? onCreateNewApplication;
 
   /// Set of application IDs that are currently selected.
   ///
@@ -128,10 +135,7 @@ class ApplicationGrid extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: Insets.large),
             child: FilledButton.icon(
-              onPressed: () {
-                // TODO(Scott): Implement create new application flow
-                debugPrint('Create new application tapped');
-              },
+              onPressed: onCreateNewApplication,
               icon: const Icon(Icons.add),
               label: Text(AppLocalizations.of(context)!.buttonCreateNewApp),
               style: FilledButton.styleFrom(

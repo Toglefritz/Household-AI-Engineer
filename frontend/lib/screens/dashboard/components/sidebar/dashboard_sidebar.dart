@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'navigation/sidebar_navigation_content.dart';
 import 'sidebar_header.dart';
-import 'sidebar_navigation_content.dart';
 
 /// Sidebar component for the main dashboard interface.
 ///
@@ -61,15 +62,6 @@ import 'sidebar_navigation_content.dart';
 /// * Proper focus management during state transitions
 /// * Screen reader compatibility
 /// * Keyboard navigation support
-///
-/// ## Usage Example
-///
-/// ```dart
-/// DashboardSidebar(
-///   isExpanded: _sidebarExpanded,
-///   onToggle: () => setState(() => _sidebarExpanded = !_sidebarExpanded),
-/// )
-/// ```
 class DashboardSidebar extends StatefulWidget {
   /// Creates a dashboard sidebar widget.
   ///
@@ -78,6 +70,7 @@ class DashboardSidebar extends StatefulWidget {
   const DashboardSidebar({
     required this.isExpanded,
     required this.onToggle,
+    required this.openNewApplicationConversation,
     super.key,
   });
 
@@ -91,6 +84,9 @@ class DashboardSidebar extends StatefulWidget {
   ///
   /// Called when the user clicks the collapse/expand button or uses keyboard shortcuts to change sidebar visibility.
   final VoidCallback onToggle;
+
+  /// A callback for when the button to create a new application is tapped.
+  final VoidCallback openNewApplicationConversation;
 
   @override
   State<DashboardSidebar> createState() => _DashboardSidebarState();
@@ -250,6 +246,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
           Expanded(
             child: SidebarNavigationContent(
               showExpandedContent: _showExpandedContent,
+                openNewApplicationConversation: widget.openNewApplicationConversation
             ),
           ),
         ],
