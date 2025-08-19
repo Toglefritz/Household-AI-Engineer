@@ -88,12 +88,39 @@ class DashboardController extends State<DashboardRoute> {
     _loadApplications();
   }
 
-  @override
-  void dispose() {
-    // Clean up resources
-    _applicationSubscription?.cancel();
-    _userApplicationService.dispose();
-    super.dispose();
+  /// Loads applications from the user application service and sets up real-time updates.
+  ///
+  /// Establishes a stream subscription to receive real-time application updates
+  /// from both local manifests and the Kiro Bridge API.
+  Future<void> _loadApplications() async {
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      // Set up stream subscription for real-time updates
+      _applicationSubscription = _userApplicationService.watchApplications().listen(
+            (List<UserApplication> applications) {
+          setState(() {
+            _applications = applications;
+            _connectionStatus = _userApplicationService.isConnected
+                ? ConnectionStatus.connected
+                : ConnectionStatus.disconnected;
+          });
+        },
+        onError: (Object error) {
+          debugPrint('Error loading applications: $error');
+          setState(() {
+            _connectionStatus = ConnectionStatus.error;
+          });
+        },
+      );
+    } catch (e) {
+      debugPrint('Failed to initialize application loading: $e');
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+    }
   }
 
   /// Toggles the sidebar expansion state.
@@ -374,41 +401,14 @@ class DashboardController extends State<DashboardRoute> {
     return modifications.join(' ');
   }
 
-  /// Loads applications from the user application service and sets up real-time updates.
-  ///
-  /// Establishes a stream subscription to receive real-time application updates
-  /// from both local manifests and the Kiro Bridge API.
-  Future<void> _loadApplications() async {
-    try {
-      setState(() {
-        _connectionStatus = ConnectionStatus.connecting;
-      });
-
-      // Set up stream subscription for real-time updates
-      _applicationSubscription = _userApplicationService.watchApplications().listen(
-        (List<UserApplication> applications) {
-          setState(() {
-            _applications = applications;
-            _connectionStatus = _userApplicationService.isConnected
-                ? ConnectionStatus.connected
-                : ConnectionStatus.disconnected;
-          });
-        },
-        onError: (Object error) {
-          debugPrint('Error loading applications: $error');
-          setState(() {
-            _connectionStatus = ConnectionStatus.error;
-          });
-        },
-      );
-    } catch (e) {
-      debugPrint('Failed to initialize application loading: $e');
-      setState(() {
-        _connectionStatus = ConnectionStatus.error;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) => DashboardView(this);
+
+  @override
+  void dispose() {
+    // Clean up resources
+    _applicationSubscription?.cancel();
+    _userApplicationService.dispose();
+    super.dispose();
+  }
 }

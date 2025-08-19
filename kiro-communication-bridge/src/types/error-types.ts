@@ -1,5 +1,5 @@
 /**
- * Error types and classification for the Kiro Orchestration Extension.
+ * Error types and classification for the Kiro Communication Bridge Extension.
  * 
  * This module defines a comprehensive error hierarchy for handling various
  * types of errors that can occur during application development orchestration.

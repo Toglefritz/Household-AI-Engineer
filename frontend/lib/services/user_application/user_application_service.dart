@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 import 'models/user_application.dart';
 
 /// Service for managing household applications through the Kiro Bridge API.
@@ -32,9 +30,6 @@ class UserApplicationService {
 
   /// Directory where per-app manifests (`*.json`) are stored.
   final Directory _appsDir;
-
-  /// WebSocket channel for real-time application updates.
-  WebSocketChannel? _webSocketChannel;
 
   /// Stream controller for broadcasting application updates.
   final StreamController<List<UserApplication>> _applicationUpdatesController =
@@ -110,9 +105,6 @@ class UserApplicationService {
     final List<UserApplication> initial = await loadApplications();
     yield initial;
 
-    // Set up WebSocket connection for real-time updates
-    await _initializeWebSocketConnection();
-
     // Set up file system watcher for local changes
     _setupFileSystemWatcher(debounce);
 
@@ -152,28 +144,6 @@ class UserApplicationService {
     return applications;
   }
 
-  /// Initializes WebSocket connection for real-time updates.
-  ///
-  /// Connects to the Kiro Bridge WebSocket endpoint to receive real-time
-  /// application status updates, progress notifications, and other events.
-  Future<void> _initializeWebSocketConnection() async {
-    try {
-      // Connect to WebSocket endpoint
-      // Note: The actual WebSocket URL may need to be adjusted based on bridge configuration
-      final Uri wsUri = Uri.parse('ws://localhost:3001/ws');
-      _webSocketChannel = WebSocketChannel.connect(wsUri);
-
-      // Listen for WebSocket messages
-      _webSocketChannel!.stream.listen(
-        _handleWebSocketMessage,
-        onError: _handleWebSocketError,
-        onDone: _handleWebSocketDisconnect,
-      );
-    } catch (e) {
-      // WebSocket connection failed, continue without real-time updates
-    }
-  }
-
   /// Sets up file system watcher for local manifest changes.
   ///
   /// Monitors the apps directory for changes and triggers application list updates
@@ -207,93 +177,6 @@ class UserApplicationService {
         // Polling failed, continue with cached data
       }
     });
-  }
-
-  /// Handles incoming WebSocket messages.
-  ///
-  /// Processes real-time updates from the Kiro Bridge and updates the
-  /// application list accordingly.
-  void _handleWebSocketMessage(dynamic message) {
-    try {
-      final Map<String, dynamic> data = json.decode(message as String) as Map<String, dynamic>;
-
-      if (data['type'] == 'application_update') {
-        // Handle application status update
-        _handleApplicationUpdate(data);
-      } else if (data['type'] == 'application_created') {
-        // Handle new application creation
-        _handleApplicationCreated(data);
-      } else if (data['type'] == 'application_deleted') {
-        // Handle application deletion
-        _handleApplicationDeleted(data);
-      }
-    } catch (e) {
-      // Failed to parse WebSocket message, ignore
-    }
-  }
-
-  /// Handles WebSocket connection errors.
-  void _handleWebSocketError(Object error) {
-    _isConnected = false;
-    // Attempt to reconnect after a delay
-    Timer(const Duration(seconds: 5), () async {
-      await _initializeWebSocketConnection();
-    });
-  }
-
-  /// Handles WebSocket disconnection.
-  void _handleWebSocketDisconnect() {
-    _isConnected = false;
-    // Attempt to reconnect after a delay
-    Timer(const Duration(seconds: 5), () async {
-      await _initializeWebSocketConnection();
-    });
-  }
-
-  /// Handles application update events from WebSocket.
-  Future<void> _handleApplicationUpdate(Map<String, dynamic> data) async {
-    try {
-      final UserApplication updatedApp = UserApplication.fromJson(data['application'] as Map<String, dynamic>);
-
-      // Update cached applications
-      final int index = _cachedApplications.indexWhere((UserApplication app) => app.id == updatedApp.id);
-      if (index != -1) {
-        _cachedApplications[index] = updatedApp;
-        _applicationUpdatesController.add(_cachedApplications);
-      }
-    } catch (e) {
-      // Failed to parse application update, refresh full list
-      final List<UserApplication> apps = await loadApplications();
-      _applicationUpdatesController.add(apps);
-    }
-  }
-
-  /// Handles application creation events from WebSocket.
-  Future<void> _handleApplicationCreated(Map<String, dynamic> data) async {
-    try {
-      final UserApplication newApp = UserApplication.fromJson(data['application'] as Map<String, dynamic>);
-
-      // Add to cached applications
-      _cachedApplications
-        ..add(newApp)
-        ..sort(
-          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
-        );
-      _applicationUpdatesController.add(_cachedApplications);
-    } catch (e) {
-      // Failed to parse new application, refresh full list
-      final List<UserApplication> apps = await loadApplications();
-      _applicationUpdatesController.add(apps);
-    }
-  }
-
-  /// Handles application deletion events from WebSocket.
-  void _handleApplicationDeleted(Map<String, dynamic> data) {
-    final String? applicationId = data['applicationId'] as String?;
-    if (applicationId != null) {
-      _cachedApplications.removeWhere((UserApplication app) => app.id == applicationId);
-      _applicationUpdatesController.add(_cachedApplications);
-    }
   }
 
   /// Attempts to read and parse a single manifest file into a
@@ -388,7 +271,6 @@ class UserApplicationService {
   /// Closes WebSocket connections, cancels timers, and cleans up stream controllers.
   /// Should be called when the service is no longer needed.
   void dispose() {
-    _webSocketChannel?.sink.close();
     _applicationUpdatesController.close();
   }
 }

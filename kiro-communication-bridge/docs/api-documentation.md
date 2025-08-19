@@ -38,7 +38,6 @@ The API uses standard HTTP status codes and returns error information in a consi
 | `KIRO_UNAVAILABLE` | 503 | Kiro IDE is not available |
 | `COMMAND_EXECUTION_FAILED` | 422 | Command execution failed |
 | `OPERATION_TIMEOUT` | 408 | Operation timed out |
-| `WEBSOCKET_ERROR` | 500 | WebSocket communication error |
 
 ## Endpoints
 
@@ -287,21 +286,6 @@ curl -X POST http://localhost:3001/api/kiro/input \
   "executionId": ""
 }
 ```
-
-## WebSocket Integration
-
-While this API provides HTTP endpoints, the system also supports WebSocket connections for real-time updates. When commands are executed via the REST API, real-time progress updates are broadcast to connected WebSocket clients.
-
-### WebSocket Events
-
-The following events are emitted during command execution:
-
-- `command-started`: Command execution begins
-- `command-output`: Real-time output from the command
-- `command-completed`: Command execution completes
-- `command-error`: Command execution fails
-- `user-input-required`: Command needs user input
-- `status-changed`: Kiro status changes
 
 ## Rate Limiting
 

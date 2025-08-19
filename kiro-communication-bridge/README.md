@@ -1,6 +1,6 @@
-# Kiro Orchestration Extension
+# Kiro Communication Bridge Extension
 
-The Kiro Orchestration Extension is a VS Code extension that enables the Kiro IDE to function as a headless development environment for the Household Software Engineer system. It provides REST API and WebSocket endpoints that allow the Flutter frontend to orchestrate automated application development through Kiro's command system.
+The Kiro Communication Bridge Extension is a VS Code extension that enables the Kiro IDE to function as a headless development environment for the Household Software Engineer system. It provides REST API and WebSocket endpoints that allow the Flutter frontend to orchestrate automated application development through Kiro's command system.
 
 ## Features
 

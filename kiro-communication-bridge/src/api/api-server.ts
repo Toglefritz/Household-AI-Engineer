@@ -16,14 +16,39 @@ import {
   ExecuteCommandResponse,
   KiroStatusResponse
 } from '../types/command-execution';
-import {
-  UserInputRequest,
-  UserInputResponse
-} from '../types/websocket-events';
+
 import {
   BridgeError,
   ValidationError
 } from '../types/bridge-errors';
+
+/**
+ * User input request for interactive commands.
+ */
+interface UserInputRequest {
+  /** Input value provided by user */
+  value: string;
+  
+  /** Type of input being provided */
+  type: 'text' | 'choice' | 'file' | 'confirmation';
+  
+  /** Execution ID this input is for */
+  executionId: string;
+}
+
+/**
+ * Response to user input submission.
+ */
+interface UserInputResponse {
+  /** Whether input was accepted */
+  success: boolean;
+  
+  /** Error message if input was rejected */
+  error?: string;
+  
+  /** Execution ID that received input */
+  executionId: string;
+}
 
 /**
  * Configuration for the API server.
@@ -464,8 +489,6 @@ export class ApiServer extends EventEmitter {
         return 408;
       case 'COMMAND_EXECUTION_FAILED':
         return 422;
-      case 'WEBSOCKET_ERROR':
-        return 500;
       case 'CONFIGURATION_ERROR':
         return 500;
       default:

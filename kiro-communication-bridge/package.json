@@ -2,7 +2,7 @@
   "name": "kiro-communication-bridge",
   "displayName": "Kiro Communication Bridge",
   "description": "Communication bridge between Flutter frontend and Kiro IDE for the Household Software Engineer system",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "publisher": "household-ai-engineer",
   "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
   "engines": {
@@ -76,16 +76,6 @@
           "default": true,
           "description": "Enable CORS for API requests"
         },
-        "kiroOrchestration.websocket.port": {
-          "type": "number",
-          "default": 3002,
-          "description": "Port for the WebSocket server"
-        },
-        "kiroOrchestration.websocket.maxConnections": {
-          "type": "number",
-          "default": 10,
-          "description": "Maximum number of WebSocket connections"
-        },
         "kiroOrchestration.kiro.commandTimeoutMs": {
           "type": "number",
           "default": 300000,
@@ -150,7 +140,6 @@
     "@types/node": "16.x",
     "@types/uuid": "^9.0.7",
     "@types/vscode": "^1.74.0",
-    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",
@@ -161,7 +150,6 @@
   "dependencies": {
     "express": "^4.18.2",
     "fs-extra": "^11.2.0",
-    "uuid": "^9.0.1",
-    "ws": "^8.16.0"
+    "uuid": "^9.0.1"
   }
 }

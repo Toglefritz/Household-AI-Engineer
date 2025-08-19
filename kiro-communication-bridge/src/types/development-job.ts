@@ -1,5 +1,5 @@
 /**
- * Development job types and interfaces for the Kiro Orchestration Extension.
+ * Development job types and interfaces for the Kiro Communication Bridge Extension.
  * 
  * This module defines the data structures used to represent development jobs
  * throughout the orchestration system, including job state management and

@@ -8,4 +8,3 @@
 // Communication Bridge exports
 export * from './command-execution';
 export * from './bridge-errors';
-export * from './websocket-events';

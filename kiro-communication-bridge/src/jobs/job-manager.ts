@@ -1,5 +1,5 @@
 /**
- * Job management for the Kiro Orchestration Extension.
+ * Job management for the Kiro Communication Bridge Extension.
  * 
  * This module handles the lifecycle of application development jobs,
  * including queuing, execution, progress tracking, and cleanup.
@@ -59,7 +59,7 @@ export class JobManager {
   /**
    * Sets the progress reporter for job updates.
    * 
-   * @param reporter - Progress reporter instance (typically WebSocket server)
+   * @param reporter - Progress reporter instance
    */
   public setProgressReporter(reporter: ProgressReporter): void {
     this.progressReporter = reporter;

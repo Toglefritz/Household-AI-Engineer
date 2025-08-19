@@ -1,5 +1,5 @@
 /**
- * Configuration management for the Kiro Orchestration Extension.
+ * Configuration management for the Kiro Communication Bridge Extension.
  * 
  * This module handles loading, validation, and management of extension
  * configuration from VS Code settings and provides typed access to
@@ -25,15 +25,7 @@ export interface ExtensionConfiguration {
     timeoutMs: number;
   };
   
-  /** WebSocket server configuration */
-  websocket: {
-    /** Port for WebSocket server */
-    port: number;
-    /** Maximum concurrent connections */
-    maxConnections: number;
-    /** Connection timeout in milliseconds */
-    connectionTimeoutMs: number;
-  };
+
   
   /** Workspace management configuration */
   workspace: {
@@ -111,11 +103,7 @@ export class ConfigurationManager {
           apiKey: apiKey,
           timeoutMs: 30000, // 30 seconds default
         },
-        websocket: {
-          port: config.get('websocket.port') || 3002,
-          maxConnections: 100,
-          connectionTimeoutMs: 60000, // 1 minute default
-        },
+
         workspace: {
           appsDirectory: config.get('workspace.appsDirectory') || './apps',
           specTemplatePath: './templates/spec-template',
@@ -141,7 +129,6 @@ export class ConfigurationManager {
       
       this.logger.info('Configuration loaded successfully', {
         apiPort: this.configuration.api.port,
-        websocketPort: this.configuration.websocket.port,
         appsDirectory: this.configuration.workspace.appsDirectory,
         maxConcurrentJobs: this.configuration.jobs.maxConcurrentJobs,
         logLevel: this.configuration.logging.level,

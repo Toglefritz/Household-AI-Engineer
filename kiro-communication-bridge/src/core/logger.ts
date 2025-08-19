@@ -1,5 +1,5 @@
 /**
- * Logging utility for the Kiro Orchestration Extension.
+ * Logging utility for the Kiro Communication Bridge Extension.
  * 
  * This module provides structured logging capabilities with configurable
  * log levels and consistent formatting across all extension components.

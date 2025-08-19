@@ -94,7 +94,6 @@ async function handleGetStatus(): Promise<void> {
       `• Servers Running: ${serverStatus.serversStarted ? '✓' : '✗'}`,
       `• Kiro Status: ${status.status}`,
       `• Kiro Available: ${serverStatus.kiroAvailable ? '✓' : '✗'}`,
-      `• Connected Clients: ${serverStatus.connectedClients}`,
       status.version ? `• Kiro Version: ${status.version}` : '',
     ].filter(line => line).join('\n');
     
@@ -204,7 +203,7 @@ async function handleShowAvailableCommands(): Promise<void> {
 /**
  * Handles the restart servers command.
  * 
- * Restarts the API and WebSocket servers gracefully.
+ * Restarts the API server gracefully.
  */
 async function handleRestartServers(): Promise<void> {
   const logger: Logger = new Logger('RestartServersCommand');
@@ -332,7 +331,7 @@ async function handleHealthCheck(): Promise<void> {
       
       const results = await extensionState.performHealthCheck();
       
-      progress.report({ increment: 50, message: 'Checking WebSocket server...' });
+      progress.report({ increment: 50, message: 'Checking API server...' });
       
       progress.report({ increment: 100, message: 'Health check complete!' });
       
@@ -354,16 +353,7 @@ async function handleHealthCheck(): Promise<void> {
       statusLines.push(`  • Error: ${healthResults.apiServer.error}`);
     }
     
-    statusLines.push(
-      '',
-      'WebSocket Server:',
-      `  • Running: ${healthResults.webSocketServer.running ? '✅' : '❌'}`,
-      `  • Responding: ${healthResults.webSocketServer.responding ? '✅' : '❌'}`
-    );
-    
-    if (healthResults.webSocketServer.error) {
-      statusLines.push(`  • Error: ${healthResults.webSocketServer.error}`);
-    }
+
     
     const statusMessage = statusLines.join('\n');
     

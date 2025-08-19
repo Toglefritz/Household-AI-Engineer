@@ -7,14 +7,39 @@
  */
 
 import { EventEmitter } from 'events';
-import {
-  UserInputRequest,
-  UserInputResponse
-} from '../types/websocket-events';
+
 import {
   ValidationError,
   TimeoutError
 } from '../types/bridge-errors';
+
+/**
+ * User input request for interactive commands.
+ */
+interface UserInputRequest {
+  /** Input value provided by user */
+  value: string;
+  
+  /** Type of input being provided */
+  type: 'text' | 'choice' | 'file' | 'confirmation';
+  
+  /** Execution ID this input is for */
+  executionId: string;
+}
+
+/**
+ * Response to user input submission.
+ */
+interface UserInputResponse {
+  /** Whether input was accepted */
+  success: boolean;
+  
+  /** Error message if input was rejected */
+  error?: string;
+  
+  /** Execution ID that received input */
+  executionId: string;
+}
 
 /**
  * Configuration for user input handling.
@@ -155,7 +180,7 @@ export class UserInputHandler extends EventEmitter {
       // Store the request
       this.pendingRequests.set(requestId, request);
 
-      // Emit event for external handlers (WebSocket server, etc.)
+      // Emit event for external handlers
       this.emit('input-required', request);
 
       this.logDebug(`User input requested: ${requestId} for execution ${executionId}`);

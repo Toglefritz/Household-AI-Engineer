@@ -2,14 +2,14 @@
  * Central state management for the Kiro Communication Bridge Extension.
  * 
  * This class manages the extension's lifecycle, configuration, and core services
- * including the API server, WebSocket server, and Kiro communication components.
+ * including the API server and Kiro communication components.
  */
 
 import * as vscode from 'vscode';
 import { Logger } from './logger';
 import { ConfigurationManager } from './configuration-manager';
 import { ApiServer } from '../api/api-server';
-import { WebSocketServer } from '../websocket/websocket-server';
+
 import { KiroCommandProxy } from '../kiro/kiro-command-proxy';
 import { StatusMonitor } from '../kiro/status-monitor';
 import { UserInputHandler } from '../kiro/user-input-handler';
@@ -30,7 +30,6 @@ export class ExtensionState {
   private readonly statusMonitor: StatusMonitor;
   private readonly userInputHandler: UserInputHandler;
   private readonly apiServer: ApiServer;
-  private readonly webSocketServer: WebSocketServer;
   
   private context: vscode.ExtensionContext | null = null;
   private isInitialized: boolean = false;
@@ -53,12 +52,6 @@ export class ExtensionState {
     
     // Initialize servers with communication components
     this.apiServer = new ApiServer(
-      {},
-      this.kiroProxy,
-      this.statusMonitor,
-      this.userInputHandler
-    );
-    this.webSocketServer = new WebSocketServer(
       {},
       this.kiroProxy,
       this.statusMonitor,
@@ -116,9 +109,9 @@ export class ExtensionState {
   }
 
   /**
-   * Starts the API and WebSocket servers.
+   * Starts the API server.
    * 
-   * This method launches both servers and sets up communication channels
+   * This method launches the server and sets up communication channels
    * for the Flutter frontend to interact with Kiro IDE.
    */
   public async startServers(): Promise<void> {
@@ -135,11 +128,8 @@ export class ExtensionState {
       this.logger.info('Starting API server...');
       await this.apiServer.start();
       
-      this.logger.info('Starting WebSocket server...');
-      await this.webSocketServer.start();
-      
       this.serversStarted = true;
-      this.logger.info('All servers started successfully');
+      this.logger.info('API server started successfully');
     } catch (error: unknown) {
       const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error(`Failed to start servers: ${errorMessage}`);
@@ -156,11 +146,10 @@ export class ExtensionState {
   public async startServersWithPortConflictHandling(): Promise<void> {
     const config = this.configurationManager.getConfiguration();
     const apiPort: number = config.api?.port || 3001;
-    const wsPort: number = config.websocket?.port || 3002;
     
     // Check port availability before attempting to start
-    this.logger.info(`Checking port availability: API=${apiPort}, WebSocket=${wsPort}`);
-    const portStatus = await checkPortsAvailability([apiPort, wsPort]);
+    this.logger.info(`Checking port availability: API=${apiPort}`);
+    const portStatus = await checkPortsAvailability([apiPort]);
     
     const unavailablePorts: number[] = [];
     for (const [port, available] of Object.entries(portStatus)) {
@@ -234,10 +223,9 @@ export class ExtensionState {
       // Get port configuration
       const config = this.configurationManager.getConfiguration();
       const apiPort: number = config.api?.port || 3001;
-      const wsPort: number = config.websocket?.port || 3002;
       
       // Kill any processes using our ports
-      await this.killProcessesOnPorts([apiPort, wsPort]);
+      await this.killProcessesOnPorts([apiPort]);
       
       // Wait for ports to be released
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -399,9 +387,9 @@ export class ExtensionState {
   }
 
   /**
-   * Stops the API and WebSocket servers.
+   * Stops the API server.
    * 
-   * This method gracefully shuts down both servers and cleans up
+   * This method gracefully shuts down the server and cleans up
    * any active connections or resources.
    */
   public async stopServers(): Promise<void> {
@@ -414,11 +402,8 @@ export class ExtensionState {
       this.logger.info('Stopping API server...');
       await this.apiServer.stop();
       
-      this.logger.info('Stopping WebSocket server...');
-      await this.webSocketServer.stop();
-      
       this.serversStarted = false;
-      this.logger.info('All servers stopped successfully');
+      this.logger.info('API server stopped successfully');
     } catch (error: unknown) {
       const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error(`Failed to stop servers: ${errorMessage}`);
@@ -435,13 +420,11 @@ export class ExtensionState {
     initialized: boolean;
     serversStarted: boolean;
     kiroAvailable: boolean;
-    connectedClients: number;
   } {
     return {
       initialized: this.isInitialized,
       serversStarted: this.serversStarted,
       kiroAvailable: this.statusMonitor.isAvailable(),
-      connectedClients: this.webSocketServer.getClientCount(),
     };
   }
 
@@ -491,12 +474,10 @@ export class ExtensionState {
    */
   public async performHealthCheck(): Promise<{
     apiServer: { running: boolean; responding: boolean; error?: string };
-    webSocketServer: { running: boolean; responding: boolean; error?: string };
     overall: boolean;
   }> {
     const results = {
       apiServer: { running: false, responding: false, error: undefined as string | undefined },
-      webSocketServer: { running: false, responding: false, error: undefined as string | undefined },
       overall: false
     };
 
@@ -522,33 +503,8 @@ export class ExtensionState {
       this.logger.warn(`API server health check failed: ${errorMessage}`);
     }
 
-    // Check WebSocket server
-    try {
-      const wsStatus = this.webSocketServer.getServerStatus();
-      results.webSocketServer.running = wsStatus.running;
-      
-      if (wsStatus.running && wsStatus.port) {
-        // For WebSocket, we can only check if the port is listening
-        // A full WebSocket connection test would be more complex
-        const config = this.configurationManager.getConfiguration();
-        const wsPort = config.websocket.port;
-        const portAvailable = await checkPortsAvailability([wsPort]);
-        
-        // If port is not available, it means something is listening (hopefully our server)
-        results.webSocketServer.responding = !portAvailable[wsPort];
-        if (portAvailable[wsPort]) {
-          results.webSocketServer.error = 'WebSocket port appears to be available (not listening)';
-        }
-      }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      results.webSocketServer.error = errorMessage;
-      this.logger.warn(`WebSocket server health check failed: ${errorMessage}`);
-    }
-
-    // Overall health is good if both servers are running and responding
-    results.overall = results.apiServer.running && results.apiServer.responding &&
-                     results.webSocketServer.running && results.webSocketServer.responding;
+    // Overall health is good if the API server is running and responding
+    results.overall = results.apiServer.running && results.apiServer.responding;
 
     return results;
   }
@@ -573,7 +529,6 @@ export class ExtensionState {
       this.statusMonitor.dispose();
       this.userInputHandler.dispose();
       await this.apiServer.dispose();
-      await this.webSocketServer.dispose();
       
       // Clear the singleton instance
       ExtensionState.instance = null;

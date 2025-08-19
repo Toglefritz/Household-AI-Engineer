@@ -1,5 +1,5 @@
 /**
- * Main extension entry point for the Kiro Orchestration Extension.
+ * Main extension entry point for the Kiro Communication Bridge Extension.
  * 
  * This module handles extension activation, server startup, command registration,
  * and lifecycle management for the orchestration system that bridges the Flutter
@@ -14,13 +14,13 @@ import { Logger } from './core/logger';
 /**
  * Called when the extension is activated.
  * 
- * This function initializes the orchestration system, starts the API and WebSocket
- * servers, and registers all commands for managing the development workflow.
+ * This function initializes the orchestration system, starts the API server,
+ * and registers all commands for managing the development workflow.
  */
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   try {
     const logger: Logger = new Logger('Extension');
-    logger.info('Activating Kiro Orchestration Extension v0.1.0...');
+    logger.info('Activating Kiro Communication Bridge Extension...');
 
     // Initialize extension state and configuration
     logger.info('Initializing extension state...');
@@ -52,9 +52,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
 
     // Show success message
-    const message: string = 'Kiro Orchestration Extension v0.1.0 activated successfully!';
+    const message: string = 'Kiro Communication Bridge Extension activated successfully!';
     vscode.window.showInformationMessage(message);
-    logger.info('Kiro Orchestration Extension v0.1.0 activated successfully');
+    logger.info('Kiro Communication Bridge Extension activated successfully');
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
     const stack: string = error instanceof Error && error.stack ? error.stack : 'No stack trace';
@@ -91,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }
       }
     } else {
-      vscode.window.showErrorMessage(`Failed to activate Kiro Orchestration Extension: ${errorMessage}`);
+      vscode.window.showErrorMessage(`Failed to activate Kiro Communincation Bridge Extension: ${errorMessage}`);
     }
   }
 }
@@ -105,7 +105,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 export async function deactivate(): Promise<void> {
   try {
     const logger: Logger = new Logger('Extension');
-    logger.info('Deactivating Kiro Orchestration Extension...');
+    logger.info('Deactivating Kiro Communication Bridge Extension...');
 
     // Get current extension state and perform cleanup
     const extensionState: ExtensionState | null = ExtensionState.getCurrentInstance();
@@ -130,7 +130,7 @@ export async function deactivate(): Promise<void> {
     // Clear context variables
     await vscode.commands.executeCommand('setContext', 'kiroOrchestration.active', false);
     
-    logger.info('Kiro Orchestration Extension deactivated successfully');
+    logger.info('Kiro Communication Bridge Extension deactivated successfully');
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
     const logger: Logger = new Logger('Extension');

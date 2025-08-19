@@ -1,5 +1,5 @@
 /**
- * Error recovery strategies for the Kiro Orchestration Extension.
+ * Error recovery strategies for the Kiro Communication Bridge Extension.
  * 
  * This module provides comprehensive error recovery mechanisms with
  * intelligent retry logic, fallback strategies, and user interaction handling.

@@ -1,5 +1,5 @@
 /**
- * Application metadata types and interfaces for the Kiro Orchestration Extension.
+ * Application metadata types and interfaces for the Kiro Communication Bridge Extension.
  * 
  * This module defines the data structures used to represent application metadata
  * throughout the orchestration system, including validation and serialization.

@@ -1,5 +1,5 @@
 /**
- * Workspace management for the Kiro Orchestration Extension.
+ * Workspace management for the Kiro Communication Bridge Extension.
  * 
  * This module handles creation, management, and cleanup of application
  * workspaces where Kiro develops user-requested applications.

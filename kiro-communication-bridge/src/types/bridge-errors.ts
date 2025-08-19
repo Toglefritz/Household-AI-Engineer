@@ -2,7 +2,7 @@
  * Error handling types for the Kiro Communication Bridge.
  * 
  * This module defines error classes and types specific to the communication
- * bridge functionality, focusing on command execution, WebSocket communication,
+ * bridge functionality, focusing on command execution
  * and Kiro availability issues.
  */
 
@@ -146,44 +146,6 @@ export class KiroUnavailableError extends BridgeError {
 
     super(messages[reason], { reason, ...context });
     this.reason = reason;
-  }
-}
-
-/**
- * Error thrown when WebSocket communication fails.
- */
-export class WebSocketError extends BridgeError {
-  public readonly code = 'WEBSOCKET_ERROR';
-  public readonly recoverable = true;
-
-  /** Type of WebSocket error */
-  public readonly errorType: 'connection_failed' | 'send_failed' | 'invalid_message' | 'client_disconnected';
-  
-  /** WebSocket error code if available */
-  public readonly wsCode?: number;
-  
-  /** WebSocket close reason if available */
-  public readonly wsReason?: string;
-
-  constructor(
-    errorType: 'connection_failed' | 'send_failed' | 'invalid_message' | 'client_disconnected',
-    originalError: string,
-    options: {
-      wsCode?: number;
-      wsReason?: string;
-      context?: Record<string, unknown>;
-    } = {}
-  ) {
-    super(`WebSocket ${errorType.replace('_', ' ')}: ${originalError}`, {
-      errorType,
-      wsCode: options.wsCode,
-      wsReason: options.wsReason,
-      ...options.context
-    });
-    
-    this.errorType = errorType;
-    this.wsCode = options.wsCode;
-    this.wsReason = options.wsReason;
   }
 }
 
