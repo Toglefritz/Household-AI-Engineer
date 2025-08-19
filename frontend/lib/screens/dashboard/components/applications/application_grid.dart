@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
+// This library groups widgets related to the grid of user applications.
+library;
 
+import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../models/models.dart';
 import '../../../../theme/insets.dart';
 import 'application_tile.dart';
+
+// Parts
+part 'application_grid_empty_state.dart';
 
 /// A responsive grid widget for displaying application tiles.
 ///
@@ -56,11 +61,37 @@ class ApplicationGrid extends StatelessWidget {
   /// they are part of a multi-selection or current focus.
   final Set<String> selectedApplicationIds;
 
+  /// Calculates the optimal number of columns based on available width.
+  ///
+  /// Uses responsive breakpoints to ensure tiles are appropriately sized
+  /// across different screen sizes while maintaining readability.
+  ///
+  /// @param availableWidth Total width available for the grid
+  /// @returns Optimal number of columns for the current screen size
+  int _calculateCrossAxisCount(double availableWidth) {
+    const double minTileWidth = 280.0; // Minimum width for readability
+    const double spacing = Insets.small; // Spacing between tiles
+
+    // Calculate how many tiles can fit with minimum width and spacing
+    final int maxColumns = ((availableWidth + spacing) / (minTileWidth + spacing)).floor();
+
+    // Apply responsive constraints for better UX
+    if (availableWidth < 600) {
+      return 1; // Single column on very narrow screens
+    } else if (availableWidth < 900) {
+      return 2; // Two columns on medium screens
+    } else if (availableWidth < 1200) {
+      return 3; // Three columns on larger screens
+    } else {
+      return maxColumns.clamp(1, 4); // Maximum 4 columns for readability
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // If there are no applications, build a view communicating this to the user.
     if (applications.isEmpty) {
-      return _buildEmptyState(context);
+      return ApplicationGridEmptyState(onCreateNewApplication: onCreateNewApplication);
     }
 
     return LayoutBuilder(
@@ -90,92 +121,5 @@ class ApplicationGrid extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// Builds the empty state widget when no applications are available.
-  ///
-  /// Displays a friendly message encouraging users to create their first
-  /// application with appropriate visual styling.
-  Widget _buildEmptyState(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.apps_outlined,
-            size: 64,
-            color: colorScheme.tertiary,
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(top: Insets.medium),
-            child: Text(
-              AppLocalizations.of(context)!.noApplications,
-              style: textTheme.headlineSmall?.copyWith(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(top: Insets.xSmall),
-            child: Text(
-              AppLocalizations.of(context)!.createApplicationPrompt,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colorScheme.tertiary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(top: Insets.large),
-            child: FilledButton.icon(
-              onPressed: onCreateNewApplication,
-              icon: const Icon(Icons.add),
-              label: Text(AppLocalizations.of(context)!.buttonCreateNewApp),
-              style: FilledButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Insets.medium,
-                  vertical: Insets.small,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Calculates the optimal number of columns based on available width.
-  ///
-  /// Uses responsive breakpoints to ensure tiles are appropriately sized
-  /// across different screen sizes while maintaining readability.
-  ///
-  /// @param availableWidth Total width available for the grid
-  /// @returns Optimal number of columns for the current screen size
-  int _calculateCrossAxisCount(double availableWidth) {
-    const double minTileWidth = 280.0; // Minimum width for readability
-    const double spacing = Insets.small; // Spacing between tiles
-
-    // Calculate how many tiles can fit with minimum width and spacing
-    final int maxColumns = ((availableWidth + spacing) / (minTileWidth + spacing)).floor();
-
-    // Apply responsive constraints for better UX
-    if (availableWidth < 600) {
-      return 1; // Single column on very narrow screens
-    } else if (availableWidth < 900) {
-      return 2; // Two columns on medium screens
-    } else if (availableWidth < 1200) {
-      return 3; // Three columns on larger screens
-    } else {
-      return maxColumns.clamp(1, 4); // Maximum 4 columns for readability
-    }
   }
 }

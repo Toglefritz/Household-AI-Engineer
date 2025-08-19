@@ -1,8 +1,13 @@
-import 'package:flutter/material.dart';
+// This library groups widgets related to the application tiles.
+library;
 
+import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../models/models.dart';
 import '../../../../theme/insets.dart';
+
+// Parts
+part 'application_development_progress.dart';
 
 /// A tile widget representing a single household application.
 ///
@@ -224,7 +229,7 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
                       if (widget.application.isInDevelopment) ...[
                         Padding(
                           padding: const EdgeInsets.only(top: Insets.xSmall),
-                          child: _buildProgressIndicator(context),
+                          child: ApplicationDevelopmentProgress(progress: widget.application.progress),
                         ),
                       ],
 
@@ -428,48 +433,6 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
           ),
         );
     }
-  }
-
-  /// Builds a progress indicator for applications in development.
-  ///
-  /// Shows development progress with percentage and current phase
-  /// information when available.
-  Widget _buildProgressIndicator(BuildContext context) {
-    final DevelopmentProgress? progress = widget.application.progress;
-    if (progress == null) {
-      return const SizedBox.shrink();
-    }
-
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Progress bar
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: progress.percentage / 100,
-            backgroundColor: colorScheme.outline.withValues(alpha: 0.2),
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-            minHeight: 6,
-          ),
-        ),
-
-        // Progress text
-        Padding(
-          padding: const EdgeInsets.only(top: Insets.xxSmall),
-          child: Text(
-            '${progress.percentage.toInt()}% • ${progress.currentPhase}',
-            style: textTheme.bodySmall?.copyWith(
-              color: colorScheme.tertiary,
-              fontSize: 11,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   /// Returns the appropriate icon for the application.

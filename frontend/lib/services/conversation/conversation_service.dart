@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../../../../models/conversation/message_action_type.dart';
-import '../../../../models/models.dart';
-import '../../../../services/sample_conversation_service.dart';
+import '../../models/conversation/message_action_type.dart';
+import '../../models/models.dart';
+import 'sample_conversation_service.dart';
 
 /// Controller for managing conversation state and interactions.
 ///
 /// Handles conversation flow, message management, and user interactions
 /// for the conversational interface used in application creation and modification.
-class ConversationController extends ChangeNotifier {
+class ConversationService extends ChangeNotifier {
   /// Creates a new conversation controller.
   ///
   /// @param initialConversation Optional initial conversation to load
-  ConversationController({ConversationThread? initialConversation}) {
+  ConversationService({ConversationThread? initialConversation}) {
     if (initialConversation != null) {
       _currentConversation = initialConversation;
     }

@@ -1,11 +1,17 @@
-import 'package:flutter/material.dart';
+//
+library;
 
+import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../models/models.dart';
+import '../../../../services/conversation/conversation_service.dart';
 import '../../../../theme/insets.dart';
-import 'conversation_controller.dart';
 import 'conversation_input_widget.dart';
 import 'conversation_message_widget.dart';
+
+// Parts
+part 'conversation_modal_header.dart';
+part 'conversation_messages_list.dart';
 
 /// Modal dialog for the conversational interface.
 ///
@@ -48,7 +54,7 @@ class ConversationModal extends StatefulWidget {
 /// State for the [ConversationModal] widget.
 class _ConversationModalState extends State<ConversationModal> {
   /// Controller for managing conversation state.
-  late final ConversationController _controller;
+  late final ConversationService _controller;
 
   /// Scroll controller for the message list.
   late final ScrollController _scrollController;
@@ -56,7 +62,7 @@ class _ConversationModalState extends State<ConversationModal> {
   @override
   void initState() {
     super.initState();
-    _controller = ConversationController(initialConversation: widget.initialConversation);
+    _controller = ConversationService(initialConversation: widget.initialConversation);
     _scrollController = ScrollController();
 
     // Start appropriate conversation type
@@ -131,11 +137,18 @@ class _ConversationModalState extends State<ConversationModal> {
         child: Column(
           children: [
             // Header
-            _buildHeader(context),
+            ConversationModalHeader(
+              applicationToModify: widget.applicationToModify,
+              onClose: _handleClose,
+            ),
 
             // Messages
             Expanded(
-              child: _buildMessagesList(context),
+              child: ConversationMessagesList(
+                controller: _controller,
+                scrollController: _scrollController,
+                onActionTap: _handleActionTap,
+              ),
             ),
 
             // Input
@@ -154,154 +167,6 @@ class _ConversationModalState extends State<ConversationModal> {
           ],
         ),
       ),
-    );
-  }
-
-  /// Builds the modal header with title and close button.
-  Widget _buildHeader(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    String title;
-    if (widget.applicationToModify != null) {
-      title = AppLocalizations.of(context)!.modifyApplication(widget.applicationToModify!.title);
-    } else {
-      title = AppLocalizations.of(context)!.createNewApplication;
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(Insets.medium),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.outline.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.only(right: Insets.small),
-            child: Icon(
-              widget.applicationToModify != null ? Icons.edit : Icons.add,
-              color: colorScheme.primary,
-              size: 20,
-            ),
-          ),
-
-          // Title
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.applicationCreationDescription,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.tertiary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Close button
-          IconButton(
-            onPressed: _handleClose,
-            icon: const Icon(Icons.close),
-            tooltip: AppLocalizations.of(context)!.close,
-            style: IconButton.styleFrom(
-              backgroundColor: colorScheme.surface,
-              foregroundColor: colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds the scrollable messages list.
-  Widget _buildMessagesList(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _controller,
-      builder: (BuildContext context, Widget? child) {
-        final ConversationThread? conversation = _controller.currentConversation;
-
-        if (conversation == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        final List<ConversationMessage> messages = List<ConversationMessage>.from(conversation.messages);
-
-        // Add typing indicator if processing
-        if (_controller.isProcessing) {
-          messages.add(
-            ConversationMessage(
-              id: 'typing_indicator',
-              sender: MessageSender.system,
-              content: '',
-              timestamp: DateTime.now(),
-              isTyping: true,
-            ),
-          );
-        }
-
-        if (messages.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: Insets.medium),
-                  child: Icon(
-                    Icons.chat_bubble_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.startConversation,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          controller: _scrollController,
-          padding: const EdgeInsets.symmetric(vertical: Insets.small),
-          itemCount: messages.length,
-          itemBuilder: (BuildContext context, int index) {
-            final ConversationMessage message = messages[index];
-            return ConversationMessageWidget(
-              message: message,
-              onActionTap: _handleActionTap,
-            );
-          },
-        );
-      },
     );
   }
 

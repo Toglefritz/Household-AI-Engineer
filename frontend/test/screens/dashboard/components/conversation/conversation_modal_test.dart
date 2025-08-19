@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/models/models.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/conversation/conversation_modal.dart';
-import 'package:household_ai_engineer/services/sample_conversation_service.dart';
+import 'package:household_ai_engineer/services/conversation/sample_conversation_service.dart';
 
 import '../../../../test_helpers.dart';
 

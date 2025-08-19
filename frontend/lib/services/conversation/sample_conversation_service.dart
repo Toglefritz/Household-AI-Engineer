@@ -1,5 +1,5 @@
-import '../models/conversation/message_action_type.dart';
-import '../models/models.dart';
+import '../../models/conversation/message_action_type.dart';
+import '../../models/models.dart';
 
 /// Service providing sample conversation data for development and testing.
 ///

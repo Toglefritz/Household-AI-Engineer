@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
-import '../../services/sample_data_service.dart';
+import '../../services/user_application/sample_data_service.dart';
 import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
