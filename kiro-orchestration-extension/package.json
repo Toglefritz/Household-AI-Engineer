@@ -2,7 +2,7 @@
   "name": "kiro-orchestration-extension",
   "displayName": "Kiro Orchestration Extension",
   "description": "Orchestrates Kiro IDE for automated application development in the Household Software Engineer system",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "household-ai-engineer",
   "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
   "engines": {
