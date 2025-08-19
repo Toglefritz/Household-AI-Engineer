@@ -22,4 +22,7 @@ enum ConnectionStatus {
   ///
   /// Displays animated indicators to show connection attempts in progress.
   connecting,
+
+  /// An error occurred during the process of establishing a connection to the Kiro IDE.
+  error,
 }

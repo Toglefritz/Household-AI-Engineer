@@ -20,6 +20,8 @@ dependencies:
   path: ^1.9.0
   # Local storage and preferences
   shared_preferences: ^2.2.2
+  # StreamChannel wrappers for WebSockets.
+  web_socket_channel: ^3.0.3
   # Window management for macOS
   window_manager: ^0.3.8
 

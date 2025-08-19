@@ -6,7 +6,7 @@ import '../../models/status_bar/connection_status_info.dart';
 
 /// Connection status indicator component for the status bar.
 ///
-/// Shows a colored dot and icon that represents the current connection state to backend services. Provides immediate 
+/// Shows a colored dot and icon that represents the current connection state to backend services. Provides immediate
 /// visual feedback about system availability and health.
 class StatusBarConnectionIndicator extends StatelessWidget {
   /// Creates a status bar connection indicator widget.
@@ -86,6 +86,7 @@ class StatusBarConnectionIndicator extends StatelessWidget {
         );
 
       case ConnectionStatus.disconnected:
+      case ConnectionStatus.error:
         return ConnectionStatusInfo(
           color: const Color(0xFFEF4444), // Red
           icon: Icons.error,

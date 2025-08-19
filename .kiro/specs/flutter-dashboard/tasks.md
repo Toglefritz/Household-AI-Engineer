@@ -164,7 +164,34 @@
   - Add performance integration tests for resource usage
   - _Requirements: All requirements integration validation_
 
-- [ ] 24. Final polish and deployment preparation
+- [x] 24. Replace mocked data with Kiro Bridge integration
+  - Remove SampleDataService and replace with real Kiro Bridge API calls
+  - Update UserApplicationService to use Kiro Bridge for application metadata
+  - Implement real-time application status updates through WebSocket connection
+  - Replace sample conversation data with actual Kiro command execution
+  - Add error handling for bridge communication failures
+  - Write integration tests for Kiro Bridge communication
+  - _Requirements: All data integration requirements_
+
+- [ ] 25. Implement application lifecycle management through Kiro Bridge
+  - Add application creation workflow using Kiro Bridge execute endpoint
+  - Implement application modification requests through bridge API
+  - Add application deployment and launch management via bridge
+  - Create application deletion and cleanup through bridge commands
+  - Implement progress monitoring using bridge WebSocket events
+  - Write tests for complete application lifecycle workflows
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 4.1, 4.2, 5.1, 5.2_
+
+- [ ] 26. Add comprehensive error handling for bridge integration
+  - Implement fallback behavior when bridge is unavailable
+  - Add retry mechanisms for failed bridge communications
+  - Create user-friendly error messages for bridge failures
+  - Implement offline mode with cached data when bridge is down
+  - Add connection status monitoring and recovery
+  - Write tests for error scenarios and recovery mechanisms
+  - _Requirements: 6.5, 7.4_
+
+- [ ] 27. Final polish and deployment preparation
   - Add application icons and branding elements
   - Implement final UI polish with consistent styling and spacing
   - Create application packaging and distribution configuration

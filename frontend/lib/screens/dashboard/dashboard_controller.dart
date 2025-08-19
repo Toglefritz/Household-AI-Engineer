@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
-import '../../services/user_application/sample_data_service.dart';
+import '../../services/user_application/user_application_service.dart';
 import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
@@ -39,6 +40,16 @@ class DashboardController extends State<DashboardRoute> {
   /// in the application grid.
   final Set<String> _selectedApplicationIds = <String>{};
 
+  /// Service for managing user applications through Kiro Bridge integration.
+  ///
+  /// Handles loading, creating, and managing applications with real-time updates.
+  late final UserApplicationService _userApplicationService;
+
+  /// Stream subscription for application updates.
+  ///
+  /// Listens to real-time application changes and updates the UI accordingly.
+  StreamSubscription<List<UserApplication>>? _applicationSubscription;
+
   /// Whether the sidebar is currently expanded.
   ///
   /// Used by the view to determine sidebar layout and animation states.
@@ -66,8 +77,19 @@ class DashboardController extends State<DashboardRoute> {
   void initState() {
     super.initState();
 
-    // Load the user applications.
+    // Initialize the user application service
+    _userApplicationService = UserApplicationService();
+
+    // Load and watch for application updates
     _loadApplications();
+  }
+
+  @override
+  void dispose() {
+    // Clean up resources
+    _applicationSubscription?.cancel();
+    _userApplicationService.dispose();
+    super.dispose();
   }
 
   /// Toggles the sidebar expansion state.
@@ -123,24 +145,42 @@ class DashboardController extends State<DashboardRoute> {
 
   /// Launches the specified application.
   ///
-  /// Handles launching applications based on their launch configuration.
-  /// For now, this is a placeholder that will be implemented in future tasks.
+  /// Handles launching applications through the Kiro Bridge service.
+  /// Updates the connection status based on the success of the operation.
   ///
   /// @param application The application to launch
-  void _launchApplication(UserApplication application) {
+  Future<void> _launchApplication(UserApplication application) async {
     debugPrint('Launching application: ${application.title}');
-    // TODO(Scott): Implement actual application launching in future tasks
 
-    // For now, simulate launching by updating the status to running
-    setState(() {
-      final int index = _applications.indexWhere((UserApplication app) => app.id == application.id);
-      if (index != -1 && application.status == ApplicationStatus.ready) {
-        _applications[index] = application.copyWith(
-          status: ApplicationStatus.running,
-          updatedAt: DateTime.now(),
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      await _userApplicationService.launchApplication(application.id);
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+      });
+
+      debugPrint('Successfully launched application: ${application.title}');
+    } catch (e) {
+      debugPrint('Failed to launch application: $e');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      // Show error to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to launch ${application.title}: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
-    });
+    }
   }
 
   /// Shows detailed information about the specified application.
@@ -206,51 +246,163 @@ class DashboardController extends State<DashboardRoute> {
   /// Handles conversation completion.
   ///
   /// Called when a conversation is successfully completed and an application
-  /// specification has been generated and submitted.
+  /// specification has been generated and submitted to the Kiro Bridge.
   ///
   /// @param conversation The completed conversation thread
-  void _onConversationComplete(ConversationThread conversation) {
+  Future<void> _onConversationComplete(ConversationThread conversation) async {
     debugPrint('Conversation completed: ${conversation.id}');
 
-    // In a real implementation, this would trigger the application creation
-    // process and add the new application to the list
+    try {
+      if (conversation.context.isCreatingApplication) {
+        // Extract application description from conversation
+        final String description = _extractApplicationDescriptionFromConversation(conversation);
 
-    // For now, simulate adding a new application in development
-    if (conversation.context.isCreatingApplication) {
-      final UserApplication newApplication = UserApplication(
-        id: 'app_new_${DateTime.now().millisecondsSinceEpoch}',
-        title: 'New Application', // Would be extracted from conversation
-        description: 'Application created through conversation',
-        status: ApplicationStatus.developing,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        launchConfig: const LaunchConfiguration(
-          type: LaunchType.web,
-          url: 'http://localhost:3000',
-        ),
-        tags: ['conversation-created'],
-        progress: DevelopmentProgress(
-          percentage: 5.0,
-          currentPhase: 'Analyzing Requirements',
-          milestones: [],
-          lastUpdated: DateTime.now(),
-        ),
-      );
+        setState(() {
+          _connectionStatus = ConnectionStatus.connecting;
+        });
+
+        // Create the application through the Kiro Bridge
+        final UserApplication newApplication = await _userApplicationService.createApplication(
+          description: description,
+          conversationId: conversation.id,
+        );
+
+        setState(() {
+          _connectionStatus = ConnectionStatus.connected;
+        });
+
+        debugPrint('Successfully created application: ${newApplication.title}');
+
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Created application: ${newApplication.title}'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else if (conversation.context.isModifyingApplication) {
+        // Handle application modification
+        final String applicationId = conversation.context.applicationId!;
+        final String modifications = _extractModificationsFromConversation(conversation);
+
+        setState(() {
+          _connectionStatus = ConnectionStatus.connecting;
+        });
+
+        final UserApplication updatedApplication = await _userApplicationService.modifyApplication(
+          applicationId: applicationId,
+          modifications: modifications,
+          conversationId: conversation.id,
+        );
+
+        setState(() {
+          _connectionStatus = ConnectionStatus.connected;
+        });
+
+        debugPrint('Successfully modified application: ${updatedApplication.title}');
+
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Modified application: ${updatedApplication.title}'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Failed to process conversation completion: $e');
 
       setState(() {
-        _applications.add(newApplication);
+        _connectionStatus = ConnectionStatus.error;
       });
+
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to process request: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
-  /// Loads applications from the sample data service.
+  /// Extracts the application description from a completed conversation.
   ///
-  /// In future tasks, this will be replaced with actual API calls
-  /// to load applications from the backend service.
-  void _loadApplications() {
-    setState(() {
-      _applications = SampleDataService.getSampleApplications();
-    });
+  /// Analyzes the conversation messages to determine what the user wants to build.
+  /// This is a simplified implementation that would be enhanced with better NLP.
+  ///
+  /// @param conversation The completed conversation thread
+  /// @returns A description of the desired application
+  String _extractApplicationDescriptionFromConversation(ConversationThread conversation) {
+    // Find the first user message that describes what they want to build
+    for (final ConversationMessage message in conversation.messages) {
+      if (message.sender == MessageSender.user && message.content.isNotEmpty) {
+        return message.content;
+      }
+    }
+
+    // Fallback description
+    return 'Custom household application created through conversation';
+  }
+
+  /// Extracts the modification description from a completed conversation.
+  ///
+  /// Analyzes the conversation messages to determine what changes the user wants.
+  ///
+  /// @param conversation The completed conversation thread
+  /// @returns A description of the desired modifications
+  String _extractModificationsFromConversation(ConversationThread conversation) {
+    // Find user messages that describe modifications
+    final List<String> modifications = [];
+
+    for (final ConversationMessage message in conversation.messages) {
+      if (message.sender == MessageSender.user && message.content.isNotEmpty) {
+        modifications.add(message.content);
+      }
+    }
+
+    return modifications.join(' ');
+  }
+
+  /// Loads applications from the user application service and sets up real-time updates.
+  ///
+  /// Establishes a stream subscription to receive real-time application updates
+  /// from both local manifests and the Kiro Bridge API.
+  Future<void> _loadApplications() async {
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      // Set up stream subscription for real-time updates
+      _applicationSubscription = _userApplicationService.watchApplications().listen(
+        (List<UserApplication> applications) {
+          setState(() {
+            _applications = applications;
+            _connectionStatus = _userApplicationService.isConnected
+                ? ConnectionStatus.connected
+                : ConnectionStatus.disconnected;
+          });
+        },
+        onError: (Object error) {
+          debugPrint('Error loading applications: $error');
+          setState(() {
+            _connectionStatus = ConnectionStatus.error;
+          });
+        },
+      );
+    } catch (e) {
+      debugPrint('Failed to initialize application loading: $e');
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+    }
   }
 
   @override

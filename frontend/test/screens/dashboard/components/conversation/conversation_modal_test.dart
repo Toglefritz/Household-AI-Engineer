@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:household_ai_engineer/models/models.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/conversation/conversation_modal.dart';
-import 'package:household_ai_engineer/services/conversation/sample_conversation_service.dart';
 
 import '../../../../test_helpers.dart';
 
@@ -57,8 +56,7 @@ void main() {
       });
 
       testWidgets('displays conversation messages', (WidgetTester tester) async {
-        final ConversationThread sampleConversation =
-            SampleConversationService.createSampleNewApplicationConversation();
+        final ConversationThread sampleConversation = _createTestConversation();
 
         await tester.pumpWidget(
           createTestApp(
@@ -145,8 +143,7 @@ void main() {
       });
 
       testWidgets('handles suggestion chip taps', (WidgetTester tester) async {
-        final ConversationThread sampleConversation =
-            SampleConversationService.createSampleNewApplicationConversation();
+        final ConversationThread sampleConversation = _createTestConversation();
 
         await tester.pumpWidget(
           createTestApp(
@@ -238,4 +235,52 @@ void main() {
       });
     });
   });
+}
+
+/// Creates a test conversation thread for testing purposes.
+///
+/// Returns a conversation with sample messages and actions to test
+/// the conversation modal functionality.
+ConversationThread _createTestConversation() {
+  final DateTime now = DateTime.now();
+  final String conversationId = 'test_conv_${now.millisecondsSinceEpoch}';
+
+  return ConversationThread(
+    id: conversationId,
+    context: const ConversationContext(
+      purpose: 'create_application',
+      metadata: {
+        'step': 'initial_request',
+        'requirements_gathered': false,
+      },
+    ),
+    status: ConversationStatus.active,
+    createdAt: now.subtract(const Duration(minutes: 2)),
+    updatedAt: now.subtract(const Duration(seconds: 30)),
+    messages: [
+      ConversationMessage(
+        id: 'msg_001',
+        sender: MessageSender.system,
+        content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
+        timestamp: now.subtract(const Duration(minutes: 2)),
+        actions: [
+          const MessageAction(
+            id: 'action_001',
+            label: 'Chore Tracker',
+            value: 'I need a chore tracking app for my family',
+          ),
+          const MessageAction(
+            id: 'action_002',
+            label: 'Budget Planner',
+            value: 'I want to track our household budget',
+          ),
+          const MessageAction(
+            id: 'action_003',
+            label: 'Recipe Organizer',
+            value: 'Help me organize family recipes',
+          ),
+        ],
+      ),
+    ],
+  );
 }

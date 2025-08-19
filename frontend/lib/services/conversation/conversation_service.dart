@@ -5,9 +5,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import '../../models/models.dart';
+import '../user_application/user_application_service.dart';
 import 'models/kiro_command.dart';
 import 'models/send_user_prompt_command.dart';
-import 'sample_conversation_service.dart';
 
 // Parts
 part 'kiro_bridge_client.dart';
@@ -21,7 +21,7 @@ class ConversationService extends ChangeNotifier {
   ///
   /// @param initialConversation Optional initial conversation to load
   ConversationService({ConversationThread? initialConversation, KiroBridgeClient? kiroClient})
-      : _kiro = kiroClient ?? KiroBridgeClient() {
+    : _kiro = kiroClient ?? KiroBridgeClient() {
     if (initialConversation != null) {
       _currentConversation = initialConversation;
     }
@@ -34,6 +34,10 @@ class ConversationService extends ChangeNotifier {
 
   /// A client responsible for handling communication with the Kiro IDE.
   final KiroBridgeClient _kiro;
+
+  /// A service for managing the user's applications including processes for reading the user's existing applications,
+  /// creating new applications, or modifying existing applications.
+  final UserApplicationService _userApplicationService = UserApplicationService();
 
   /// Whether the system is currently processing a message.
   ///
@@ -71,13 +75,16 @@ class ConversationService extends ChangeNotifier {
   ///
   /// Creates a new conversation thread and adds the initial welcome message.
   void startNewApplicationConversation() {
+    // Open the Kiro IDE.
+    _userApplicationService.openKiroInAppsDir();
+
     _error = null;
-    _currentConversation = SampleConversationService.createNewConversation(
+    _currentConversation = _createNewConversation(
       purpose: 'create_application',
     );
 
     // Add welcome message
-    final ConversationMessage welcomeMessage = SampleConversationService.createWelcomeMessage(
+    final ConversationMessage welcomeMessage = _createWelcomeMessage(
       conversationId: _currentConversation!.id,
     );
 
@@ -90,13 +97,13 @@ class ConversationService extends ChangeNotifier {
   /// @param application The application to modify
   void startModifyApplicationConversation(UserApplication application) {
     _error = null;
-    _currentConversation = SampleConversationService.createNewConversation(
+    _currentConversation = _createNewConversation(
       purpose: 'modify_application',
       applicationId: application.id,
     );
 
     // Add welcome message
-    final ConversationMessage welcomeMessage = SampleConversationService.createWelcomeMessage(
+    final ConversationMessage welcomeMessage = _createWelcomeMessage(
       conversationId: _currentConversation!.id,
       isModification: true,
       applicationName: application.title,
@@ -231,6 +238,104 @@ class ConversationService extends ChangeNotifier {
     } finally {
       _isProcessing = false;
       notifyListeners();
+    }
+  }
+
+  /// Creates a new empty conversation thread for starting a new conversation.
+  ///
+  /// @param purpose The purpose of the conversation (e.g., 'create_application')
+  /// @param applicationId Optional application ID for modification conversations
+  /// @returns New empty ConversationThread
+  ConversationThread _createNewConversation({
+    required String purpose,
+    String? applicationId,
+  }) {
+    final DateTime now = DateTime.now();
+    final String conversationId = 'conv_${now.millisecondsSinceEpoch}';
+
+    return ConversationThread(
+      id: conversationId,
+      context: ConversationContext(
+        purpose: purpose,
+        applicationId: applicationId,
+        metadata: const {
+          'step': 'initial',
+        },
+      ),
+      status: ConversationStatus.active,
+      createdAt: now,
+      updatedAt: now,
+      messages: [],
+    );
+  }
+
+  /// Generates a system welcome message for starting a new conversation.
+  ///
+  /// @param conversationId The ID of the conversation
+  /// @param isModification Whether this is for modifying an existing app
+  /// @param applicationName Optional name of the app being modified
+  /// @returns ConversationMessage with welcome content and suggestions
+  ConversationMessage _createWelcomeMessage({
+    required String conversationId,
+    bool isModification = false,
+    String? applicationName,
+  }) {
+    final DateTime now = DateTime.now();
+    final String messageId = 'msg_welcome_${now.millisecondsSinceEpoch}';
+
+    if (isModification && applicationName != null) {
+      return ConversationMessage(
+        id: messageId,
+        sender: MessageSender.system,
+        content: 'I can help you modify your $applicationName application. What changes would you like to make?',
+        timestamp: now,
+        actions: [
+          const MessageAction(
+            id: 'action_modify_001',
+            label: 'Add Features',
+            value: 'I want to add new features',
+          ),
+          const MessageAction(
+            id: 'action_modify_002',
+            label: 'Change Design',
+            value: 'I want to change the design or layout',
+          ),
+          const MessageAction(
+            id: 'action_modify_003',
+            label: 'Fix Issues',
+            value: 'There are some issues I want to fix',
+          ),
+        ],
+      );
+    } else {
+      return ConversationMessage(
+        id: messageId,
+        sender: MessageSender.system,
+        content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
+        timestamp: now,
+        actions: [
+          const MessageAction(
+            id: 'action_create_001',
+            label: 'Chore Tracker',
+            value: 'I need a chore tracking app for my family',
+          ),
+          const MessageAction(
+            id: 'action_create_002',
+            label: 'Budget Planner',
+            value: 'I want to track our household budget',
+          ),
+          const MessageAction(
+            id: 'action_create_003',
+            label: 'Recipe Organizer',
+            value: 'Help me organize family recipes',
+          ),
+          const MessageAction(
+            id: 'action_create_004',
+            label: 'Event Calendar',
+            value: 'I need a family calendar for events and appointments',
+          ),
+        ],
+      );
     }
   }
 }
