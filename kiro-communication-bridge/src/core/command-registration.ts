@@ -42,12 +42,24 @@ export function registerCommands(context: vscode.ExtensionContext): void {
       handleRestartServers
     );
     
+    const forceRestartServersCommand: vscode.Disposable = vscode.commands.registerCommand(
+      'kiroOrchestration.forceRestartServers',
+      handleForceRestartServers
+    );
+    
+    const healthCheckCommand: vscode.Disposable = vscode.commands.registerCommand(
+      'kiroOrchestration.healthCheck',
+      handleHealthCheck
+    );
+    
     // Add all commands to the extension context for proper disposal
     context.subscriptions.push(
       getStatusCommand,
       executeCommandCommand,
       showAvailableCommandsCommand,
-      restartServersCommand
+      restartServersCommand,
+      forceRestartServersCommand,
+      healthCheckCommand
     );
     
     logger.info('All commands registered successfully');
@@ -192,7 +204,7 @@ async function handleShowAvailableCommands(): Promise<void> {
 /**
  * Handles the restart servers command.
  * 
- * Restarts the API and WebSocket servers.
+ * Restarts the API and WebSocket servers gracefully.
  */
 async function handleRestartServers(): Promise<void> {
   const logger: Logger = new Logger('RestartServersCommand');
@@ -205,11 +217,9 @@ async function handleRestartServers(): Promise<void> {
     
     logger.info('Restarting communication servers...');
     
-    // Stop servers
+    // Use the port conflict handling method for restart
     await extensionState.stopServers();
-    
-    // Start servers
-    await extensionState.startServers();
+    await extensionState.startServersWithPortConflictHandling();
     
     const message: string = 'Communication servers restarted successfully';
     vscode.window.showInformationMessage(message);
@@ -217,6 +227,168 @@ async function handleRestartServers(): Promise<void> {
   } catch (error: unknown) {
     const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
     logger.error(`Failed to restart servers: ${errorMessage}`);
-    vscode.window.showErrorMessage(`Failed to restart servers: ${errorMessage}`);
+    
+    // Handle port conflicts specifically
+    if (error instanceof Error && error.message.includes('EADDRINUSE')) {
+      const userChoice = await vscode.window.showErrorMessage(
+        'Failed to restart servers due to port conflicts. Would you like to force restart and kill any processes using the required ports?',
+        'Force Restart',
+        'Cancel'
+      );
+      
+      if (userChoice === 'Force Restart') {
+        try {
+          const currentExtensionState: ExtensionState | null = ExtensionState.getCurrentInstance();
+          if (currentExtensionState) {
+            await currentExtensionState.forceRestartServers();
+            vscode.window.showInformationMessage('Servers force restarted successfully!');
+          } else {
+            throw new Error('Extension state is not initialized');
+          }
+        } catch (forceError: unknown) {
+          const forceErrorMessage: string = forceError instanceof Error ? forceError.message : 'Unknown error';
+          vscode.window.showErrorMessage(`Force restart failed: ${forceErrorMessage}`);
+        }
+      }
+    } else {
+      vscode.window.showErrorMessage(`Failed to restart servers: ${errorMessage}`);
+    }
+  }
+}
+
+/**
+ * Handles the force restart servers command.
+ * 
+ * Forcefully restarts servers by killing any processes using the required ports.
+ */
+async function handleForceRestartServers(): Promise<void> {
+  const logger: Logger = new Logger('ForceRestartServersCommand');
+  
+  try {
+    const extensionState: ExtensionState | null = ExtensionState.getCurrentInstance();
+    if (!extensionState) {
+      throw new Error('Extension state is not initialized');
+    }
+    
+    // Confirm with user before force restart
+    const confirmation = await vscode.window.showWarningMessage(
+      'Force restart will kill any processes using ports 3001 and 3002. This may affect other Kiro IDE windows. Continue?',
+      { modal: true },
+      'Yes, Force Restart',
+      'Cancel'
+    );
+    
+    if (confirmation !== 'Yes, Force Restart') {
+      return;
+    }
+    
+    logger.info('Force restarting communication servers...');
+    
+    await vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: 'Force restarting Kiro Communication Bridge...',
+      cancellable: false
+    }, async (progress) => {
+      progress.report({ increment: 0, message: 'Stopping current servers...' });
+      
+      progress.report({ increment: 25, message: 'Killing processes on required ports...' });
+      await extensionState.forceRestartServers();
+      
+      progress.report({ increment: 100, message: 'Servers restarted successfully!' });
+    });
+    
+    const message: string = 'Communication servers force restarted successfully';
+    vscode.window.showInformationMessage(message);
+    logger.info(message);
+  } catch (error: unknown) {
+    const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+    logger.error(`Failed to force restart servers: ${errorMessage}`);
+    vscode.window.showErrorMessage(`Failed to force restart servers: ${errorMessage}`);
+  }
+}
+
+/**
+ * Handles the health check command.
+ * 
+ * Performs a comprehensive health check of all servers and displays the results.
+ */
+async function handleHealthCheck(): Promise<void> {
+  const logger: Logger = new Logger('HealthCheckCommand');
+  
+  try {
+    const extensionState: ExtensionState | null = ExtensionState.getCurrentInstance();
+    if (!extensionState) {
+      throw new Error('Extension state is not initialized');
+    }
+    
+    logger.info('Performing health check...');
+    
+    const healthResults = await vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: 'Performing health check...',
+      cancellable: false
+    }, async (progress) => {
+      progress.report({ increment: 0, message: 'Checking API server...' });
+      
+      const results = await extensionState.performHealthCheck();
+      
+      progress.report({ increment: 50, message: 'Checking WebSocket server...' });
+      
+      progress.report({ increment: 100, message: 'Health check complete!' });
+      
+      return results;
+    });
+    
+    // Format health check results
+    const statusLines: string[] = [
+      'Kiro Communication Bridge Health Check:',
+      '',
+      `Overall Status: ${healthResults.overall ? '✅ Healthy' : '❌ Unhealthy'}`,
+      '',
+      'API Server:',
+      `  • Running: ${healthResults.apiServer.running ? '✅' : '❌'}`,
+      `  • Responding: ${healthResults.apiServer.responding ? '✅' : '❌'}`,
+    ];
+    
+    if (healthResults.apiServer.error) {
+      statusLines.push(`  • Error: ${healthResults.apiServer.error}`);
+    }
+    
+    statusLines.push(
+      '',
+      'WebSocket Server:',
+      `  • Running: ${healthResults.webSocketServer.running ? '✅' : '❌'}`,
+      `  • Responding: ${healthResults.webSocketServer.responding ? '✅' : '❌'}`
+    );
+    
+    if (healthResults.webSocketServer.error) {
+      statusLines.push(`  • Error: ${healthResults.webSocketServer.error}`);
+    }
+    
+    const statusMessage = statusLines.join('\n');
+    
+    if (healthResults.overall) {
+      vscode.window.showInformationMessage('Health Check Passed', { modal: true, detail: statusMessage });
+    } else {
+      const action = await vscode.window.showWarningMessage(
+        'Health Check Failed',
+        { modal: true, detail: statusMessage },
+        'Restart Servers',
+        'Force Restart',
+        'OK'
+      );
+      
+      if (action === 'Restart Servers') {
+        await handleRestartServers();
+      } else if (action === 'Force Restart') {
+        await handleForceRestartServers();
+      }
+    }
+    
+    logger.info('Health check completed');
+  } catch (error: unknown) {
+    const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+    logger.error(`Failed to perform health check: ${errorMessage}`);
+    vscode.window.showErrorMessage(`Failed to perform health check: ${errorMessage}`);
   }
 }

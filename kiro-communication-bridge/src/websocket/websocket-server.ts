@@ -141,9 +141,21 @@ export class WebSocketServer extends EventEmitter {
         resolve();
       });
 
-      this.httpServer.on('error', (error) => {
+      this.httpServer.on('error', (error: NodeJS.ErrnoException) => {
         this.logDebug('WebSocket server error:', error);
-        reject(error);
+        
+        // Enhance EADDRINUSE error with more context
+        if (error.code === 'EADDRINUSE') {
+          const enhancedError = new Error(
+            `listen EADDRINUSE: address already in use 127.0.0.1:${this.config.port}. ` +
+            `Another process is already using port ${this.config.port}. This may be from another ` +
+            `Kiro IDE window or a previous session that didn't close properly.`
+          );
+          enhancedError.name = 'EADDRINUSE';
+          reject(enhancedError);
+        } else {
+          reject(error);
+        }
       });
     });
   }
@@ -158,24 +170,39 @@ export class WebSocketServer extends EventEmitter {
       return;
     }
 
-    // Close all client connections
+    // Close all client connections gracefully
     for (const client of this.clients.values()) {
-      client.socket.close(1001, 'Server shutting down');
+      try {
+        client.socket.close(1001, 'Server shutting down');
+      } catch (error) {
+        this.logDebug('Error closing client connection:', error);
+      }
     }
     this.clients.clear();
 
     // Close WebSocket server
     this.wsServer.close();
 
-    // Close HTTP server
+    // Close HTTP server with timeout
     return new Promise((resolve) => {
-      this.httpServer!.close(() => {
-        this.httpServer = undefined;
-        this.wsServer = undefined;
+      const server = this.httpServer!;
+      this.httpServer = undefined;
+      this.wsServer = undefined;
+      
+      server.close(() => {
         this.logDebug('WebSocket server stopped');
         this.emit('server-stopped');
         resolve();
       });
+      
+      // Force close after timeout
+      setTimeout(() => {
+        if (server.listening) {
+          this.logDebug('Force closing WebSocket server after timeout');
+          (server as any).closeAllConnections?.();
+        }
+        resolve();
+      }, 5000);
     });
   }
 
@@ -259,6 +286,25 @@ export class WebSocketServer extends EventEmitter {
    */
   public getClientCount(): number {
     return this.clients.size;
+  }
+
+  /**
+   * Gets the current server status.
+   * 
+   * @returns Server status information
+   */
+  public getServerStatus(): {
+    running: boolean;
+    port?: number;
+    clientCount: number;
+    uptime?: number;
+  } {
+    return {
+      running: !!this.httpServer && !!this.wsServer,
+      port: this.httpServer ? this.config.port : undefined,
+      clientCount: this.clients.size,
+      uptime: this.httpServer ? process.uptime() : undefined
+    };
   }
 
   /**

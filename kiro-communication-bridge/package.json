@@ -2,7 +2,7 @@
   "name": "kiro-communication-bridge",
   "displayName": "Kiro Communication Bridge",
   "description": "Communication bridge between Flutter frontend and Kiro IDE for the Household Software Engineer system",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "publisher": "household-ai-engineer",
   "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
   "engines": {
@@ -35,6 +35,16 @@
       {
         "command": "kiroOrchestration.restartServers",
         "title": "Restart Communication Servers",
+        "category": "Kiro Communication"
+      },
+      {
+        "command": "kiroOrchestration.forceRestartServers",
+        "title": "Force Restart Communication Servers",
+        "category": "Kiro Communication"
+      },
+      {
+        "command": "kiroOrchestration.healthCheck",
+        "title": "Health Check Communication Servers",
         "category": "Kiro Communication"
       }
     ],

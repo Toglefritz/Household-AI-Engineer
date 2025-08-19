@@ -124,13 +124,28 @@ export class ApiServer extends EventEmitter {
         resolve();
       });
 
-      this.server.on('error', (error) => {
+      this.server.on('error', (error: NodeJS.ErrnoException) => {
         this.logDebug('Server error:', error);
-        reject(error);
+        
+        // Enhance EADDRINUSE error with more context
+        if (error.code === 'EADDRINUSE') {
+          const enhancedError = new Error(
+            `listen EADDRINUSE: address already in use ${this.config.host}:${this.config.port}. ` +
+            `Another process is already using port ${this.config.port}. This may be from another ` +
+            `Kiro IDE window or a previous session that didn't close properly.`
+          );
+          enhancedError.name = 'EADDRINUSE';
+          reject(enhancedError);
+        } else {
+          reject(error);
+        }
       });
 
       // Set server timeout
       this.server.timeout = this.config.timeoutMs;
+      
+      // Set up graceful shutdown handlers
+      this.setupGracefulShutdown();
     });
   }
 
@@ -145,12 +160,24 @@ export class ApiServer extends EventEmitter {
     }
 
     return new Promise((resolve) => {
-      this.server!.close(() => {
-        this.server = undefined;
+      const server = this.server!;
+      this.server = undefined;
+      
+      // Close server and all connections
+      server.close(() => {
         this.logDebug('API server stopped');
         this.emit('server-stopped');
         resolve();
       });
+      
+      // Force close after timeout
+      setTimeout(() => {
+        if (server.listening) {
+          this.logDebug('Force closing API server after timeout');
+          (server as any).closeAllConnections?.();
+        }
+        resolve();
+      }, 5000);
     });
   }
 
@@ -444,6 +471,40 @@ export class ApiServer extends EventEmitter {
       default:
         return 500;
     }
+  }
+
+  /**
+   * Sets up graceful shutdown handlers for the server.
+   * 
+   * This method ensures that the server can be properly closed when
+   * the extension is deactivated or when port conflicts need to be resolved.
+   */
+  private setupGracefulShutdown(): void {
+    if (!this.server) {
+      return;
+    }
+
+    // Track active connections for graceful shutdown
+    const connections = new Set<any>();
+    
+    this.server.on('connection', (connection) => {
+      connections.add(connection);
+      
+      connection.on('close', () => {
+        connections.delete(connection);
+      });
+    });
+
+    // Store reference to connections for forced shutdown
+    (this.server as any)._connections = connections;
+    
+    // Add method to close all connections
+    (this.server as any).closeAllConnections = () => {
+      for (const connection of connections) {
+        connection.destroy();
+      }
+      connections.clear();
+    };
   }
 
   /**

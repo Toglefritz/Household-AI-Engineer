@@ -46,8 +46,26 @@ The extension can be configured through VS Code settings under the `kiroOrchestr
 
 The extension provides the following commands:
 
-- `Kiro Orchestration: Start Orchestration Server` - Starts the API and WebSocket servers
-- `Kiro Orchestration: Stop Orchestration Server` - Stops the servers
+### Server Management
+- `Kiro Communication: Restart Communication Servers` - Gracefully restarts both servers with automatic port conflict detection
+- `Kiro Communication: Force Restart Communication Servers` - Forcefully restarts servers by killing any processes using the required ports
+- `Kiro Communication: Health Check Communication Servers` - Verifies server health and responsiveness
+
+### Kiro Integration
+- `Kiro Communication: Get Kiro Status` - Shows the current status of Kiro IDE and the communication bridge
+- `Kiro Communication: Execute Kiro Command` - Executes a command through Kiro IDE
+- `Kiro Communication: Show Available Commands` - Displays available Kiro commands for selection
+
+## Port Conflict Handling
+
+The extension uses ports 3001 (API) and 3002 (WebSocket) by default. When port conflicts occur (e.g., multiple Kiro IDE windows or previous sessions not properly closed), the extension provides:
+
+- **Automatic Detection**: Identifies processes using the required ports
+- **Smart Resolution**: Attempts to gracefully terminate conflicting processes
+- **User Prompts**: Offers clear options for resolving conflicts
+- **Force Restart**: Option to forcefully kill conflicting processes when needed
+
+For detailed information about port conflict handling, see [PORT-CONFLICT-HANDLING.md](./PORT-CONFLICT-HANDLING.md).
 - `Kiro Orchestration: View Server Status` - Shows the current status of all services
 - `Kiro Orchestration: View Active Jobs` - Displays information about active development jobs
 - `Kiro Orchestration: Open Apps Directory` - Opens the configured apps directory
