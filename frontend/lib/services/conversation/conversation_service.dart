@@ -1,8 +1,16 @@
-import 'package:flutter/material.dart';
+// This library groups widgets related to the Kiro conversation service.
+library;
 
-import '../../models/conversation/message_action_type.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import '../../models/models.dart';
+import 'models/kiro_command.dart';
+import 'models/send_user_prompt_command.dart';
 import 'sample_conversation_service.dart';
+
+// Parts
+part 'kiro_bridge_client.dart';
 
 /// Controller for managing conversation state and interactions.
 ///
@@ -12,7 +20,8 @@ class ConversationService extends ChangeNotifier {
   /// Creates a new conversation controller.
   ///
   /// @param initialConversation Optional initial conversation to load
-  ConversationService({ConversationThread? initialConversation}) {
+  ConversationService({ConversationThread? initialConversation, KiroBridgeClient? kiroClient})
+      : _kiro = kiroClient ?? KiroBridgeClient() {
     if (initialConversation != null) {
       _currentConversation = initialConversation;
     }
@@ -22,6 +31,9 @@ class ConversationService extends ChangeNotifier {
   ///
   /// Null when no conversation is active.
   ConversationThread? _currentConversation;
+
+  /// A client responsible for handling communication with the Kiro IDE.
+  final KiroBridgeClient _kiro;
 
   /// Whether the system is currently processing a message.
   ///
@@ -178,137 +190,47 @@ class ConversationService extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Simulate processing delay
-      await Future<void>.delayed(const Duration(seconds: 2));
+      // Optionally ping status to surface availability issues early.
+      try {
+        await _kiro.getStatus();
+      } catch (_) {
+        // Non-fatal; proceed to execute so we surface the real error if any.
+      }
 
-      // Generate mock system response based on conversation context
-      final ConversationMessage systemResponse = _generateSystemResponse(userMessage);
+      // Send the user's prompt to Kiro.
+      final Map<String, Object?> execResult = await _kiro.execute(
+        SendUserPromptCommand(prompt: userMessage),
+      );
+
+      // Derive response text. The bridge may return different shapes; prefer 'output'.
+      String responseText = '';
+      if (execResult.containsKey('output') && execResult['output'] != null) {
+        responseText = execResult['output'].toString();
+      } else if (execResult.containsKey('message') && execResult['message'] != null) {
+        responseText = execResult['message'].toString();
+      } else if (execResult.containsKey('executionId')) {
+        responseText = 'Request accepted. Execution ID: ${execResult['executionId']}';
+      } else {
+        responseText = 'Command executed.';
+      }
+
+      final ConversationMessage systemResponse = ConversationMessage(
+        id: 'msg_system_${DateTime.now().millisecondsSinceEpoch}',
+        sender: MessageSender.system,
+        content: responseText,
+        timestamp: DateTime.now(),
+        // In a future enhancement, parse actionable buttons from output if your bridge encodes them.
+      );
 
       _currentConversation = _currentConversation!.addMessage(systemResponse);
       _currentConversation = _currentConversation!.updateStatus(ConversationStatus.waitingForInput);
+      _error = null;
     } catch (e) {
       _error = 'Failed to process message: $e';
       _currentConversation = _currentConversation!.updateStatus(ConversationStatus.error);
     } finally {
       _isProcessing = false;
       notifyListeners();
-    }
-  }
-
-  /// Generates a mock system response based on the user's message.
-  ///
-  /// This simulates the conversation flow for demonstration purposes.
-  /// In a real implementation, this would be handled by the backend.
-  ///
-  /// @param userMessage The user's message content
-  /// @returns Generated system response message
-  ConversationMessage _generateSystemResponse(String userMessage) {
-    final DateTime now = DateTime.now();
-    final String messageId = 'msg_system_${now.millisecondsSinceEpoch}';
-
-    // Simple mock logic based on message content
-    if (userMessage.toLowerCase().contains('chore') || userMessage.toLowerCase().contains('track')) {
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content:
-            'Great! A chore tracking system sounds very useful. Let me ask a few questions to make sure I build exactly what you need:\n\n• How many family members will be using this?\n• What chores do you want to track?\n• Should it rotate weekly or on a different schedule?',
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_chore_001',
-            label: '4 family members',
-            value: 'We have 4 family members',
-          ),
-          const MessageAction(
-            id: 'action_chore_002',
-            label: 'Weekly rotation',
-            value: 'Weekly rotation works for us',
-          ),
-          const MessageAction(
-            id: 'action_chore_003',
-            label: 'Common chores',
-            value: 'Kitchen cleanup, laundry, vacuuming, trash, bathrooms',
-          ),
-        ],
-      );
-    } else if (userMessage.toLowerCase().contains('budget') || userMessage.toLowerCase().contains('money')) {
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content:
-            'A budget tracking application is a great idea! Let me understand your needs better:\n\n• Do you want to track expenses by category?\n• Should it include income tracking?\n• Do you need spending alerts or limits?',
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_budget_001',
-            label: 'Track by category',
-            value: 'Yes, track expenses by category like groceries, utilities, entertainment',
-          ),
-          const MessageAction(
-            id: 'action_budget_002',
-            label: 'Include income',
-            value: 'Yes, track both income and expenses',
-          ),
-          const MessageAction(
-            id: 'action_budget_003',
-            label: 'Set spending limits',
-            value: 'I want to set spending limits and get alerts',
-          ),
-        ],
-      );
-    } else if (userMessage.toLowerCase().contains('recipe') || userMessage.toLowerCase().contains('cooking')) {
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content:
-            "A recipe organizer sounds wonderful! Here's what I'm thinking:\n\n• Store family recipes with ingredients and instructions\n• Organize by meal type or cuisine\n• Generate shopping lists from recipes\n• Plan weekly meals\n\nDoes this match what you had in mind?",
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_recipe_001',
-            label: 'Perfect!',
-            value: 'Yes, that sounds perfect. Please create it.',
-            type: MessageActionType.primary,
-          ),
-          const MessageAction(
-            id: 'action_recipe_002',
-            label: 'Add meal planning',
-            value: 'Yes, and I also want meal planning for the week',
-          ),
-          const MessageAction(
-            id: 'action_recipe_003',
-            label: 'Include nutrition',
-            value: 'Can you also include nutritional information?',
-          ),
-        ],
-      );
-    } else {
-      // Generic response for other inputs
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content:
-            'I understand you want to create an application. Could you tell me more about what specific functionality you need? For example:\n\n• What problem are you trying to solve?\n• Who will be using this application?\n• What are the main features you envision?',
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_generic_001',
-            label: 'Family organization',
-            value: 'I need help organizing family activities and responsibilities',
-          ),
-          const MessageAction(
-            id: 'action_generic_002',
-            label: 'Home management',
-            value: 'I want to manage household tasks and maintenance',
-          ),
-          const MessageAction(
-            id: 'action_generic_003',
-            label: 'Personal tracking',
-            value: 'I need to track personal goals or habits',
-          ),
-        ],
-      );
     }
   }
 }
