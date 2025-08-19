@@ -30,7 +30,7 @@
     - _Requirements: 2.4, 6.4, 7.1_
 
 - [ ] 3. Create workspace management system
-  - [x] 3.1 Implement WorkspaceManager class
+  - [ ] 3.1 Implement WorkspaceManager class
     - Create workspace directory structure creation logic
     - Implement spec template copying and customization
     - Add workspace cleanup and validation methods
