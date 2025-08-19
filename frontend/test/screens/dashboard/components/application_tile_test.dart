@@ -1,8 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/models.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/applications/application_tile.dart';
+import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
+import 'package:household_ai_engineer/services/user_application/models/development_progress.dart';
+import 'package:household_ai_engineer/services/user_application/models/user_application.dart';
 
 import '../../../test_helpers.dart';
 

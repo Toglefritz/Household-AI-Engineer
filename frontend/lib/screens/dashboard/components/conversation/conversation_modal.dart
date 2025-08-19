@@ -3,8 +3,12 @@
 
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../models/models.dart';
 import '../../../../services/conversation/conversation_service.dart';
+import '../../../../services/conversation/models/conversation_message.dart';
+import '../../../../services/conversation/models/conversation_thread.dart';
+import '../../../../services/conversation/models/message_action.dart';
+import '../../../../services/conversation/models/message_sender.dart';
+import '../../../../services/user_application/models/user_application.dart';
 import '../../../../theme/insets.dart';
 import 'conversation_input_widget.dart';
 import 'conversation_message_widget.dart';

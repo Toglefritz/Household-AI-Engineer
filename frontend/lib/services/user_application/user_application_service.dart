@@ -4,14 +4,7 @@ import 'dart:io';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../models/application/user_application.dart';
-import '../conversation/conversation_service.dart';
-import 'commands/create_application_command.dart';
-import 'commands/delete_application_command.dart';
-import 'commands/launch_application_command.dart';
-import 'commands/list_applications_command.dart';
-import 'commands/modify_application_command.dart';
-import 'commands/stop_application_command.dart';
+import 'models/user_application.dart';
 
 /// Service for managing household applications through the Kiro Bridge API.
 ///
@@ -31,20 +24,14 @@ class UserApplicationService {
   ///
   /// * [baseMetadataDirPath] — Absolute path to the **metadata** directory that contains the `apps/` subfolder. If
   ///   omitted, [defaultMetadataDirPath] is used.
-  /// * [kiroBridgeClient] — Optional Kiro Bridge client for API communication. If omitted, a default client is created.
   UserApplicationService({
     String? baseMetadataDirPath,
-    KiroBridgeClient? kiroBridgeClient,
   }) : _appsDir = Directory(
          '${baseMetadataDirPath ?? defaultMetadataDirPath}/apps',
-       ),
-       _kiroBridge = kiroBridgeClient ?? KiroBridgeClient();
+       );
 
   /// Directory where per-app manifests (`*.json`) are stored.
   final Directory _appsDir;
-
-  /// Kiro Bridge client for API communication.
-  final KiroBridgeClient _kiroBridge;
 
   /// WebSocket channel for real-time application updates.
   WebSocketChannel? _webSocketChannel;
@@ -79,10 +66,7 @@ class UserApplicationService {
   /// Returns applications sorted by update time (newest first) for optimal user experience.
   Future<List<UserApplication>> loadApplications() async {
     try {
-      // First, try to load applications from Kiro Bridge API
-      final List<UserApplication> bridgeApplications = await _loadApplicationsFromBridge();
-
-      // Then load local manifest files for deployed applications
+      // Load local manifest files for deployed applications
       final List<UserApplication> localApplications = await _loadLocalApplications();
 
       // Merge the two lists, preferring bridge data for applications that exist in both
@@ -93,17 +77,11 @@ class UserApplicationService {
         applicationMap[app.id] = app;
       }
 
-      // Override with bridge data (more up-to-date)
-      for (final UserApplication app in bridgeApplications) {
-        applicationMap[app.id] = app;
-      }
-
       final List<UserApplication> applications = applicationMap.values.toList()
-
-      // Sort newest updated first for a pleasant dashboard experience
-      ..sort(
-        (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
-      );
+        // Sort newest updated first for a pleasant dashboard experience
+        ..sort(
+          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
+        );
 
       _cachedApplications = applications;
       _isConnected = true;
@@ -143,34 +121,6 @@ class UserApplicationService {
 
     // Yield from the application updates stream
     yield* _applicationUpdatesController.stream;
-  }
-
-  /// Loads applications from the Kiro Bridge API.
-  ///
-  /// Communicates with the bridge to get real-time application status and metadata.
-  /// This includes applications currently in development that may not have local manifests yet.
-  Future<List<UserApplication>> _loadApplicationsFromBridge() async {
-    try {
-      // Check if bridge is available
-      await _kiroBridge.getStatus();
-
-      // Execute a command to get application list
-      // Note: This assumes the bridge has a command to list applications
-      // The actual command may need to be adjusted based on the bridge implementation
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        const ListApplicationsCommand(),
-      );
-
-      if (result['success'] == true && result['applications'] != null) {
-        final List<dynamic> applicationsJson = result['applications']! as List<dynamic>;
-        return applicationsJson.map((dynamic json) => UserApplication.fromJson(json as Map<String, dynamic>)).toList();
-      }
-
-      return [];
-    } catch (e) {
-      // Bridge communication failed, return empty list
-      return [];
-    }
   }
 
   /// Loads applications from local manifest files.
@@ -324,10 +274,11 @@ class UserApplicationService {
       final UserApplication newApp = UserApplication.fromJson(data['application'] as Map<String, dynamic>);
 
       // Add to cached applications
-      _cachedApplications..add(newApp)
-      ..sort(
-        (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
-      );
+      _cachedApplications
+        ..add(newApp)
+        ..sort(
+          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
+        );
       _applicationUpdatesController.add(_cachedApplications);
     } catch (e) {
       // Failed to parse new application, refresh full list
@@ -374,34 +325,8 @@ class UserApplicationService {
     String? conversationId,
     String priority = 'normal',
   }) async {
-    try {
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        CreateApplicationCommand(
-          description: description,
-          conversationId: conversationId,
-          priority: priority,
-        ),
-      );
-
-      if (result['success'] == true && result['application'] != null) {
-        final UserApplication newApp = UserApplication.fromJson(
-          result['application']! as Map<String, dynamic>,
-        );
-
-        // Add to cached applications
-        _cachedApplications..add(newApp)
-        ..sort(
-          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
-        );
-        _applicationUpdatesController.add(_cachedApplications);
-
-        return newApp;
-      } else {
-        throw Exception('Failed to create application: ${result['message'] ?? 'Unknown error'}');
-      }
-    } catch (e) {
-      throw Exception('Failed to create application: $e');
-    }
+    // TODO(Scott): Implementation
+    throw UnimplementedError();
   }
 
   /// Modifies an existing application through the Kiro Bridge.
@@ -414,34 +339,8 @@ class UserApplicationService {
     required String modifications,
     String? conversationId,
   }) async {
-    try {
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        ModifyApplicationCommand(
-          applicationId: applicationId,
-          modifications: modifications,
-          conversationId: conversationId,
-        ),
-      );
-
-      if (result['success'] == true && result['application'] != null) {
-        final UserApplication updatedApp = UserApplication.fromJson(
-          result['application']! as Map<String, dynamic>,
-        );
-
-        // Update cached applications
-        final int index = _cachedApplications.indexWhere((UserApplication app) => app.id == applicationId);
-        if (index != -1) {
-          _cachedApplications[index] = updatedApp;
-          _applicationUpdatesController.add(_cachedApplications);
-        }
-
-        return updatedApp;
-      } else {
-        throw Exception('Failed to modify application: ${result['message'] ?? 'Unknown error'}');
-      }
-    } catch (e) {
-      throw Exception('Failed to modify application: $e');
-    }
+    // TODO(Scott): Implementation
+    throw UnimplementedError();
   }
 
   /// Deletes an application through the Kiro Bridge.
@@ -449,21 +348,8 @@ class UserApplicationService {
   /// Removes the application from the system and cleans up associated resources.
   /// This operation cannot be undone.
   Future<void> deleteApplication(String applicationId) async {
-    try {
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        DeleteApplicationCommand(applicationId: applicationId),
-      );
-
-      if (result['success'] == true) {
-        // Remove from cached applications
-        _cachedApplications.removeWhere((UserApplication app) => app.id == applicationId);
-        _applicationUpdatesController.add(_cachedApplications);
-      } else {
-        throw Exception('Failed to delete application: ${result['message'] ?? 'Unknown error'}');
-      }
-    } catch (e) {
-      throw Exception('Failed to delete application: $e');
-    }
+    // TODO(Scott): Implementation
+    throw UnimplementedError();
   }
 
   /// Launches an application through the Kiro Bridge.
@@ -471,34 +357,8 @@ class UserApplicationService {
   /// Starts the specified application and returns launch information.
   /// The application must be in a ready state to be launched.
   Future<void> launchApplication(String applicationId) async {
-    try {
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        LaunchApplicationCommand(applicationId: applicationId),
-      );
-
-      if (result['success'] != true) {
-        throw Exception('Failed to launch application: ${result['message'] ?? 'Unknown error'}');
-      }
-    } catch (e) {
-      throw Exception('Failed to launch application: $e');
-    }
-  }
-
-  /// Stops a running application through the Kiro Bridge.
-  ///
-  /// Gracefully stops the specified application and updates its status.
-  Future<void> stopApplication(String applicationId) async {
-    try {
-      final Map<String, Object?> result = await _kiroBridge.execute(
-        StopApplicationCommand(applicationId: applicationId),
-      );
-
-      if (result['success'] != true) {
-        throw Exception('Failed to stop application: ${result['message'] ?? 'Unknown error'}');
-      }
-    } catch (e) {
-      throw Exception('Failed to stop application: $e');
-    }
+    // TODO(Scott): Implementation
+    throw UnimplementedError();
   }
 
   /// Launches the Kiro IDE with the `apps/` directory as the working directory.
@@ -509,9 +369,7 @@ class UserApplicationService {
   /// or inspection.
   ///
   /// Returns a [Process] representing the running Kiro IDE instance.
-  Future<Process> openKiroInAppsDir() {
-    return Process.start('kiro', [_appsDir.path]);
-  }
+  Future<Process> openKiroInAppsDir() => Process.start('kiro', [_appsDir.path]);
 
   /// Returns whether the service is currently connected to the Kiro Bridge.
   ///
@@ -524,45 +382,6 @@ class UserApplicationService {
   /// Provides immediate access to the last loaded application data without
   /// requiring an async call. May be empty if no applications have been loaded yet.
   List<UserApplication> get cachedApplications => List.unmodifiable(_cachedApplications);
-
-  /// Waits for the Kiro Bridge REST API to become available by polling the `/api/kiro/status` endpoint.
-  ///
-  /// This method repeatedly attempts to connect to `http://localhost:3001/api/kiro/status` until a successful
-  /// response (HTTP 200) is received or the specified [timeout] duration elapses.
-  ///
-  /// The polling interval between attempts is controlled by [pollInterval].
-  ///
-  /// Throws a [StateError] if the bridge does not become available within the timeout.
-  ///
-  /// Returns `true` if the bridge becomes available within the timeout.
-  Future<bool> waitForKiroBridgeAvailable({
-    Duration timeout = const Duration(seconds: 30),
-    Duration pollInterval = const Duration(milliseconds: 500),
-  }) async {
-    final Uri statusUri = Uri.parse('http://localhost:3001/api/kiro/status');
-    final DateTime deadline = DateTime.now().add(timeout);
-    final HttpClient client = HttpClient();
-
-    while (DateTime.now().isBefore(deadline)) {
-      try {
-        final HttpClientRequest request = await client.getUrl(statusUri);
-        final HttpClientResponse response = await request.close();
-
-        if (response.statusCode == 200) {
-          client.close(force: true);
-          return true;
-        }
-      } catch (_) {
-        // Ignore errors and continue polling until timeout.
-      }
-
-      await Future<void>.delayed(pollInterval);
-    }
-
-    client.close(force: true);
-
-    throw StateError('Timed out waiting for Kiro Bridge to become available.');
-  }
 
   /// Disposes of resources used by this service.
   ///

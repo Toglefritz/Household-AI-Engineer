@@ -1,3 +1,4 @@
+
 import 'milestone_status.dart';
 
 /// Represents a single milestone in the user application development process.

@@ -1,5 +1,5 @@
-import '../development_progress/development_progress.dart';
-import '../launch_configuration/launch_configuration.dart';
+import 'development_progress.dart';
+import '../../../models/launch_configuration/launch_configuration.dart';
 import 'application_status.dart';
 
 /// Represents a household application created on behalf of the user by Amazon Kiro.

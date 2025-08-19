@@ -1,16 +1,13 @@
-// This library groups widgets related to the Kiro conversation service.
-library;
+import 'dart:io';
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import '../../models/models.dart';
-import '../user_application/user_application_service.dart';
-import 'models/kiro_command.dart';
-import 'models/send_user_prompt_command.dart';
 
-// Parts
-part 'kiro_bridge_client.dart';
+import '../user_application/models/user_application.dart';
+import 'models/conversation_message.dart';
+import 'models/conversation_status.dart';
+import 'models/conversation_thread.dart';
+import 'models/message_action.dart';
+import 'models/message_sender.dart';
 
 /// Controller for managing conversation state and interactions.
 ///
@@ -20,8 +17,7 @@ class ConversationService extends ChangeNotifier {
   /// Creates a new conversation controller.
   ///
   /// @param initialConversation Optional initial conversation to load
-  ConversationService({ConversationThread? initialConversation, KiroBridgeClient? kiroClient})
-    : _kiro = kiroClient ?? KiroBridgeClient() {
+  ConversationService({ConversationThread? initialConversation}) {
     if (initialConversation != null) {
       _currentConversation = initialConversation;
     }
@@ -31,13 +27,6 @@ class ConversationService extends ChangeNotifier {
   ///
   /// Null when no conversation is active.
   ConversationThread? _currentConversation;
-
-  /// A client responsible for handling communication with the Kiro IDE.
-  final KiroBridgeClient _kiro;
-
-  /// A service for managing the user's applications including processes for reading the user's existing applications,
-  /// creating new applications, or modifying existing applications.
-  final UserApplicationService _userApplicationService = UserApplicationService();
 
   /// Whether the system is currently processing a message.
   ///
@@ -71,24 +60,54 @@ class ConversationService extends ChangeNotifier {
   /// Whether the conversation can be cancelled.
   bool get canCancel => hasActiveConversation && _currentConversation!.canCancel;
 
+  /// Waits for the Kiro Bridge REST API to become available by polling the `/api/kiro/status` endpoint.
+  ///
+  /// This method repeatedly attempts to connect to `http://localhost:3001/api/kiro/status` until a successful
+  /// response (HTTP 200) is received or the specified [timeout] duration elapses.
+  ///
+  /// The polling interval between attempts is controlled by [pollInterval].
+  ///
+  /// Throws a [StateError] if the bridge does not become available within the timeout.
+  ///
+  /// Returns `true` if the bridge becomes available within the timeout.
+  Future<bool> waitForKiroBridgeAvailable({
+    Duration timeout = const Duration(seconds: 30),
+    Duration pollInterval = const Duration(milliseconds: 500),
+  }) async {
+    final Uri statusUri = Uri.parse('http://localhost:3001/api/kiro/status');
+    final DateTime deadline = DateTime.now().add(timeout);
+    final HttpClient client = HttpClient();
+
+    while (DateTime.now().isBefore(deadline)) {
+      try {
+        final HttpClientRequest request = await client.getUrl(statusUri);
+        final HttpClientResponse response = await request.close();
+
+        if (response.statusCode == 200) {
+          client.close(force: true);
+          return true;
+        }
+      } catch (_) {
+        // Ignore errors and continue polling until timeout.
+      }
+
+      await Future<void>.delayed(pollInterval);
+    }
+
+    client.close(force: true);
+
+    throw StateError('Timed out waiting for Kiro Bridge to become available.');
+  }
+
   /// Starts a new conversation for creating an application.
   ///
   /// Creates a new conversation thread and adds the initial welcome message.
   void startNewApplicationConversation() {
-    // Open the Kiro IDE.
-    _userApplicationService.openKiroInAppsDir();
-
     _error = null;
-    _currentConversation = _createNewConversation(
-      purpose: 'create_application',
-    );
 
-    // Add welcome message
-    final ConversationMessage welcomeMessage = _createWelcomeMessage(
-      conversationId: _currentConversation!.id,
-    );
+    // TODO(Scott): Implementation
 
-    _currentConversation = _currentConversation!.addMessage(welcomeMessage);
+    // TODO(Scott): _currentConversation = _currentConversation!.addMessage(welcomeMessage);
     notifyListeners();
   }
 
@@ -97,28 +116,9 @@ class ConversationService extends ChangeNotifier {
   /// @param application The application to modify
   void startModifyApplicationConversation(UserApplication application) {
     _error = null;
-    _currentConversation = _createNewConversation(
-      purpose: 'modify_application',
-      applicationId: application.id,
-    );
 
-    // Add welcome message
-    final ConversationMessage welcomeMessage = _createWelcomeMessage(
-      conversationId: _currentConversation!.id,
-      isModification: true,
-      applicationName: application.title,
-    );
+    // TODO(Scott): Implementation
 
-    _currentConversation = _currentConversation!.addMessage(welcomeMessage);
-    notifyListeners();
-  }
-
-  /// Loads an existing conversation thread.
-  ///
-  /// @param conversation The conversation to load
-  void loadConversation(ConversationThread conversation) {
-    _error = null;
-    _currentConversation = conversation;
     notifyListeners();
   }
 
@@ -179,12 +179,6 @@ class ConversationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Clears any error state.
-  void clearError() {
-    _error = null;
-    notifyListeners();
-  }
-
   /// Processes a user message and generates an appropriate system response.
   ///
   /// This is a mock implementation that simulates conversation flow.
@@ -196,146 +190,6 @@ class ConversationService extends ChangeNotifier {
     _currentConversation = _currentConversation!.updateStatus(ConversationStatus.processing);
     notifyListeners();
 
-    try {
-      // Optionally ping status to surface availability issues early.
-      try {
-        await _kiro.getStatus();
-      } catch (_) {
-        // Non-fatal; proceed to execute so we surface the real error if any.
-      }
-
-      // Send the user's prompt to Kiro.
-      final Map<String, Object?> execResult = await _kiro.execute(
-        SendUserPromptCommand(prompt: userMessage),
-      );
-
-      // Derive response text. The bridge may return different shapes; prefer 'output'.
-      String responseText = '';
-      if (execResult.containsKey('output') && execResult['output'] != null) {
-        responseText = execResult['output'].toString();
-      } else if (execResult.containsKey('message') && execResult['message'] != null) {
-        responseText = execResult['message'].toString();
-      } else if (execResult.containsKey('executionId')) {
-        responseText = 'Request accepted. Execution ID: ${execResult['executionId']}';
-      } else {
-        responseText = 'Command executed.';
-      }
-
-      final ConversationMessage systemResponse = ConversationMessage(
-        id: 'msg_system_${DateTime.now().millisecondsSinceEpoch}',
-        sender: MessageSender.system,
-        content: responseText,
-        timestamp: DateTime.now(),
-        // In a future enhancement, parse actionable buttons from output if your bridge encodes them.
-      );
-
-      _currentConversation = _currentConversation!.addMessage(systemResponse);
-      _currentConversation = _currentConversation!.updateStatus(ConversationStatus.waitingForInput);
-      _error = null;
-    } catch (e) {
-      _error = 'Failed to process message: $e';
-      _currentConversation = _currentConversation!.updateStatus(ConversationStatus.error);
-    } finally {
-      _isProcessing = false;
-      notifyListeners();
-    }
-  }
-
-  /// Creates a new empty conversation thread for starting a new conversation.
-  ///
-  /// @param purpose The purpose of the conversation (e.g., 'create_application')
-  /// @param applicationId Optional application ID for modification conversations
-  /// @returns New empty ConversationThread
-  ConversationThread _createNewConversation({
-    required String purpose,
-    String? applicationId,
-  }) {
-    final DateTime now = DateTime.now();
-    final String conversationId = 'conv_${now.millisecondsSinceEpoch}';
-
-    return ConversationThread(
-      id: conversationId,
-      context: ConversationContext(
-        purpose: purpose,
-        applicationId: applicationId,
-        metadata: const {
-          'step': 'initial',
-        },
-      ),
-      status: ConversationStatus.active,
-      createdAt: now,
-      updatedAt: now,
-      messages: [],
-    );
-  }
-
-  /// Generates a system welcome message for starting a new conversation.
-  ///
-  /// @param conversationId The ID of the conversation
-  /// @param isModification Whether this is for modifying an existing app
-  /// @param applicationName Optional name of the app being modified
-  /// @returns ConversationMessage with welcome content and suggestions
-  ConversationMessage _createWelcomeMessage({
-    required String conversationId,
-    bool isModification = false,
-    String? applicationName,
-  }) {
-    final DateTime now = DateTime.now();
-    final String messageId = 'msg_welcome_${now.millisecondsSinceEpoch}';
-
-    if (isModification && applicationName != null) {
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content: 'I can help you modify your $applicationName application. What changes would you like to make?',
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_modify_001',
-            label: 'Add Features',
-            value: 'I want to add new features',
-          ),
-          const MessageAction(
-            id: 'action_modify_002',
-            label: 'Change Design',
-            value: 'I want to change the design or layout',
-          ),
-          const MessageAction(
-            id: 'action_modify_003',
-            label: 'Fix Issues',
-            value: 'There are some issues I want to fix',
-          ),
-        ],
-      );
-    } else {
-      return ConversationMessage(
-        id: messageId,
-        sender: MessageSender.system,
-        content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
-        timestamp: now,
-        actions: [
-          const MessageAction(
-            id: 'action_create_001',
-            label: 'Chore Tracker',
-            value: 'I need a chore tracking app for my family',
-          ),
-          const MessageAction(
-            id: 'action_create_002',
-            label: 'Budget Planner',
-            value: 'I want to track our household budget',
-          ),
-          const MessageAction(
-            id: 'action_create_003',
-            label: 'Recipe Organizer',
-            value: 'Help me organize family recipes',
-          ),
-          const MessageAction(
-            id: 'action_create_004',
-            label: 'Event Calendar',
-            value: 'I need a family calendar for events and appointments',
-          ),
-        ],
-      );
-    }
+    // TODO(Scott): Implementation
   }
 }

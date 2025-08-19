@@ -1,5 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/models.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
+import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
+import 'package:household_ai_engineer/services/user_application/models/development_milestone.dart';
+import 'package:household_ai_engineer/services/user_application/models/development_progress.dart';
+import 'package:household_ai_engineer/services/user_application/models/milestone_status.dart';
+import 'package:household_ai_engineer/services/user_application/models/user_application.dart';
 
 void main() {
   group('LaunchType', () {

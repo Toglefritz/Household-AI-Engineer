@@ -5,7 +5,9 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/models.dart';
+import 'package:household_ai_engineer/services/user_application/models/development_milestone.dart';
+import 'package:household_ai_engineer/services/user_application/models/development_progress.dart';
+import 'package:household_ai_engineer/services/user_application/models/milestone_status.dart';
 
 void main() {
   group('DevelopmentProgress', () {

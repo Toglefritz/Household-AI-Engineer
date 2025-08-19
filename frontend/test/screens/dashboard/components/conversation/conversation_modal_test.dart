@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/models.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
+import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/conversation/conversation_modal.dart';
+import 'package:household_ai_engineer/services/conversation/models/conversation_context.dart';
+import 'package:household_ai_engineer/services/conversation/models/conversation_message.dart';
+import 'package:household_ai_engineer/services/conversation/models/conversation_status.dart';
+import 'package:household_ai_engineer/services/conversation/models/conversation_thread.dart';
+import 'package:household_ai_engineer/services/conversation/models/message_action.dart';
+import 'package:household_ai_engineer/services/conversation/models/message_sender.dart';
+import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
+import 'package:household_ai_engineer/services/user_application/models/user_application.dart';
 
 import '../../../../test_helpers.dart';
 

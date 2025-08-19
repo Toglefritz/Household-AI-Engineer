@@ -14,8 +14,6 @@ dependencies:
   # Used to define localizable strings
   flutter_localizations:
     sdk: flutter
-  # Used to send REST API commands
-  http: ^1.5.0
   # Path utilities
   path: ^1.9.0
   # Local storage and preferences

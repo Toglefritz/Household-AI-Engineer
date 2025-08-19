@@ -5,7 +5,7 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/models.dart';
+import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
 
 void main() {
   group('ApplicationStatus', () {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../models/conversation/message_action_type.dart';
-import '../../../../models/models.dart';
+import '../../../../services/conversation/models/conversation_message.dart';
+import '../../../../services/conversation/models/message_action.dart';
+import '../../../../services/conversation/models/message_action_type.dart';
 import '../../../../theme/insets.dart';
 
 /// Widget for displaying a single conversation message.

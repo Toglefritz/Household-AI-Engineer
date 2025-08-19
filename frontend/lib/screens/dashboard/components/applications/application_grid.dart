@@ -3,7 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../models/models.dart';
+import '../../../../services/user_application/models/user_application.dart';
 import '../../../../theme/insets.dart';
 import 'application_tile.dart';
 

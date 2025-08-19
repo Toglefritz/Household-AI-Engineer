@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../models/models.dart';
+import '../../services/conversation/models/conversation_message.dart';
+import '../../services/conversation/models/conversation_thread.dart';
+import '../../services/conversation/models/message_sender.dart';
+import '../../services/user_application/models/application_status.dart';
+import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
 import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
