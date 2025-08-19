@@ -1,183 +1,211 @@
 {
-    "info": {
-      "name": "Kiro Communication Bridge API",
-      "_postman_id": "9c9a1a1c-5b3e-4a5a-9b6f-kiro-bridge-collection",
-      "description": "Postman collection for the local REST API that connects the Flutter frontend to the Kiro IDE.\n\nBase URL: http://localhost:3001\nAuth: Optional API key via Authorization: Bearer <key> or ?apiKey=<key>\nContent-Type: application/json",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "variable": [
-      { "key": "baseUrl", "value": "http://localhost:3001" },
-      { "key": "apiKey", "value": "" },
-      { "key": "authLocation", "value": "header", "type": "string", "description": "Set to 'header' or 'query' to control how the API key is sent." },
-      { "key": "timeoutMs", "value": "30000" }
-    ],
-    "event": [
-      {
-        "listen": "prerequest",
-        "script": {
-          "type": "text/javascript",
-          "exec": [
-            "// Inject API key if provided, either in header or as query param",
-            "const apiKey = pm.collectionVariables.get('apiKey');",
-            "const mode = (pm.collectionVariables.get('authLocation') || 'header').toLowerCase();",
-            "if (apiKey && apiKey.trim().length > 0) {",
-            "  if (mode === 'header') {",
-            "    pm.request.headers.upsert({ key: 'Authorization', value: 'Bearer ' + apiKey, disabled: false });",
-            "  } else if (mode === 'query') {",
-            "    // Add or update the apiKey query param",
-            "    const u = new URL(pm.request.url.toString());",
-            "    u.searchParams.set('apiKey', apiKey);",
-            "    pm.request.url = u.toString();",
-            "  }",
-            "}",
-            "// Ensure JSON content type for bodies",
-            "if (pm.request.method !== 'GET') {",
-            "  pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
-            "}"
-          ]
-        }
-      }
-    ],
-    "item": [
-      {
-        "name": "Health Check",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] },
-          "description": "Checks if the local API server is running and healthy."
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "pm.test('Status code is 200', () => pm.response.code === 200);",
-                "pm.test('Content-Type is JSON', () => pm.response.headers.get('Content-Type').includes('application/json'));",
-                "const body = pm.response.json();",
-                "pm.test('Server reports healthy', () => body.status === 'healthy');",
-                "pm.test('Has server info', () => body.server && typeof body.server.port === 'number');"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "name": "Get Kiro Status",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": { "raw": "{{baseUrl}}/api/kiro/status", "host": ["{{baseUrl}}"], "path": ["api", "kiro", "status"] },
-          "description": "Returns current Kiro IDE status, version, and available commands."
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "pm.test('Status code is 200', () => pm.response.code === 200);",
-                "const body = pm.response.json();",
-                "pm.test('Status is valid', () => ['ready','busy','unavailable'].includes(body.status));",
-                "pm.test('Has timestamp', () => typeof body.timestamp === 'string');",
-                "pm.test('availableCommands is array', () => Array.isArray(body.availableCommands));"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "name": "Execute Kiro Command",
-        "request": {
-          "method": "POST",
-          "header": [],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"command\": \"workbench.action.files.newUntitledFile\",\n  \"args\": []\n}"
-          },
-          "url": { "raw": "{{baseUrl}}/api/kiro/execute", "host": ["{{baseUrl}}"], "path": ["api", "kiro", "execute"] },
-          "description": "Executes a Kiro/VS Code command. Customize `command`, optional `args`, and `workspacePath`."
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "const isJson = pm.response.headers.get('Content-Type')?.includes('application/json');",
-                "pm.test('Content-Type is JSON', () => isJson === true);",
-                "let body = {};",
-                "try { body = pm.response.json(); } catch (e) {}",
-                "pm.test('Has success flag', () => typeof body.success === 'boolean' || typeof body.code === 'string');",
-                "if (pm.response.code === 200 && body.success) {",
-                "  pm.test('Contains output or executionTimeMs', () => 'output' in body || 'executionTimeMs' in body);",
-                "} else {",
-                "  pm.test('Error payload has code & message', () => body.code && body.message);",
-                "}",
-                "// Save executionId from output if present (for input step scenarios, if the server returns it in output) — adjust if your bridge exposes it differently.",
-                "if (body.executionId) { pm.collectionVariables.set('lastExecutionId', body.executionId); }"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "name": "Execute Kiro Command (Invalid Example)",
-        "request": {
-          "method": "POST",
-          "header": [],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"command\": \"invalid.command\",\n  \"args\": []\n}"
-          },
-          "url": { "raw": "{{baseUrl}}/api/kiro/execute", "host": ["{{baseUrl}}"], "path": ["api", "kiro", "execute"] },
-          "description": "Demonstrates an error response (e.g., COMMAND_EXECUTION_FAILED)."
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "pm.test('Returns error status (4xx/5xx) or 200 with success=false', function () {",
-                "  const s = pm.response.code;",
-                "  const body = pm.response.json();",
-                "  pm.expect((s >= 400 && s < 600) || body.success === false || !!body.code).to.be.true;",
-                "});",
-                "const body = pm.response.json();",
-                "pm.test('Has error code/message', () => !!body.code && !!body.message);"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "name": "Provide User Input",
-        "request": {
-          "method": "POST",
-          "header": [],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"value\": \"yes\",\n  \"type\": \"confirmation\",\n  \"executionId\": \"{{lastExecutionId}}\"\n}"
-          },
-          "url": { "raw": "{{baseUrl}}/api/kiro/input", "host": ["{{baseUrl}}"], "path": ["api", "kiro", "input"] },
-          "description": "Sends user input to an interactive command. Set {{lastExecutionId}} manually if not previously captured."
-        },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "type": "text/javascript",
-              "exec": [
-                "pm.test('Status code is 200', () => pm.response.code === 200);",
-                "const body = pm.response.json();",
-                "pm.test('Has success flag', () => typeof body.success === 'boolean');",
-                "pm.test('Returns executionId (may be empty if invalid)', () => typeof body.executionId === 'string');"
-              ]
-            }
-          }
-        ]
-      }
-    ]
-  }
+	"info": {
+		"_postman_id": "6bdf27ef-d4e9-43b0-88d9-48dee65daa97",
+		"name": "Kiro Communication Bridge API",
+		"description": "Postman collection for the local REST API that connects the Flutter frontend to the Kiro IDE.\n\nBase URL: http://localhost:3001\nAuth: Optional API key via Authorization: Bearer <key> or ?apiKey=<key>\nContent-Type: application/json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11173603",
+		"_collection_link": "https://grey-meteor-592865.postman.co/workspace/Household-AI-Engineer~0e722f48-da42-40c9-857d-c8dca7298dc5/collection/11173603-6bdf27ef-d4e9-43b0-88d9-48dee65daa97?action=share&source=collection_link&creator=11173603"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', () => pm.response.code === 200);",
+							"pm.test('Content-Type is JSON', () => pm.response.headers.get('Content-Type').includes('application/json'));",
+							"const body = pm.response.json();",
+							"pm.test('Server reports healthy', () => body.status === 'healthy');",
+							"pm.test('Has server info', () => body.server && typeof body.server.port === 'number');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Checks if the local API server is running and healthy."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Kiro Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', () => pm.response.code === 200);",
+							"const body = pm.response.json();",
+							"pm.test('Status is valid', () => ['ready','busy','unavailable'].includes(body.status));",
+							"pm.test('Has timestamp', () => typeof body.timestamp === 'string');",
+							"pm.test('availableCommands is array', () => Array.isArray(body.availableCommands));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/kiro/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"kiro",
+						"status"
+					]
+				},
+				"description": "Returns current Kiro IDE status, version, and available commands."
+			},
+			"response": []
+		},
+		{
+			"name": "Execute Kiro Command - Send User Message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const isJson = pm.response.headers.get('Content-Type')?.includes('application/json');",
+							"pm.test('Content-Type is JSON', () => isJson === true);",
+							"let body = {};",
+							"try { body = pm.response.json(); } catch (e) {}",
+							"pm.test('Has success flag', () => typeof body.success === 'boolean' || typeof body.code === 'string');",
+							"if (pm.response.code === 200 && body.success) {",
+							"  pm.test('Contains output or executionTimeMs', () => 'output' in body || 'executionTimeMs' in body);",
+							"} else {",
+							"  pm.test('Error payload has code & message', () => body.code && body.message);",
+							"}",
+							"// Save executionId from output if present (for input step scenarios, if the server returns it in output) — adjust if your bridge exposes it differently.",
+							"if (body.executionId) { pm.collectionVariables.set('lastExecutionId', body.executionId); }"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"command\": \"workbench.action.files.newUntitledFile\",\n  \"args\": []\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/kiro/execute",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"kiro",
+						"execute"
+					]
+				},
+				"description": "Executes a Kiro/VS Code command. Customize `command`, optional `args`, and `workspacePath`.\n\n---\n# Examples (swap into the raw request body)\n\n## Open: Kiro Hooks UI (palette)\n```json\n{\n  \"command\": \"kiro.commands.openHookUI\",\n  \"args\": []\n}\n```\n\n## Create/overwrite a Spec requirements.md (fsWrite)\n```json\n{\n  \"command\": \"kiro.tools.fsWrite\",\n  \"args\": [\n    {\n      \"path\": \".kiro/specs/kiro-command-research/requirements.md\",\n      \"text\": \"# Requirements\\n\\n## Introduction\\nKiro command research feature.\\n\\n## Requirements\\n\\n### R1\\n**User Story:** As a developer, I want to trigger Kiro actions remotely, so that I can orchestrate workflows from another app.\\n\\n#### Acceptance Criteria\\n1. WHEN a POST arrives at the bridge THEN Kiro SHALL execute a command.\\n2. IF the command needs input THEN the system SHALL expose an executionId for follow-up input.\\n\"\n    }\n  ]\n}\n```\n\n## Append to Spec design.md (fsAppend)\n```json\n{\n  \"command\": \"kiro.tools.fsAppend\",\n  \"args\": [\n    {\n      \"path\": \".kiro/specs/kiro-command-research/design.md\",\n      \"text\": \"\\n## Components and Interfaces\\n- Bridge API -> VS Code command bus -> Kiro tools.\\n\"\n    }\n  ]\n}\n```\n\n## Read a file (readFile) – useful for confirming generated docs\n```json\n{\n  \"command\": \"kiro.tools.readFile\",\n  \"args\": [\n    {\n      \"path\": \".kiro/specs/kiro-command-research/requirements.md\",\n      \"explanation\": \"Verify the requirements.md contents\"\n    }\n  ]\n}\n```\n\n## Search steering rules (grepSearch)\n```json\n{\n  \"command\": \"kiro.tools.grepSearch\",\n  \"args\": [\n    {\n      \"query\": \"^inclusion:\\\\s\",\n      \"includePattern\": \".kiro/steering/**/*.md\",\n      \"explanation\": \"Discover steering inclusion modes\"\n    }\n  ]\n}\n```\n\n## Prompt user for approval (userInput)\n```json\n{\n  \"command\": \"kiro.tools.userInput\",\n  \"args\": [\n    {\n      \"question\": \"**Does the design look good? If so, we can move on to the implementation plan.**\",\n      \"reason\": \"spec-design-review\"\n    }\n  ]\n}\n```\n\n> If the bridge surfaces `executionId` in the response, send the follow‑up input via **Provide User Input** using that ID.\n\n## Update a tasks.md checkbox status (taskStatus)\n```json\n{\n  \"command\": \"kiro.tools.taskStatus\",\n  \"args\": [\n    {\n      \"taskFilePath\": \".kiro/specs/kiro-command-research/tasks.md\",\n      \"task\": \"2.1 Create core data model interfaces and types\",\n      \"status\": \"in_progress\"\n    }\n  ]\n}\n```\n\n## Run a shell command in a subfolder (executeBash)\n```json\n{\n  \"command\": \"kiro.tools.executeBash\",\n  \"args\": [\n    {\n      \"command\": \"flutter test\",\n      \"path\": \"frontend\"\n    }\n  ]\n}\n```\n\n## Fuzzy file search by path (fileSearch)\n```json\n{\n  \"command\": \"kiro.tools.fileSearch\",\n  \"args\": [\n    {\n      \"explanation\": \"Locate spec folders\",\n      \"query\": \".kiro/specs/.*\",\n      \"excludePattern\": \"**/node_modules/**\"\n    }\n  ]\n}\n```\n\n## Replace exact text in a file (strReplace)\n```json\n{\n  \"command\": \"kiro.tools.strReplace\",\n  \"args\": [\n    {\n      \"path\": \".kiro/specs/kiro-command-research/requirements.md\",\n      \"oldStr\": \"## Introduction\\nKiro command research feature.\",\n      \"newStr\": \"## Introduction\\nKiro command research feature (updated).\"\n    }\n  ]\n}\n```\n\n## Open a file in the editor (VS Code built-in)\n```json\n{\n  \"command\": \"vscode.open\",\n  \"args\": [\n    { \"path\": \".kiro/specs/kiro-command-research/requirements.md\" }\n  ]\n}\n```\n\n## Create an untitled file (VS Code built-in)\n```json\n{\n  \"command\": \"workbench.action.files.newUntitledFile\",\n  \"args\": []\n}\n```\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Provide User Input",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test('Status code is 200', () => pm.response.code === 200);",
+							"const body = pm.response.json();",
+							"pm.test('Has success flag', () => typeof body.success === 'boolean');",
+							"pm.test('Returns executionId (may be empty if invalid)', () => typeof body.executionId === 'string');"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"value\": \"yes\",\n  \"type\": \"confirmation\",\n  \"executionId\": \"{{lastExecutionId}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/kiro/input",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"kiro",
+						"input"
+					]
+				},
+				"description": "Sends user input to an interactive command. Set {{lastExecutionId}} manually if not previously captured."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Inject API key if provided, either in header or as query param",
+					"const apiKey = pm.collectionVariables.get('apiKey');",
+					"const mode = (pm.collectionVariables.get('authLocation') || 'header').toLowerCase();",
+					"if (apiKey && apiKey.trim().length > 0) {",
+					"  if (mode === 'header') {",
+					"    pm.request.headers.upsert({ key: 'Authorization', value: 'Bearer ' + apiKey, disabled: false });",
+					"  } else if (mode === 'query') {",
+					"    // Add or update the apiKey query param",
+					"    const u = new URL(pm.request.url.toString());",
+					"    u.searchParams.set('apiKey', apiKey);",
+					"    pm.request.url = u.toString();",
+					"  }",
+					"}",
+					"// Ensure JSON content type for bodies",
+					"if (pm.request.method !== 'GET') {",
+					"  pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001"
+		},
+		{
+			"key": "apiKey",
+			"value": ""
+		},
+		{
+			"key": "authLocation",
+			"value": "header",
+			"type": "string",
+			"description": "Set to 'header' or 'query' to control how the API key is sent."
+		},
+		{
+			"key": "timeoutMs",
+			"value": "30000"
+		}
+	]
+}
