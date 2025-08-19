@@ -1,0 +1,157 @@
+{
+  "name": "kiro-communication-bridge",
+  "displayName": "Kiro Communication Bridge",
+  "description": "Communication bridge between Flutter frontend and Kiro IDE for the Household Software Engineer system",
+  "version": "0.6.0",
+  "publisher": "household-ai-engineer",
+  "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kiroOrchestration.getStatus",
+        "title": "Get Kiro Status",
+        "category": "Kiro Communication"
+      },
+      {
+        "command": "kiroOrchestration.executeCommand",
+        "title": "Execute Kiro Command",
+        "category": "Kiro Communication"
+      },
+      {
+        "command": "kiroOrchestration.showAvailableCommands",
+        "title": "Show Available Commands",
+        "category": "Kiro Communication"
+      },
+      {
+        "command": "kiroOrchestration.restartServers",
+        "title": "Restart Communication Servers",
+        "category": "Kiro Communication"
+      }
+    ],
+    "configuration": {
+      "title": "Kiro Communication Bridge",
+      "properties": {
+        "kiroOrchestration.api.port": {
+          "type": "number",
+          "default": 3001,
+          "description": "Port for the HTTP API server"
+        },
+        "kiroOrchestration.api.host": {
+          "type": "string",
+          "default": "localhost",
+          "description": "Host address to bind the API server to"
+        },
+        "kiroOrchestration.api.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for authentication (leave empty to disable)"
+        },
+        "kiroOrchestration.api.timeoutMs": {
+          "type": "number",
+          "default": 30000,
+          "description": "Request timeout in milliseconds"
+        },
+        "kiroOrchestration.api.enableCors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CORS for API requests"
+        },
+        "kiroOrchestration.websocket.port": {
+          "type": "number",
+          "default": 3002,
+          "description": "Port for the WebSocket server"
+        },
+        "kiroOrchestration.websocket.maxConnections": {
+          "type": "number",
+          "default": 10,
+          "description": "Maximum number of WebSocket connections"
+        },
+        "kiroOrchestration.kiro.commandTimeoutMs": {
+          "type": "number",
+          "default": 300000,
+          "description": "Default timeout for Kiro commands in milliseconds"
+        },
+        "kiroOrchestration.kiro.maxConcurrentCommands": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum number of concurrent command executions"
+        },
+        "kiroOrchestration.kiro.statusCheckIntervalMs": {
+          "type": "number",
+          "default": 5000,
+          "description": "Interval for Kiro status checks in milliseconds"
+        },
+        "kiroOrchestration.kiro.statusCheckTimeoutMs": {
+          "type": "number",
+          "default": 3000,
+          "description": "Timeout for status check operations in milliseconds"
+        },
+        "kiroOrchestration.kiro.failureThreshold": {
+          "type": "number",
+          "default": 3,
+          "description": "Number of consecutive failures before marking as unavailable"
+        },
+        "kiroOrchestration.kiro.commandDiscoveryIntervalMs": {
+          "type": "number",
+          "default": 30000,
+          "description": "Interval for command discovery in milliseconds"
+        },
+        "kiroOrchestration.userInput.defaultTimeoutMs": {
+          "type": "number",
+          "default": 300000,
+          "description": "Default timeout for user input in milliseconds"
+        },
+        "kiroOrchestration.userInput.maxPendingRequests": {
+          "type": "number",
+          "default": 10,
+          "description": "Maximum number of pending input requests"
+        },
+        "kiroOrchestration.logging.enableDebugLogging": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug logging for all components"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.8",
+    "@types/node": "16.x",
+    "@types/uuid": "^9.0.7",
+    "@types/vscode": "^1.74.0",
+    "@types/ws": "^8.5.10",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  }
+}

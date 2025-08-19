@@ -260,8 +260,8 @@ export const WebSocketValidation = {
     );
   },
 
-  // Private validation methods for specific event types
-  private isValidCommandStartedEvent(event: Record<string, unknown>): boolean {
+  // Validation methods for specific event types
+  isValidCommandStartedEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.command === 'string' &&
       Array.isArray(event.args) &&
@@ -270,7 +270,7 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidCommandOutputEvent(event: Record<string, unknown>): boolean {
+  isValidCommandOutputEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.output === 'string' &&
       typeof event.executionId === 'string' &&
@@ -278,7 +278,7 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidCommandCompletedEvent(event: Record<string, unknown>): boolean {
+  isValidCommandCompletedEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.success === 'boolean' &&
       typeof event.output === 'string' &&
@@ -288,7 +288,7 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidCommandErrorEvent(event: Record<string, unknown>): boolean {
+  isValidCommandErrorEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.error === 'string' &&
       typeof event.executionId === 'string' &&
@@ -297,7 +297,7 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidUserInputRequiredEvent(event: Record<string, unknown>): boolean {
+  isValidUserInputRequiredEvent(event: Record<string, unknown>): boolean {
     const validInputTypes = ['text', 'choice', 'file', 'confirmation'];
     return (
       typeof event.prompt === 'string' &&
@@ -309,14 +309,14 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidInputAcceptedEvent(event: Record<string, unknown>): boolean {
+  isValidInputAcceptedEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.executionId === 'string' &&
       typeof event.inputValue === 'string'
     );
   },
 
-  private isValidStatusChangedEvent(event: Record<string, unknown>): boolean {
+  isValidStatusChangedEvent(event: Record<string, unknown>): boolean {
     const validStatuses = ['ready', 'busy', 'unavailable'];
     return (
       validStatuses.includes(event.status as string) &&
@@ -325,7 +325,7 @@ export const WebSocketValidation = {
     );
   },
 
-  private isValidConnectionReadyEvent(event: Record<string, unknown>): boolean {
+  isValidConnectionReadyEvent(event: Record<string, unknown>): boolean {
     return (
       typeof event.serverInfo === 'object' &&
       event.serverInfo !== null &&

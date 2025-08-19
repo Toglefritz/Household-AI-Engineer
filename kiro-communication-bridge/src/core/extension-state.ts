@@ -1,8 +1,8 @@
 /**
- * Central state management for the Kiro Orchestration Extension.
+ * Central state management for the Kiro Communication Bridge Extension.
  * 
  * This class manages the extension's lifecycle, configuration, and core services
- * including the API server, WebSocket server, and job management system.
+ * including the API server, WebSocket server, and Kiro communication components.
  */
 
 import * as vscode from 'vscode';
@@ -10,11 +10,12 @@ import { Logger } from './logger';
 import { ConfigurationManager } from './configuration-manager';
 import { ApiServer } from '../api/api-server';
 import { WebSocketServer } from '../websocket/websocket-server';
-import { JobManager } from '../jobs/job-manager';
-import { WorkspaceManager } from '../workspace/workspace-manager';
+import { KiroCommandProxy } from '../kiro/kiro-command-proxy';
+import { StatusMonitor } from '../kiro/status-monitor';
+import { UserInputHandler } from '../kiro/user-input-handler';
 
 /**
- * Manages the global state and lifecycle of the orchestration extension.
+ * Manages the global state and lifecycle of the communication bridge extension.
  * 
  * This singleton class coordinates all major components of the extension
  * and provides a central point for initialization, configuration, and cleanup.
@@ -24,8 +25,9 @@ export class ExtensionState {
   
   private readonly logger: Logger;
   private readonly configurationManager: ConfigurationManager;
-  private readonly workspaceManager: WorkspaceManager;
-  private readonly jobManager: JobManager;
+  private readonly kiroProxy: KiroCommandProxy;
+  private readonly statusMonitor: StatusMonitor;
+  private readonly userInputHandler: UserInputHandler;
   private readonly apiServer: ApiServer;
   private readonly webSocketServer: WebSocketServer;
   
@@ -42,10 +44,25 @@ export class ExtensionState {
   private constructor() {
     this.logger = new Logger('ExtensionState');
     this.configurationManager = new ConfigurationManager();
-    this.workspaceManager = new WorkspaceManager();
-    this.jobManager = new JobManager(this.workspaceManager);
-    this.apiServer = new ApiServer(this.jobManager, this.configurationManager);
-    this.webSocketServer = new WebSocketServer(this.configurationManager);
+    
+    // Initialize Kiro communication components
+    this.kiroProxy = new KiroCommandProxy();
+    this.statusMonitor = new StatusMonitor();
+    this.userInputHandler = new UserInputHandler();
+    
+    // Initialize servers with communication components
+    this.apiServer = new ApiServer(
+      {},
+      this.kiroProxy,
+      this.statusMonitor,
+      this.userInputHandler
+    );
+    this.webSocketServer = new WebSocketServer(
+      {},
+      this.kiroProxy,
+      this.statusMonitor,
+      this.userInputHandler
+    );
     
     this.logger.info('Extension state instance created');
   }
@@ -88,12 +105,6 @@ export class ExtensionState {
       this.logger.info('Loading configuration...');
       await this.configurationManager.loadConfiguration();
       
-      this.logger.info('Initializing workspace manager...');
-      await this.workspaceManager.initialize(this.configurationManager.getConfiguration());
-      
-      this.logger.info('Initializing job manager...');
-      await this.jobManager.initialize();
-      
       this.isInitialized = true;
       this.logger.info('Extension state initialized successfully');
     } catch (error: unknown) {
@@ -107,7 +118,7 @@ export class ExtensionState {
    * Starts the API and WebSocket servers.
    * 
    * This method launches both servers and sets up communication channels
-   * for the Flutter frontend to interact with the orchestration system.
+   * for the Flutter frontend to interact with Kiro IDE.
    */
   public async startServers(): Promise<void> {
     if (!this.isInitialized) {
@@ -125,9 +136,6 @@ export class ExtensionState {
       
       this.logger.info('Starting WebSocket server...');
       await this.webSocketServer.start();
-      
-      // Connect job manager to WebSocket server for progress updates
-      this.jobManager.setProgressReporter(this.webSocketServer);
       
       this.serversStarted = true;
       this.logger.info('All servers started successfully');
@@ -174,35 +182,42 @@ export class ExtensionState {
   public getServerStatus(): {
     initialized: boolean;
     serversStarted: boolean;
-    apiServerRunning: boolean;
-    webSocketServerRunning: boolean;
-    activeJobs: number;
+    kiroAvailable: boolean;
+    connectedClients: number;
   } {
     return {
       initialized: this.isInitialized,
       serversStarted: this.serversStarted,
-      apiServerRunning: this.apiServer.isRunning(),
-      webSocketServerRunning: this.webSocketServer.isRunning(),
-      activeJobs: this.jobManager.getActiveJobCount(),
+      kiroAvailable: this.statusMonitor.isAvailable(),
+      connectedClients: this.webSocketServer.getClientCount(),
     };
   }
 
   /**
-   * Gets the job manager instance.
+   * Gets the Kiro command proxy instance.
    * 
-   * @returns The job manager instance
+   * @returns The Kiro command proxy instance
    */
-  public getJobManager(): JobManager {
-    return this.jobManager;
+  public getKiroProxy(): KiroCommandProxy {
+    return this.kiroProxy;
   }
 
   /**
-   * Gets the workspace manager instance.
+   * Gets the status monitor instance.
    * 
-   * @returns The workspace manager instance
+   * @returns The status monitor instance
    */
-  public getWorkspaceManager(): WorkspaceManager {
-    return this.workspaceManager;
+  public getStatusMonitor(): StatusMonitor {
+    return this.statusMonitor;
+  }
+
+  /**
+   * Gets the user input handler instance.
+   * 
+   * @returns The user input handler instance
+   */
+  public getUserInputHandler(): UserInputHandler {
+    return this.userInputHandler;
   }
 
   /**
@@ -230,8 +245,11 @@ export class ExtensionState {
       }
       
       // Dispose of all services
-      await this.jobManager.dispose();
-      await this.workspaceManager.dispose();
+      this.kiroProxy.dispose();
+      this.statusMonitor.dispose();
+      this.userInputHandler.dispose();
+      await this.apiServer.dispose();
+      await this.webSocketServer.dispose();
       
       // Clear the singleton instance
       ExtensionState.instance = null;

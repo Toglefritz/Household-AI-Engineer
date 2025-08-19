@@ -121,26 +121,6 @@ export class CommandExecutionError extends BridgeError {
     this.stdout = options.stdout;
     this.stderr = options.stderr;
   }
-
-  /**
-   * Creates a CommandExecutionError from a command result.
-   */
-  public static fromCommandResult(
-    command: string,
-    args: string[],
-    result: { exitCode?: number; stdout?: string; stderr?: string; error?: string }
-  ): CommandExecutionError {
-    return new CommandExecutionError(
-      command,
-      args,
-      result.error || 'Command execution failed',
-      {
-        exitCode: result.exitCode,
-        stdout: result.stdout,
-        stderr: result.stderr
-      }
-    );
-  }
 }
 
 /**
@@ -166,22 +146,6 @@ export class KiroUnavailableError extends BridgeError {
 
     super(messages[reason], { reason, ...context });
     this.reason = reason;
-  }
-
-  /**
-   * Gets suggested recovery actions for this error.
-   */
-  public getRecoveryActions(): string[] {
-    switch (this.reason) {
-      case 'not_installed':
-        return ['Install Kiro IDE', 'Check PATH configuration'];
-      case 'not_running':
-        return ['Start Kiro IDE', 'Check if VS Code is running'];
-      case 'not_responding':
-        return ['Restart Kiro IDE', 'Check system resources', 'Wait and retry'];
-      default:
-        return ['Check Kiro IDE status', 'Restart application'];
-    }
   }
 }
 
@@ -221,28 +185,6 @@ export class WebSocketError extends BridgeError {
     this.wsCode = options.wsCode;
     this.wsReason = options.wsReason;
   }
-
-  /**
-   * Creates a WebSocketError from a WebSocket close event.
-   */
-  public static fromCloseEvent(code: number, reason: string): WebSocketError {
-    return new WebSocketError(
-      'client_disconnected',
-      `Client disconnected with code ${code}: ${reason}`,
-      { wsCode: code, wsReason: reason }
-    );
-  }
-
-  /**
-   * Creates a WebSocketError from a connection failure.
-   */
-  public static fromConnectionFailure(error: Error): WebSocketError {
-    return new WebSocketError(
-      'connection_failed',
-      error.message,
-      { context: { originalError: error.name } }
-    );
-  }
 }
 
 /**
@@ -280,26 +222,6 @@ export class ValidationError extends BridgeError {
     this.value = options.value;
     this.rule = options.rule;
   }
-
-  /**
-   * Creates a ValidationError for a missing required field.
-   */
-  public static missingField(field: string): ValidationError {
-    return new ValidationError(
-      `Required field '${field}' is missing`,
-      { field, rule: 'required' }
-    );
-  }
-
-  /**
-   * Creates a ValidationError for an invalid field format.
-   */
-  public static invalidFormat(field: string, expectedFormat: string, value: unknown): ValidationError {
-    return new ValidationError(
-      `Field '${field}' must be in ${expectedFormat} format`,
-      { field, value, rule: 'format' }
-    );
-  }
 }
 
 /**
@@ -336,141 +258,8 @@ export class TimeoutError extends BridgeError {
 }
 
 /**
- * Error thrown when configuration is invalid or missing.
- */
-export class ConfigurationError extends BridgeError {
-  public readonly code = 'CONFIGURATION_ERROR';
-  public readonly recoverable = false;
-
-  /** Configuration key that is invalid */
-  public readonly configKey?: string;
-  
-  /** Expected configuration format */
-  public readonly expectedFormat?: string;
-  
-  /** Actual configuration value */
-  public readonly actualValue?: unknown;
-
-  constructor(
-    message: string,
-    options: {
-      configKey?: string;
-      expectedFormat?: string;
-      actualValue?: unknown;
-      context?: Record<string, unknown>;
-    } = {}
-  ) {
-    super(message, {
-      configKey: options.configKey,
-      expectedFormat: options.expectedFormat,
-      ...options.context
-    });
-    
-    this.configKey = options.configKey;
-    this.expectedFormat = options.expectedFormat;
-    this.actualValue = options.actualValue;
-  }
-}
-
-/**
- * Union type for all specific bridge error types.
- */
-export type SpecificBridgeError = 
-  | CommandExecutionError
-  | KiroUnavailableError
-  | WebSocketError
-  | ValidationError
-  | TimeoutError
-  | ConfigurationError;
-
-/**
  * Type guard to check if an error is a BridgeError.
  */
 export function isBridgeError(error: unknown): error is BridgeError {
   return error instanceof BridgeError;
 }
-
-/**
- * Type guard to check if an error is recoverable.
- */
-export function isRecoverableError(error: unknown): boolean {
-  return isBridgeError(error) && error.recoverable;
-}
-
-/**
- * Utility functions for error handling.
- */
-export const ErrorUtils = {
-  /**
-   * Converts any error to a BridgeError.
-   */
-  toBridgeError(error: unknown): BridgeError {
-    if (isBridgeError(error)) {
-      return error;
-    }
-    
-    if (error instanceof Error) {
-      return new class extends BridgeError {
-        public readonly code = 'UNKNOWN_ERROR';
-        public readonly recoverable = false;
-      }(error.message, { originalError: error.name });
-    }
-    
-    return new class extends BridgeError {
-      public readonly code = 'UNKNOWN_ERROR';
-      public readonly recoverable = false;
-    }(String(error));
-  },
-
-  /**
-   * Formats error for logging.
-   */
-  formatForLogging(error: unknown): Record<string, unknown> {
-    const bridgeError = this.toBridgeError(error);
-    return bridgeError.toLogInfo();
-  },
-
-  /**
-   * Formats error for client response.
-   */
-  formatForClient(error: unknown): Record<string, unknown> {
-    const bridgeError = this.toBridgeError(error);
-    return bridgeError.toClientInfo();
-  },
-
-  /**
-   * Gets recovery suggestions for an error.
-   */
-  getRecoverySuggestions(error: unknown): string[] {
-    if (error instanceof KiroUnavailableError) {
-      return error.getRecoveryActions();
-    }
-    
-    if (error instanceof CommandExecutionError) {
-      return [
-        'Check command syntax and arguments',
-        'Verify workspace path is correct',
-        'Ensure Kiro IDE is responding',
-        'Try running the command manually'
-      ];
-    }
-    
-    if (error instanceof WebSocketError) {
-      return [
-        'Check network connection',
-        'Refresh the page',
-        'Restart the application'
-      ];
-    }
-    
-    if (error instanceof ValidationError) {
-      return [
-        'Check request format',
-        'Verify all required fields are provided',
-        'Ensure field values are in correct format'
-      ];
-    }
-    
-    return ['Try again later', 'Contact support if problem persists'];
-  }
-};

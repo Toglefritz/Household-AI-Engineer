@@ -29,73 +29,73 @@
     - Write unit tests for error handling
     - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 3. Build Kiro Command Proxy
-  - [ ] 3.1 Implement KiroCommandProxy class
+- [x] 3. Build Kiro Command Proxy
+  - [x] 3.1 Implement KiroCommandProxy class
     - Create command execution logic using VS Code command API
     - Implement command output capture and parsing
     - Add command timeout and error handling
     - Write unit tests with mocked VS Code commands
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ] 3.2 Create status monitoring system
+  - [x] 3.2 Create status monitoring system
     - Implement Kiro availability detection
     - Add status checking and monitoring logic
     - Create available commands discovery
     - Write unit tests for status monitoring
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 3.3 Add user input handling
+  - [x] 3.3 Add user input handling
     - Implement user input forwarding to active Kiro commands
     - Add input validation and error handling
     - Create input acceptance confirmation
     - Write unit tests for user input processing
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 4. Create REST API Server
-  - [ ] 4.1 Set up Express.js API server
+- [x] 4. Create REST API Server
+  - [x] 4.1 Set up Express.js API server
     - Create ApiServer class with Express configuration
     - Add basic middleware for JSON parsing and error handling
     - Implement server startup and shutdown logic
     - Write unit tests for server setup
     - _Requirements: 1.1, 5.4_
 
-  - [ ] 4.2 Implement command execution endpoint
+  - [x] 4.2 Implement command execution endpoint
     - Create POST /api/kiro/execute endpoint handler
     - Add request validation and command forwarding
     - Implement response formatting and error handling
     - Write unit tests for command execution endpoint
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ] 4.3 Create status query endpoint
+  - [x] 4.3 Create status query endpoint
     - Implement GET /api/kiro/status endpoint
     - Add Kiro status checking and response formatting
     - Include available commands in status response
     - Write unit tests for status endpoint
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 4.4 Add user input endpoint
+  - [x] 4.4 Add user input endpoint
     - Create POST /api/kiro/input endpoint handler
     - Implement input validation and forwarding
     - Add response confirmation and error handling
     - Write unit tests for input endpoint
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 5. Build WebSocket Server
-  - [ ] 5.1 Implement WebSocket server setup
+- [x] 5. Build WebSocket Server
+  - [x] 5.1 Implement WebSocket server setup
     - Create WebSocketServer class with ws library
     - Add connection management and client tracking
     - Implement connection authentication if needed
     - Write unit tests for WebSocket server
     - _Requirements: 2.5, 5.2_
 
-  - [ ] 5.2 Create event broadcasting system
+  - [x] 5.2 Create event broadcasting system
     - Implement EventBroadcaster for sending events to clients
     - Add event queuing and delivery confirmation
     - Create connection cleanup and error handling
     - Write unit tests for event broadcasting
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 5.3 Integrate real-time command output streaming
+  - [x] 5.3 Integrate real-time command output streaming
     - Connect command execution to WebSocket event broadcasting
     - Implement real-time output streaming during command execution
     - Add command lifecycle event emission
@@ -140,7 +140,7 @@
     - _Requirements: 5.1, 5.2, 5.3_
 
 - [ ] 8. Package and deploy extension
-  - [ ] 8.1 Create extension packaging
+  - [x] 8.1 Create extension packaging
     - Set up VSIX packaging with all required files
     - Create extension manifest with proper metadata
     - Add installation and activation testing

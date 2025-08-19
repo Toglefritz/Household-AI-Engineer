@@ -3,3 +3,5 @@
 *.vsix
 /kiro-orchestration-extension/node_modules
 /kiro-orchestration-extension/out
+/kiro-communication-bridge/node_modules
+/kiro-communication-bridge/out
