@@ -1,0 +1,121 @@
+/**
+ * Styles for the PageNavigation component.
+ */
+
+.pageNavigation {
+  margin: 3rem 0 2rem 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.navigationGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.navLink {
+  display: block;
+  padding: 1.5rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  text-decoration: none;
+  color: inherit;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.navPrevious {
+  text-align: left;
+}
+
+.navNext {
+  text-align: right;
+}
+
+.navDirection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-600);
+  font-weight: 500;
+}
+
+.navPrevious .navDirection {
+  justify-content: flex-start;
+}
+
+.navNext .navDirection {
+  justify-content: flex-end;
+}
+
+.navArrow {
+  font-size: 1rem;
+  color: var(--ifm-color-primary);
+}
+
+.navPrevious .navArrow {
+  margin-right: 0.5rem;
+}
+
+.navNext .navArrow {
+  margin-left: 0.5rem;
+}
+
+.navLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.navContent {
+  margin-top: 0.5rem;
+}
+
+.navTitle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.navDescription {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.4;
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .navLink {
+  background-color: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .navLink:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navigationGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .navLink {
+    padding: 1rem;
+  }
+  
+  .navTitle {
+    font-size: 1rem;
+  }
+}

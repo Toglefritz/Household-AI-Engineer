@@ -1,0 +1,17 @@
+/**
+ * Styles for the SearchHighlight component.
+ */
+
+.highlight {
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+  font-weight: 600;
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .highlight {
+  background-color: var(--ifm-color-primary-darkest);
+  color: var(--ifm-color-primary-lightest);
+}

@@ -1,0 +1,644 @@
+openapi: 3.0.3
+info:
+  title: Kiro Communication Bridge API
+  description: |
+    REST API for the Kiro Communication Bridge VS Code extension. This API enables external applications, 
+    particularly Flutter frontends, to interact with Kiro IDE for automated application development.
+    
+    ## Features
+    - Execute Kiro commands remotely
+    - Monitor Kiro status and availability
+    - Handle interactive command sessions
+    - Comprehensive error handling
+    
+    ## Authentication
+    Optional API key authentication can be enabled through VS Code configuration.
+    When enabled, include the API key in the `Authorization` header as `Bearer <api-key>`.
+    
+    ## Base URL
+    The API server runs locally at `http://localhost:3001` by default.
+    The port can be configured through VS Code settings.
+  version: 1.0.0
+  contact:
+    name: Household AI Engineer
+    url: https://github.com/Toglefritz/Household-AI-Engineer
+    email: support@household-ai-engineer.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001
+    description: Local development server
+  - url: http://127.0.0.1:3001
+    description: Local development server (IPv4)
+
+security:
+  - ApiKeyAuth: []
+  - {}  # No authentication required for some endpoints
+
+paths:
+  /health:
+    get:
+      summary: Health Check
+      description: |
+        Check the health and availability of the API server. This endpoint provides basic server 
+        status information and is useful for monitoring, load balancing, and service discovery.
+        
+        **Note:** This endpoint does not require authentication.
+      operationId: getHealth
+      tags:
+        - Health
+      security: []  # No authentication required
+      responses:
+        '200':
+          description: Server is healthy and running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: healthy
+                timestamp: '2025-01-19T10:30:00Z'
+                server:
+                  running: true
+                  port: 3001
+                  host: localhost
+                  uptime: 3600
+        '500':
+          description: Server is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: unhealthy
+                timestamp: '2025-01-19T10:30:00Z'
+                server:
+                  running: false
+                error: Internal server error
+
+  /api/kiro/status:
+    get:
+      summary: Get Kiro Status
+      description: |
+        Retrieve the current status of Kiro IDE, including availability, version information, 
+        and available commands. This endpoint is essential for monitoring system health and 
+        discovering available functionality.
+      operationId: getKiroStatus
+      tags:
+        - Kiro Status
+      responses:
+        '200':
+          description: Kiro status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiroStatusResponse'
+              examples:
+                ready:
+                  summary: Kiro is ready
+                  value:
+                    status: ready
+                    version: '1.85.0'
+                    availableCommands:
+                      - workbench.action.showCommands
+                      - vscode.open
+                      - kiro.generateCode
+                    timestamp: '2025-01-19T10:30:00Z'
+                busy:
+                  summary: Kiro is busy
+                  value:
+                    status: busy
+                    currentCommand: kiro.generateCode
+                    version: '1.85.0'
+                    availableCommands:
+                      - workbench.action.showCommands
+                    timestamp: '2025-01-19T10:30:00Z'
+                unavailable:
+                  summary: Kiro is unavailable
+                  value:
+                    status: unavailable
+                    availableCommands: []
+                    timestamp: '2025-01-19T10:30:00Z'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kiro/execute:
+    post:
+      summary: Execute Kiro Command
+      description: |
+        Execute Kiro IDE commands remotely through the REST API. This endpoint allows external 
+        applications to trigger Kiro functionality and receive execution results.
+        
+        ## Command Execution
+        - Commands are executed asynchronously
+        - Maximum execution time is configurable (default: 5 minutes)
+        - Maximum concurrent commands: 3 (configurable)
+        - Commands may require user input (see User Input endpoint)
+        
+        ## Common Commands
+        - `workbench.action.showCommands` - Show command palette
+        - `vscode.open` - Open file or folder
+        - `kiro.generateCode` - Generate code with AI
+        - `workbench.action.chat.open` - Open chat panel
+      operationId: executeKiroCommand
+      tags:
+        - Command Execution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteCommandRequest'
+            examples:
+              simple_command:
+                summary: Simple command without arguments
+                value:
+                  command: workbench.action.showCommands
+              command_with_args:
+                summary: Command with arguments
+                value:
+                  command: vscode.open
+                  args:
+                    - 'file:///path/to/file.txt'
+              command_with_workspace:
+                summary: Command with workspace context
+                value:
+                  command: kiro.generateCode
+                  args:
+                    - 'Create a login form'
+                  workspacePath: '/path/to/workspace'
+      responses:
+        '200':
+          description: Command executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteCommandResponse'
+              examples:
+                success:
+                  summary: Successful command execution
+                  value:
+                    success: true
+                    output: 'File opened successfully'
+                    executionTimeMs: 1250
+                failure:
+                  summary: Failed command execution
+                  value:
+                    success: false
+                    output: ''
+                    error: "Command 'invalid.command' not found"
+                    executionTimeMs: 150
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '408':
+          $ref: '#/components/responses/TimeoutError'
+        '422':
+          description: Command execution failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteCommandResponse'
+              example:
+                success: false
+                output: ''
+                error: 'Maximum concurrent commands limit reached (3)'
+                executionTimeMs: 0
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableError'
+
+  /api/kiro/input:
+    post:
+      summary: Provide User Input
+      description: |
+        Provide user input for interactive Kiro commands that require user interaction. 
+        This endpoint enables external applications to respond to prompts, confirmations, 
+        and other interactive elements during command execution.
+        
+        ## Input Types
+        - **text**: Free-form text input
+        - **choice**: Selection from predefined options
+        - **file**: File or directory path
+        - **confirmation**: Yes/no confirmation
+        
+        ## Interactive Flow
+        1. Execute an interactive command via `/api/kiro/execute`
+        2. Monitor for input requests (command will pause)
+        3. Provide input via this endpoint
+        4. Command continues execution
+      operationId: provideUserInput
+      tags:
+        - User Input
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputRequest'
+            examples:
+              text_input:
+                summary: Text input
+                value:
+                  value: 'MyApp'
+                  type: text
+                  executionId: 'exec-1642598400000-1'
+              choice_input:
+                summary: Choice selection
+                value:
+                  value: 'React'
+                  type: choice
+                  executionId: 'exec-1642598400000-1'
+              file_input:
+                summary: File path input
+                value:
+                  value: '/path/to/file.txt'
+                  type: file
+                  executionId: 'exec-1642598400000-1'
+              confirmation_input:
+                summary: Confirmation input
+                value:
+                  value: 'yes'
+                  type: confirmation
+                  executionId: 'exec-1642598400000-1'
+      responses:
+        '200':
+          description: User input accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInputResponse'
+              examples:
+                success:
+                  summary: Input accepted
+                  value:
+                    success: true
+                    executionId: 'exec-1642598400000-1'
+                rejected:
+                  summary: Input rejected
+                  value:
+                    success: false
+                    error: 'Invalid choice. Available options: option1, option2, option3'
+                    executionId: 'exec-1642598400000-1'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Execution ID not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInputResponse'
+              example:
+                success: false
+                error: 'No pending input request found for execution ID: exec-invalid-id'
+                executionId: 'exec-invalid-id'
+        '408':
+          description: Input request timed out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInputResponse'
+              example:
+                success: false
+                error: 'Input request timed out after 300000ms'
+                executionId: 'exec-1642598400000-1'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: |
+        API key authentication (optional). When enabled, include the API key 
+        in the Authorization header as `Bearer <api-key>`.
+
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - server
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Server health status
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when health was checked (ISO 8601)
+        server:
+          type: object
+          required:
+            - running
+          properties:
+            running:
+              type: boolean
+              description: Whether the server is running
+            port:
+              type: integer
+              minimum: 1024
+              maximum: 65535
+              description: Server port number
+            host:
+              type: string
+              description: Server host address
+            uptime:
+              type: number
+              minimum: 0
+              description: Server uptime in seconds
+        error:
+          type: string
+          description: Error message if server is unhealthy
+
+    KiroStatusResponse:
+      type: object
+      required:
+        - status
+        - availableCommands
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [ready, busy, unavailable]
+          description: Current Kiro IDE status
+        currentCommand:
+          type: string
+          description: Currently executing command (only present when status is 'busy')
+        version:
+          type: string
+          description: VS Code/Kiro version information
+        availableCommands:
+          type: array
+          items:
+            type: string
+          description: List of available command identifiers
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when status was checked (ISO 8601)
+
+    ExecuteCommandRequest:
+      type: object
+      required:
+        - command
+      properties:
+        command:
+          type: string
+          minLength: 1
+          description: Kiro command identifier to execute
+          example: workbench.action.showCommands
+        args:
+          type: array
+          items:
+            type: string
+          description: Optional array of command arguments
+          example: ['file:///path/to/file.txt']
+        workspacePath:
+          type: string
+          description: Optional workspace directory path for command context
+          example: /path/to/workspace
+
+    ExecuteCommandResponse:
+      type: object
+      required:
+        - success
+        - output
+        - executionTimeMs
+      properties:
+        success:
+          type: boolean
+          description: Whether command executed successfully
+        output:
+          type: string
+          description: Text output from command execution
+        error:
+          type: string
+          description: Error message if command execution failed
+        executionTimeMs:
+          type: number
+          minimum: 0
+          description: Time taken to execute the command in milliseconds
+
+    UserInputRequest:
+      type: object
+      required:
+        - value
+        - type
+        - executionId
+      properties:
+        value:
+          type: string
+          minLength: 1
+          description: User input value
+          example: MyApp
+        type:
+          type: string
+          enum: [text, choice, file, confirmation]
+          description: Type of input being provided
+        executionId:
+          type: string
+          minLength: 1
+          description: Unique identifier of the command execution waiting for input
+          example: exec-1642598400000-1
+
+    UserInputResponse:
+      type: object
+      required:
+        - success
+        - executionId
+      properties:
+        success:
+          type: boolean
+          description: Whether input was accepted
+        error:
+          type: string
+          description: Error message if input was rejected
+        executionId:
+          type: string
+          description: Execution ID that received the input
+
+    BridgeError:
+      type: object
+      required:
+        - code
+        - message
+        - recoverable
+        - timestamp
+      properties:
+        code:
+          type: string
+          description: Unique error code for programmatic handling
+          example: COMMAND_EXECUTION_FAILED
+        message:
+          type: string
+          description: Human-readable error message
+          example: Command execution failed
+        recoverable:
+          type: boolean
+          description: Whether the error can be recovered from
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when error occurred (ISO 8601)
+        context:
+          type: object
+          additionalProperties: true
+          description: Additional context information for debugging
+
+  responses:
+    ValidationError:
+      description: Request validation failed
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/BridgeError'
+              - type: object
+                properties:
+                  code:
+                    enum: [VALIDATION_FAILED]
+                  field:
+                    type: string
+                    description: Field that failed validation
+                  rule:
+                    type: string
+                    description: Validation rule that was violated
+          example:
+            code: VALIDATION_FAILED
+            message: Command is required and must be a string
+            recoverable: false
+            timestamp: '2025-01-19T10:30:00Z'
+            field: command
+            rule: required
+
+    UnauthorizedError:
+      description: Authentication failed or API key required
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error
+              - message
+            properties:
+              error:
+                type: string
+                enum: [Unauthorized]
+              message:
+                type: string
+                enum: [Valid API key required]
+          example:
+            error: Unauthorized
+            message: Valid API key required
+
+    TimeoutError:
+      description: Operation timed out
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/BridgeError'
+              - type: object
+                properties:
+                  code:
+                    enum: [OPERATION_TIMEOUT]
+                  operation:
+                    type: string
+                    description: Operation that timed out
+                  timeoutMs:
+                    type: number
+                    description: Configured timeout in milliseconds
+                  elapsedMs:
+                    type: number
+                    description: Actual elapsed time in milliseconds
+          example:
+            code: OPERATION_TIMEOUT
+            message: "Operation 'command-execution' timed out after 305000ms (limit: 300000ms)"
+            recoverable: true
+            timestamp: '2025-01-19T10:30:00Z'
+            operation: command-execution
+            timeoutMs: 300000
+            elapsedMs: 305000
+
+    ServiceUnavailableError:
+      description: Kiro IDE is not available
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/BridgeError'
+              - type: object
+                properties:
+                  code:
+                    enum: [KIRO_UNAVAILABLE]
+                  reason:
+                    type: string
+                    enum: [not_installed, not_running, not_responding, unknown]
+                    description: Reason why Kiro is unavailable
+          example:
+            code: KIRO_UNAVAILABLE
+            message: Kiro IDE is not responding to commands
+            recoverable: true
+            timestamp: '2025-01-19T10:30:00Z'
+            reason: not_responding
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/BridgeError'
+              - type: object
+                properties:
+                  code:
+                    enum: [CONFIGURATION_ERROR, INTERNAL_ERROR]
+          example:
+            code: INTERNAL_ERROR
+            message: An unexpected error occurred
+            recoverable: false
+            timestamp: '2025-01-19T10:30:00Z'
+
+  examples:
+    SimpleCommand:
+      summary: Simple command execution
+      value:
+        command: workbench.action.showCommands
+
+    CommandWithArgs:
+      summary: Command with arguments
+      value:
+        command: vscode.open
+        args:
+          - 'file:///path/to/file.txt'
+
+    InteractiveCommand:
+      summary: Interactive command requiring user input
+      value:
+        command: kiro.generateCode
+        args:
+          - 'Create a React component for user login'
+        workspacePath: '/path/to/project'
+
+tags:
+  - name: Health
+    description: Server health and availability endpoints
+  - name: Kiro Status
+    description: Kiro IDE status and command discovery
+  - name: Command Execution
+    description: Execute Kiro commands remotely
+  - name: User Input
+    description: Handle interactive command sessions
+
+externalDocs:
+  description: Complete API Documentation
+  url: https://toglefritz.github.io/Household-AI-Engineer/docs/api/overview
