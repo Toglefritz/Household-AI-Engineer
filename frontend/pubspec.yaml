@@ -16,6 +16,8 @@ dependencies:
     sdk: flutter
   # Path utilities
   path: ^1.9.0
+  # Used for getting commonly used locations on host platform file systems.
+  path_provider: ^2.1.5
   # Local storage and preferences
   shared_preferences: ^2.2.2
   # Window management for macOS
@@ -30,3 +32,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/
+    - assets/templates/
+    - assets/templates/kiro/specs/user-application-template/

@@ -1,11 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
+import '../kiro/kiro_service.dart';
 import '../user_application/models/user_application.dart';
+import 'models/conversation_context.dart';
 import 'models/conversation_message.dart';
 import 'models/conversation_status.dart';
 import 'models/conversation_thread.dart';
+import 'models/default_messages.dart';
 import 'models/message_action.dart';
 import 'models/message_sender.dart';
 
@@ -18,10 +18,14 @@ class ConversationService extends ChangeNotifier {
   ///
   /// @param initialConversation Optional initial conversation to load
   ConversationService({ConversationThread? initialConversation}) {
+    // Start with an initial conversation if one was provided in this constructor
     if (initialConversation != null) {
       _currentConversation = initialConversation;
     }
   }
+
+  /// A service used to communicate with the Kiro IDE via the communication bridge extension.
+  final KiroService _kiroService = KiroService();
 
   /// The current active conversation thread.
   ///
@@ -60,66 +64,112 @@ class ConversationService extends ChangeNotifier {
   /// Whether the conversation can be cancelled.
   bool get canCancel => hasActiveConversation && _currentConversation!.canCancel;
 
-  /// Waits for the Kiro Bridge REST API to become available by polling the `/api/kiro/status` endpoint.
-  ///
-  /// This method repeatedly attempts to connect to `http://localhost:3001/api/kiro/status` until a successful
-  /// response (HTTP 200) is received or the specified [timeout] duration elapses.
-  ///
-  /// The polling interval between attempts is controlled by [pollInterval].
-  ///
-  /// Throws a [StateError] if the bridge does not become available within the timeout.
-  ///
-  /// Returns `true` if the bridge becomes available within the timeout.
-  Future<bool> waitForKiroBridgeAvailable({
-    Duration timeout = const Duration(seconds: 30),
-    Duration pollInterval = const Duration(milliseconds: 500),
-  }) async {
-    final Uri statusUri = Uri.parse('http://localhost:3001/api/kiro/status');
-    final DateTime deadline = DateTime.now().add(timeout);
-    final HttpClient client = HttpClient();
-
-    while (DateTime.now().isBefore(deadline)) {
-      try {
-        final HttpClientRequest request = await client.getUrl(statusUri);
-        final HttpClientResponse response = await request.close();
-
-        if (response.statusCode == 200) {
-          client.close(force: true);
-          return true;
-        }
-      } catch (_) {
-        // Ignore errors and continue polling until timeout.
-      }
-
-      await Future<void>.delayed(pollInterval);
-    }
-
-    client.close(force: true);
-
-    throw StateError('Timed out waiting for Kiro Bridge to become available.');
-  }
-
   /// Starts a new conversation for creating an application.
   ///
   /// Creates a new conversation thread and adds the initial welcome message.
-  void startNewApplicationConversation() {
+  Future<void> startNewApplicationConversation() async {
     _error = null;
 
-    // TODO(Scott): Implementation
+    // Perform Kiro setup for a new application.
+    await _kiroService.setupKiroForNewApplication();
 
-    // TODO(Scott): _currentConversation = _currentConversation!.addMessage(welcomeMessage);
+    // Create a new conversation.
+    _currentConversation = _createNewConversation(
+      purpose: 'create_application',
+    );
+
+    // Add a default message to the conversation.
+    _currentConversation!.addMessage(
+      _createWelcomeMessage(conversationId: _currentConversation!.id),
+    );
+
+    // After Kiro is open and the conversation is set up, processing is complete.
+    _isProcessing = false;
+
     notifyListeners();
   }
 
   /// Starts a new conversation for modifying an existing application.
   ///
   /// @param application The application to modify
-  void startModifyApplicationConversation(UserApplication application) {
-    _error = null;
-
+  Future<void> startModifyApplicationConversation(UserApplication application) async {
     // TODO(Scott): Implementation
+    /*_error = null;
+
+    // Open a new Kiro window in the apps/ directory.
+    await _kiroService.openKiroInAppsDir();
+
+    // Create a new conversation
+    _currentConversation = _createNewConversation(
+      purpose: 'modify_application',
+      applicationId: application.id,
+    );
+
+    // Add a welcome message to the conversation.
+    _currentConversation!.addMessage(
+      _createWelcomeMessage(
+        conversationId: _currentConversation!.id,
+        isModification: true,
+        applicationName: application.title,
+      ),
+    );*/
+
+    // After Kiro is open and the conversation is set up, processing is complete.
+    _isProcessing = false;
 
     notifyListeners();
+  }
+
+  /// Creates a new empty conversation thread for starting a new conversation.
+  ///
+  /// @param purpose The purpose of the conversation (e.g., 'create_application')
+  /// @param applicationId Optional application ID for modification conversations
+  /// @returns New empty ConversationThread
+  ConversationThread _createNewConversation({
+    required String purpose,
+    String? applicationId,
+  }) {
+    final DateTime now = DateTime.now();
+    final String conversationId = 'conv_${now.millisecondsSinceEpoch}';
+
+    return ConversationThread(
+      id: conversationId,
+      context: ConversationContext(
+        purpose: purpose,
+        applicationId: applicationId,
+        metadata: const {
+          'step': 'initial',
+        },
+      ),
+      status: ConversationStatus.active,
+      createdAt: now,
+      updatedAt: now,
+      messages: [],
+    );
+  }
+
+  /// Generates a system welcome message for starting a new conversation.
+  ///
+  /// @param conversationId The ID of the conversation
+  /// @param isModification Whether this is for modifying an existing app
+  /// @param applicationName Optional name of the app being modified
+  /// @returns ConversationMessage with welcome content and suggestions
+  ConversationMessage _createWelcomeMessage({
+    required String conversationId,
+    bool isModification = false,
+    String? applicationName,
+  }) {
+    final DateTime now = DateTime.now();
+    final String messageId = 'msg_welcome_${now.millisecondsSinceEpoch}';
+
+    if (isModification && applicationName != null) {
+      return DefaultMessages.getModifyApplicationWelcomeMessage(
+        messageId: messageId,
+        applicationName: applicationName,
+      );
+    } else {
+      return DefaultMessages.getNewApplicationWelcomeMessage();
+    }
   }
 
   /// Sends a user message.
@@ -170,12 +220,17 @@ class ConversationService extends ChangeNotifier {
   /// Cancels the current conversation.
   ///
   /// Sets the conversation status to cancelled and clears the current conversation.
-  void cancelConversation() {
+  Future<void> cancelConversation() async {
     if (!canCancel) return;
 
+    // Clean up the current conversation.
     _currentConversation = _currentConversation!.updateStatus(ConversationStatus.cancelled);
     _currentConversation = null;
     _error = null;
+
+    // Close the Kiro IDE
+    await _kiroService.closeKiro();
+
     notifyListeners();
   }
 

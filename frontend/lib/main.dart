@@ -30,6 +30,9 @@ void main() async {
     await windowManager.focus();
   });
 
+  // Keep window always on top so the Kiro IDE can run in the background.
+  await windowManager.setAlwaysOnTop(true);
+
   // Launch the application
   runApp(const HouseholdAIEngineerApp());
 }

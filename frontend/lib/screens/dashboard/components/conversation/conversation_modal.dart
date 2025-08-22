@@ -66,20 +66,28 @@ class _ConversationModalState extends State<ConversationModal> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize the controllers
     _controller = ConversationService(initialConversation: widget.initialConversation);
     _scrollController = ScrollController();
 
-    // Start appropriate conversation type
-    if (widget.initialConversation == null) {
-      if (widget.applicationToModify != null) {
-        _controller.startModifyApplicationConversation(widget.applicationToModify!);
-      } else {
-        _controller.startNewApplicationConversation();
-      }
-    }
+    // Initialize the conversation
+    _initializeConversation();
 
     // Listen for conversation updates to auto-scroll
     _controller.addListener(_onConversationUpdated);
+  }
+
+  /// Starts a new conversation with the Kiro IDE. The setup depends on the information provided to this modal.
+  Future<void> _initializeConversation() async {
+    // Start appropriate conversation type
+    if (widget.initialConversation == null) {
+      if (widget.applicationToModify != null) {
+        await _controller.startModifyApplicationConversation(widget.applicationToModify!);
+      } else {
+        await _controller.startNewApplicationConversation();
+      }
+    }
   }
 
   /// Handles conversation updates and auto-scrolls to bottom.
@@ -109,6 +117,7 @@ class _ConversationModalState extends State<ConversationModal> {
     if (_controller.canCancel) {
       _controller.cancelConversation();
     }
+
     Navigator.of(context).pop();
   }
 

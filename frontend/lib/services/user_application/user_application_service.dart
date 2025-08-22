@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import '../config/app_config.dart';
 import 'models/user_application.dart';
 
 /// Service for managing household applications through the Kiro Bridge API.
@@ -18,18 +19,11 @@ import 'models/user_application.dart';
 /// - Application creation, modification, and lifecycle management
 /// - Error handling and offline fallback capabilities
 class UserApplicationService {
-  /// Creates a new service that manages [UserApplication]s through Kiro Bridge integration.
-  ///
-  /// * [baseMetadataDirPath] — Absolute path to the **metadata** directory that contains the `apps/` subfolder. If
-  ///   omitted, [defaultMetadataDirPath] is used.
-  UserApplicationService({
-    String? baseMetadataDirPath,
-  }) : _appsDir = Directory(
-         '${baseMetadataDirPath ?? defaultMetadataDirPath}/apps',
-       );
-
   /// Directory where per-app manifests (`*.json`) are stored.
-  final Directory _appsDir;
+  ///
+  /// Delegates to the shared configuration service to avoid coupling
+  /// with other services that need the same path.
+  static Future<Directory> get appsDir => AppConfig.appsDirectory;
 
   /// Stream controller for broadcasting application updates.
   final StreamController<List<UserApplication>> _applicationUpdatesController =
@@ -40,17 +34,6 @@ class UserApplicationService {
 
   /// Whether the service is currently connected to the Kiro Bridge.
   bool _isConnected = false;
-
-  /// Returns the default metadata directory path on macOS for this project.
-  ///
-  /// The path is resolved as:
-  /// `~/Library/Application Support/HouseholdAI/metadata`
-  static String get defaultMetadataDirPath {
-    final String? home = Platform.environment['HOME'];
-    final String resolvedHome = home ?? '';
-
-    return '$resolvedHome/Library/Application Support/HouseholdAI/metadata';
-  }
 
   /// Loads all available [UserApplication]s from both local manifests and Kiro Bridge API.
   ///
@@ -106,7 +89,7 @@ class UserApplicationService {
     yield initial;
 
     // Set up file system watcher for local changes
-    _setupFileSystemWatcher(debounce);
+    await _setupFileSystemWatcher(debounce);
 
     // Set up periodic polling as fallback
     _setupPeriodicPolling(pollInterval);
@@ -120,7 +103,11 @@ class UserApplicationService {
   /// Reads JSON manifest files from the apps directory and parses them into
   /// UserApplication objects. This provides data for deployed applications.
   Future<List<UserApplication>> _loadLocalApplications() async {
-    final bool exists = _appsDir.existsSync();
+    // Get the apps/ directory.
+    final Directory directory = await appsDir;
+
+    // Check that the directory exists.
+    final bool exists = directory.existsSync();
     if (!exists) {
       return <UserApplication>[];
     }
@@ -128,7 +115,7 @@ class UserApplicationService {
     final List<UserApplication> applications = <UserApplication>[];
 
     // Gather manifest files with a conservative read strategy
-    final List<FileSystemEntity> entries = _appsDir.listSync(followLinks: false);
+    final List<FileSystemEntity> entries = directory.listSync(followLinks: false);
     for (final FileSystemEntity entity in entries) {
       if (entity is! File) continue;
       final File file = entity;
@@ -148,11 +135,15 @@ class UserApplicationService {
   ///
   /// Monitors the apps directory for changes and triggers application list updates
   /// when manifest files are added, modified, or removed.
-  void _setupFileSystemWatcher(Duration debounce) {
-    final bool exists = _appsDir.existsSync();
+  Future<void> _setupFileSystemWatcher(Duration debounce) async {
+    // Get the apps/ directory.
+    final Directory directory = await appsDir;
+
+    // Check that the directory exists.
+    final bool exists = directory.existsSync();
     if (!exists) return;
 
-    final Stream<FileSystemEvent> raw = _appsDir.watch();
+    final Stream<FileSystemEvent> raw = directory.watch();
     Timer? timer;
 
     raw.listen((FileSystemEvent _) {
@@ -243,16 +234,6 @@ class UserApplicationService {
     // TODO(Scott): Implementation
     throw UnimplementedError();
   }
-
-  /// Launches the Kiro IDE with the `apps/` directory as the working directory.
-  ///
-  /// This method starts the external `kiro` process, passing the path to the `apps/`
-  /// directory where user application manifests are stored. This allows developers
-  /// to open the Kiro IDE focused on the current applications directory for editing
-  /// or inspection.
-  ///
-  /// Returns a [Process] representing the running Kiro IDE instance.
-  Future<Process> openKiroInAppsDir() => Process.start('kiro', [_appsDir.path]);
 
   /// Returns whether the service is currently connected to the Kiro Bridge.
   ///
