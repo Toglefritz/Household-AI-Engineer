@@ -9,9 +9,14 @@ import 'message_sender.dart';
 /// a default welcome message can be displayed.
 class DefaultMessages {
   /// A message displayed when the user first initializes a conversation with Kiro to create a new application.
-  static ConversationMessage getNewApplicationWelcomeMessage() {
+  ///
+  /// @param messageId Unique identifier for this welcome message
+  /// @returns ConversationMessage with welcome content and action suggestions
+  static ConversationMessage getNewApplicationWelcomeMessage({
+    required String messageId,
+  }) {
     return ConversationMessage(
-      id: 'msg_001',
+      id: messageId,
       sender: MessageSender.system,
       content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
       timestamp: DateTime.now(),

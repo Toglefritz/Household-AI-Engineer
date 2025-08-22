@@ -47,7 +47,7 @@ class ApplicationGridEmptyState extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: onCreateNewApplication,
               icon: Icon(
-                Icons.add_circle_outline,
+                Icons.add,
                 color: colorScheme.primary,
                 size: 28,
               ),

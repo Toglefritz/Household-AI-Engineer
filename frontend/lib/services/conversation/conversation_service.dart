@@ -79,9 +79,8 @@ class ConversationService extends ChangeNotifier {
     );
 
     // Add a default message to the conversation.
-    _currentConversation!.addMessage(
-      _createWelcomeMessage(conversationId: _currentConversation!.id),
-    );
+    final ConversationMessage welcomeMessage = _createWelcomeMessage(conversationId: _currentConversation!.id);
+    _currentConversation = _currentConversation!.addMessage(welcomeMessage);
 
     // After Kiro is open and the conversation is set up, processing is complete.
     _isProcessing = false;
@@ -168,7 +167,7 @@ class ConversationService extends ChangeNotifier {
         applicationName: applicationName,
       );
     } else {
-      return DefaultMessages.getNewApplicationWelcomeMessage();
+      return DefaultMessages.getNewApplicationWelcomeMessage(messageId: messageId);
     }
   }
 

@@ -4,7 +4,10 @@ part of 'conversation_modal.dart';
 class ConversationMessagesList extends StatelessWidget {
   /// Creates an instance of [ConversationMessagesList].
   const ConversationMessagesList({
-    required this.controller, required this.scrollController, required this.onActionTap, super.key,
+    required this.controller,
+    required this.scrollController,
+    required this.onActionTap,
+    super.key,
   });
 
   /// A service responsible for managing the conversation between Kiro and the user, moderated through an orchestration
@@ -31,6 +34,9 @@ class ConversationMessagesList extends StatelessWidget {
         }
 
         final List<ConversationMessage> messages = List<ConversationMessage>.from(conversation.messages);
+
+        // Debug: Log message count
+        debugPrint('ConversationMessagesList: Displaying ${messages.length} messages');
 
         // Add typing indicator if processing
         if (controller.isProcessing) {
