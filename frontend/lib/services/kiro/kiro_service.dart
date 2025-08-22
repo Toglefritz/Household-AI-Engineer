@@ -289,6 +289,8 @@ class KiroService {
   /// @throws [StateError] if not connected to the bridge
   /// @throws [HttpException] if the request fails
   Future<String> sendMessage(String message) async {
+    debugPrint('Sending user message to Kiro IDE');
+
     if (!_isConnected) {
       throw StateError('Not connected to Kiro Bridge');
     }
@@ -313,6 +315,8 @@ class KiroService {
     final String body = await response.transform(utf8.decoder).join();
 
     if (response.statusCode != 200) {
+      debugPrint('Sending message to Kiro IDE failed with status code, ${response.statusCode}');
+
       throw HttpException('HTTP ${response.statusCode}: $body', uri: uri);
     }
 
@@ -323,15 +327,10 @@ class KiroService {
       return body;
     }
 
-    if (result['success'] == true && result.containsKey('output')) {
-      return result['output'].toString();
-    }
-    if (result.containsKey('message')) {
-      return result['message'].toString();
-    }
-    if (result.containsKey('executionId')) {
-      return 'Request accepted. Execution ID: ${result['executionId']}';
-    }
+    debugPrint('Successfully sent user message to the Kiro IDE');
+
+    // TODO(Scott): process the result according to the data it contains
+
     return body; // Fallback to raw content
   }
 

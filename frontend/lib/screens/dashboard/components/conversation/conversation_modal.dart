@@ -16,6 +16,7 @@ import 'conversation_message_widget.dart';
 
 // Parts
 part 'conversation_modal_header.dart';
+
 part 'conversation_messages_list.dart';
 
 /// Modal dialog for the conversational interface.
@@ -108,7 +109,9 @@ class _ConversationModalState extends State<ConversationModal> {
   }
 
   /// Handles sending a text message.
-  void _handleSendMessage(String message) => _controller.sendMessage(message);
+  void _handleSendMessage(String message) {
+    _controller.sendMessage(message);
+  }
 
   /// Handles tapping a message action.
   void _handleActionTap(MessageAction action) => _controller.sendAction(action);

@@ -44,22 +44,21 @@ class ApplicationGridEmptyState extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: Insets.large),
-            child: OutlinedButton.icon(
+            child: FilledButton.icon(
               onPressed: onCreateNewApplication,
               icon: Icon(
                 Icons.add,
-                color: colorScheme.primary,
-                size: 28,
+                color: colorScheme.onPrimary,
               ),
               label: Text(
                 AppLocalizations.of(context)!.buttonCreateNewApp,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: colorScheme.primary,
+                  color: colorScheme.onPrimary,
                 ),
               ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: colorScheme.onSurface,
-                side: BorderSide(color: colorScheme.primary),
+              style: FilledButton.styleFrom(
+                foregroundColor: colorScheme.onPrimary,
+                backgroundColor: colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: Insets.medium,
                   vertical: Insets.small,

@@ -180,7 +180,7 @@ class ConversationService extends ChangeNotifier {
     final String messageContent = messageText.trim();
     if (messageContent.isEmpty) return;
 
-    // Add user message
+    // Add user message to the current conversation
     final ConversationMessage userMessage = ConversationMessage(
       id: 'msg_user_${DateTime.now().millisecondsSinceEpoch}',
       sender: MessageSender.user,
@@ -192,7 +192,7 @@ class ConversationService extends ChangeNotifier {
     notifyListeners();
 
     // Process the message and generate system response
-    await _processUserMessage(messageContent);
+    await _kiroService.sendMessage(messageContent);
   }
 
   /// Sends a predefined action as a user message.
@@ -213,7 +213,7 @@ class ConversationService extends ChangeNotifier {
     notifyListeners();
 
     // Process the action and generate system response
-    await _processUserMessage(action.value);
+    // TODO await _processUserMessage(action.value);
   }
 
   /// Cancels the current conversation.
@@ -231,19 +231,5 @@ class ConversationService extends ChangeNotifier {
     await _kiroService.closeKiro();
 
     notifyListeners();
-  }
-
-  /// Processes a user message and generates an appropriate system response.
-  ///
-  /// This is a mock implementation that simulates conversation flow.
-  /// In a real implementation, this would communicate with the backend.
-  ///
-  /// @param userMessage The user's message content
-  Future<void> _processUserMessage(String userMessage) async {
-    _isProcessing = true;
-    _currentConversation = _currentConversation!.updateStatus(ConversationStatus.processing);
-    notifyListeners();
-
-    // TODO(Scott): Implementation
   }
 }
