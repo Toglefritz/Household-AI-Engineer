@@ -24,7 +24,10 @@ class DashboardController extends State<DashboardRoute> {
   /// Controls the sidebar visibility state for responsive behavior.
   /// When false, the sidebar shows only icons; when true, it shows
   /// full labels and expanded content.
-  bool _isSidebarExpanded = true;
+  ///
+  /// Initially set to false and automatically updated based on application
+  /// availability: opens when applications are present, stays closed when none exist.
+  bool _isSidebarExpanded = false;
 
   /// Current connection status to the backend services.
   ///
@@ -91,7 +94,9 @@ class DashboardController extends State<DashboardRoute> {
   /// Loads applications from the user application service and sets up real-time updates.
   ///
   /// Establishes a stream subscription to receive real-time application updates
-  /// from both local manifests and the Kiro Bridge API.
+  /// from both local manifests and the Kiro Bridge API. Also manages sidebar
+  /// state based on application availability - opens when applications exist,
+  /// stays closed when none are present.
   Future<void> _loadApplications() async {
     try {
       setState(() {
@@ -100,12 +105,16 @@ class DashboardController extends State<DashboardRoute> {
 
       // Set up stream subscription for real-time updates
       _applicationSubscription = _userApplicationService.watchApplications().listen(
-            (List<UserApplication> applications) {
+        (List<UserApplication> applications) {
           setState(() {
             _applications = applications;
             _connectionStatus = _userApplicationService.isConnected
                 ? ConnectionStatus.connected
                 : ConnectionStatus.disconnected;
+
+            // Set sidebar state based on application availability
+            // Open sidebar if there are applications, keep closed if none
+            _isSidebarExpanded = applications.isNotEmpty;
           });
         },
         onError: (Object error) {
