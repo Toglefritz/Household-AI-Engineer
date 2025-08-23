@@ -73,14 +73,14 @@ class StatusBarConnectionIndicator extends StatelessWidget {
     switch (connectionStatus) {
       case ConnectionStatus.connected:
         return ConnectionStatusInfo(
-          color: const Color(0xFF10B981), // Green
+          color:  Colors.green,
           icon: Icons.check_circle,
           label: AppLocalizations.of(context)!.statusConnected,
         );
 
       case ConnectionStatus.degraded:
         return ConnectionStatusInfo(
-          color: const Color(0xFFF59E0B), // Yellow/Orange
+          color: Colors.orange,
           icon: Icons.warning,
           label: AppLocalizations.of(context)!.statusDegraded,
         );
@@ -88,7 +88,7 @@ class StatusBarConnectionIndicator extends StatelessWidget {
       case ConnectionStatus.disconnected:
       case ConnectionStatus.error:
         return ConnectionStatusInfo(
-          color: const Color(0xFFEF4444), // Red
+          color: Theme.of(context).colorScheme.error,
           icon: Icons.error,
           label: AppLocalizations.of(context)!.statusDisconnected,
         );

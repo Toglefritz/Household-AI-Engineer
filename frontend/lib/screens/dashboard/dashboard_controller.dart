@@ -116,6 +116,10 @@ class DashboardController extends State<DashboardRoute> {
           });
         },
       );
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+      });
     } catch (e) {
       debugPrint('Failed to initialize application loading: $e');
       setState(() {

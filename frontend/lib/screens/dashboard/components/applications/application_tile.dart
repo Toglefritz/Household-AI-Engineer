@@ -261,17 +261,23 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
   ///
   /// Returns appropriate visual indicators for each application state
   /// including colors, icons, and animations where applicable.
+  /// All status indicators use consistent padding and spacing for visual uniformity.
   Widget _buildStatusIndicator(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    // Consistent padding and spacing for all status indicators
+    const EdgeInsets containerPadding = EdgeInsets.symmetric(
+      horizontal: Insets.xSmall,
+      vertical: Insets.xxSmall,
+    );
+    const EdgeInsets iconPadding = EdgeInsets.only(right: Insets.xxSmall);
+    const double iconSize = 12.0;
 
     // The widget returned depends upon the application status.
     switch (widget.application.status) {
       case ApplicationStatus.requested:
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Insets.xSmall,
-            vertical: Insets.xxSmall,
-          ),
+          padding: containerPadding,
           decoration: BoxDecoration(
             color: Colors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
@@ -280,10 +286,10 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
             mainAxisSize: MainAxisSize.min,
             children: [
               const Padding(
-                padding: EdgeInsets.only(right: Insets.xxSmall),
+                padding: iconPadding,
                 child: Icon(
                   Icons.schedule,
-                  size: 12,
+                  size: iconSize,
                   color: Colors.orange,
                 ),
               ),
@@ -303,10 +309,7 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
       case ApplicationStatus.testing:
       case ApplicationStatus.updating:
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Insets.xSmall,
-            vertical: Insets.xxSmall,
-          ),
+          padding: containerPadding,
           decoration: BoxDecoration(
             color: Colors.blue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
@@ -315,10 +318,10 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
             mainAxisSize: MainAxisSize.min,
             children: [
               const Padding(
-                padding: EdgeInsets.only(right: Insets.xxSmall),
+                padding: iconPadding,
                 child: SizedBox(
-                  width: 12,
-                  height: 12,
+                  width: iconSize,
+                  height: iconSize,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
@@ -339,10 +342,7 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
 
       case ApplicationStatus.ready:
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Insets.small,
-            vertical: Insets.xxSmall,
-          ),
+          padding: containerPadding,
           decoration: BoxDecoration(
             color: Colors.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
@@ -351,10 +351,10 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
             mainAxisSize: MainAxisSize.min,
             children: [
               const Padding(
-                padding: EdgeInsets.only(right: Insets.small),
+                padding: iconPadding,
                 child: Icon(
                   Icons.check_circle,
-                  size: 12,
+                  size: iconSize,
                   color: Colors.green,
                 ),
               ),
@@ -372,10 +372,7 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
 
       case ApplicationStatus.running:
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Insets.xSmall,
-            vertical: Insets.xxSmall,
-          ),
+          padding: containerPadding,
           decoration: BoxDecoration(
             color: colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
@@ -383,13 +380,15 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.only(right: Insets.small),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  shape: BoxShape.circle,
+              Padding(
+                padding: iconPadding,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
               Text(
@@ -406,10 +405,7 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
 
       case ApplicationStatus.failed:
         return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Insets.xSmall,
-            vertical: Insets.xxSmall,
-          ),
+          padding: containerPadding,
           decoration: BoxDecoration(
             color: colorScheme.error.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
@@ -417,12 +413,14 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.error,
-                size: 12,
-                color: colorScheme.error,
+              Padding(
+                padding: iconPadding,
+                child: Icon(
+                  Icons.error,
+                  size: iconSize,
+                  color: colorScheme.error,
+                ),
               ),
-              const SizedBox(width: 4),
               Text(
                 AppLocalizations.of(context)!.failed,
                 style: TextStyle(
