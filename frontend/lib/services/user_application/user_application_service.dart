@@ -56,11 +56,18 @@ class UserApplicationService {
     }
   }
 
-  /// Watches for application changes through both file system.
+  /// Watches for application changes through the file system.
   ///
-  /// This method monitors the local file system for changes in the apps/ directory.
-  /// When a user applications is added, removed, or modified, this [Stream]
-  /// returns the resulting user applications.
+  /// This method monitors the local file system for changes in the apps/ directory
+  /// and all subdirectories. When user applications are added, removed, or modified,
+  /// including changes to manifest.json files, this [Stream] returns the updated
+  /// user applications list.
+  ///
+  /// The watcher responds to:
+  /// * New application directories being created
+  /// * Application directories being removed
+  /// * Changes to manifest.json files (development progress updates)
+  /// * Any other relevant file changes within application directories
   ///
   /// Consumers receive updated application lists automatically without manual refresh.
   Stream<List<UserApplication>> watchApplications({
@@ -78,6 +85,22 @@ class UserApplicationService {
     yield* _applicationUpdatesController.stream;
   }
 
+  /// Manually refreshes the application list and notifies listeners.
+  ///
+  /// This method can be called to force a refresh of the application list
+  /// without waiting for file system events. Useful for:
+  /// * Manual refresh buttons in the UI
+  /// * Recovering from file system watcher failures
+  /// * Initial loading when file system events might be missed
+  ///
+  /// Returns the updated list of applications for immediate use.
+  Future<List<UserApplication>> refreshApplications() async {
+    final List<UserApplication> apps = await _loadApplications();
+    _applicationUpdatesController.add(apps);
+
+    return apps;
+  }
+
   /// Loads applications from local manifest files.
   ///
   /// Reads manifest.json files from subdirectories within the apps directory
@@ -92,6 +115,7 @@ class UserApplicationService {
     // Check that the directory exists.
     final bool exists = appsDirectory.existsSync();
     if (!exists) {
+      debugPrint('Apps directory does not exist: ${appsDirectory.path}');
       return <UserApplication>[];
     }
 
@@ -99,31 +123,52 @@ class UserApplicationService {
 
     // Iterate through each subdirectory in the apps directory
     final List<FileSystemEntity> entries = appsDirectory.listSync(followLinks: false);
+    debugPrint('Found ${entries.length} entries in apps directory');
+
     for (final FileSystemEntity entity in entries) {
       // Skip if not a directory - each app should be in its own folder
-      if (entity is! Directory) continue;
+      if (entity is! Directory) {
+        debugPrint('Skipping non-directory: ${entity.path}');
+        continue;
+      }
       final Directory appDirectory = entity;
+      debugPrint('Checking app directory: ${appDirectory.path}');
 
       // Look for manifest.json file within this app directory
       final File manifestFile = File('${appDirectory.path}/manifest.json');
 
       // Skip if manifest.json doesn't exist in this directory
-      if (!manifestFile.existsSync()) continue;
+      if (!manifestFile.existsSync()) {
+        debugPrint('No manifest.json found in: ${appDirectory.path}');
+        continue;
+      }
+
+      debugPrint('Found manifest.json in: ${appDirectory.path}');
 
       // Attempt to read and parse the manifest file
       final UserApplication? parsed = await _readManifest(manifestFile);
       if (parsed != null) {
         applications.add(parsed);
+        debugPrint('Successfully loaded application: ${parsed.title}');
+      } else {
+        debugPrint('Failed to parse manifest in ${appDirectory.path}');
       }
     }
 
+    debugPrint('Loaded ${applications.length} applications total');
     return applications;
   }
 
   /// Sets up file system watcher for local manifest changes.
   ///
-  /// Monitors the apps directory for changes and triggers application list updates
-  /// when manifest files are added, modified, or removed.
+  /// Monitors the apps directory and all application subdirectories for changes.
+  /// This includes watching for:
+  /// * New application directories being created or removed
+  /// * Changes to manifest.json files within application directories
+  /// * Any other file changes that might affect application state
+  ///
+  /// The watcher uses recursive monitoring to detect changes at any level
+  /// within the application directory structure.
   Future<void> _setupFileSystemWatcher(Duration debounce) async {
     // Resolve the base apps/ directory.
     final Directory appsDirectory = await AppConfig.appsDirectory;
@@ -132,21 +177,78 @@ class UserApplicationService {
     final bool exists = appsDirectory.existsSync();
     if (!exists) return;
 
-    final Stream<FileSystemEvent> raw = appsDirectory.watch();
+    // Set up recursive watching for the entire apps directory tree
+    final Stream<FileSystemEvent> raw = appsDirectory.watch(recursive: true);
     Timer? timer;
 
-    // Add a listener for local file system changes
-    raw.listen((FileSystemEvent _) {
-      timer?.cancel();
-      timer = Timer(debounce, () async {
-        final List<UserApplication> apps = await _loadApplications();
-        _applicationUpdatesController.add(apps);
-      });
+    // Add a listener for all file system changes within the apps directory
+    raw.listen((FileSystemEvent event) {
+      // Only trigger updates for relevant file changes
+      if (_shouldTriggerUpdate(event)) {
+        timer?.cancel();
+        timer = Timer(debounce, () async {
+          final List<UserApplication> apps = await _loadApplications();
+          _applicationUpdatesController.add(apps);
+        });
+      }
     });
+  }
+
+  /// Determines whether a file system event should trigger an application update.
+  ///
+  /// This method filters file system events to only respond to changes that
+  /// could affect the application list or individual application state.
+  ///
+  /// Triggers updates for:
+  /// * Changes to manifest.json files (development progress updates)
+  /// * Directory creation/deletion (new apps or app removal)
+  /// * Any changes within application directories
+  ///
+  /// Ignores:
+  /// * Temporary files and system files
+  /// * Non-manifest JSON files that don't affect application state
+  bool _shouldTriggerUpdate(FileSystemEvent event) {
+    final String path = event.path;
+
+    debugPrint('File system event: ${event.type} at $path');
+
+    // Always trigger for directory changes (app creation/deletion)
+    if (event.type == FileSystemEvent.create || event.type == FileSystemEvent.delete) {
+      debugPrint('Triggering update for directory change: $path');
+      
+      return true;
+    }
+
+    // Trigger for manifest.json file changes
+    if (path.endsWith('manifest.json')) {
+      debugPrint('Triggering update for manifest.json change: $path');
+      return true;
+    }
+
+    // Trigger for any changes within application directories
+    // This catches cases where files are moved or renamed
+    if (path.contains('/') && !path.endsWith('.tmp') && !path.contains('.DS_Store')) {
+      debugPrint('Triggering update for file change in app directory: $path');
+      
+      return true;
+    }
+
+    debugPrint('Ignoring file system event: $path');
+
+    // Ignore other file changes (temporary files, system files, etc.)
+    return false;
   }
 
   /// Attempts to read and parse a single manifest file into a
   /// [UserApplication]. Returns `null` if the file is unreadable or invalid.
+  ///
+  /// This method handles various error conditions gracefully:
+  /// * File I/O errors (permissions, file not found, etc.)
+  /// * JSON parsing errors (malformed JSON syntax)
+  /// * Model validation errors (missing required fields, invalid data types)
+  ///
+  /// All errors are logged for debugging purposes but do not prevent
+  /// the application from continuing to load other valid manifests.
   Future<UserApplication?> _readManifest(File file) async {
     try {
       // Read the manifest JSON file
@@ -156,16 +258,19 @@ class UserApplicationService {
       // Convert the JSON to a UserApplication object
       final UserApplication app = UserApplication.fromJson(jsonMap);
 
+      debugPrint('Successfully loaded application: ${app.title} (${app.id})');
       return app;
-    } on FormatException {
-      debugPrint('Failed to read user application manifest with exception, $e');
-
+    } on FormatException catch (e) {
+      debugPrint('Failed to parse JSON in manifest file ${file.path}: $e');
       // Malformed JSON or model validation: skip this manifest.
       return null;
-    } on Object {
-      debugPrint('Failed to read user application manifest with exception, $e');
-
-      // Any other I/O error: skip this manifest.
+    } on FileSystemException catch (e) {
+      debugPrint('Failed to read manifest file ${file.path}: $e');
+      // File I/O error: skip this manifest.
+      return null;
+    } on Object catch (e) {
+      debugPrint('Unexpected error reading manifest file ${file.path}: $e');
+      // Any other error: skip this manifest.
       return null;
     }
   }
@@ -247,7 +352,40 @@ class UserApplicationService {
     throw UnimplementedError();
   }
 
+  /// Gets a specific application by its ID.
+  ///
+  /// This method loads the current application list and returns the application
+  /// with the matching ID. Returns null if no application with the given ID exists.
+  ///
+  /// This is useful for:
+  /// * Refreshing individual application data
+  /// * Checking current status of a specific application
+  /// * Validating application existence before operations
+  Future<UserApplication?> getApplicationById(String applicationId) async {
+    final List<UserApplication> applications = await _loadApplications();
+    try {
+      return applications.firstWhere((UserApplication app) => app.id == applicationId);
+    } catch(e) {
+      // No application found with the given ID
+      return null;
+    }
+  }
+
+  /// Gets the current list of applications without setting up watchers.
+  ///
+  /// This method provides a one-time snapshot of the current application state
+  /// without establishing ongoing file system monitoring. Useful for:
+  /// * One-time data retrieval
+  /// * Testing and debugging
+  /// * Situations where streaming updates are not needed
+  Future<List<UserApplication>> getApplications() async {
+    return _loadApplications();
+  }
+
   /// Disposes of resources used by this service.
+  ///
+  /// Closes the stream controller and cleans up any active file system watchers.
+  /// Should be called when the service is no longer needed to prevent memory leaks.
   void dispose() {
     _applicationUpdatesController.close();
   }

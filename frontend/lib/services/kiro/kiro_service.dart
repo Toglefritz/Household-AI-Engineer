@@ -95,9 +95,9 @@ class KiroService {
 
     // Step 2: Create the .kiro directory structure and copy template files.
     await _createKiroSpecStructure(newAppDir);
-    await _copyManifestTemplate(newAppDir);
 
-    // Step 2.5: Copy the manifest template into the new application directory.
+    // Step 2.5: Copy the manifest schema and template.
+    await _copyManifestSchema(newAppDir);
     await _copyManifestTemplate(newAppDir);
 
     // Step 3: Open Kiro into the new application directory and wait for readiness.
@@ -150,25 +150,51 @@ class KiroService {
     }
   }
 
-  /// Copies the manifest template file into the given destination directory.
+  /// Copies the manifest schema and creates initial manifest files.
   ///
-  /// This method loads the `manifest_example.json` from Flutter assets and writes
-  /// it as `manifest_example.json` into the provided destination directory. This
-  /// manifest file provides basic configuration or metadata needed by the Kiro IDE
-  /// for the new user application.
+  /// This method loads the `manifest_schema.json` from Flutter assets and writes it as `manifest_schema.json`
+  /// (template for Kiro reference).
+  ///
+  ///
+  /// Throws a [FileSystemException] if the asset cannot be loaded or written.
+  Future<void> _copyManifestSchema(Directory destination) async {
+    const String manifestSchemaAssetPath = 'assets/templates/manifest/manifest_schema.json';
+
+    try {
+      // Load the schema content
+      final String schemaContent = await rootBundle.loadString(manifestSchemaAssetPath);
+
+      // Write the schema file for Kiro reference
+      final File exampleFileSchema = File('${destination.path}/manifest_schema.json');
+      await exampleFileSchema.writeAsString(schemaContent, flush: true);
+    } catch (e) {
+      throw FileSystemException(
+        'Failed to copy manifest schema from assets with exception, $e',
+        manifestSchemaAssetPath,
+      );
+    }
+  }
+
+  /// Copies the manifest template and creates initial manifest files.
+  ///
+  /// This method loads the `manifest_example.json` from Flutter assets and writes it as `manifest_example.json`
+  /// (template for Kiro reference).
   ///
   /// Throws a [FileSystemException] if the asset cannot be loaded or written.
   Future<void> _copyManifestTemplate(Directory destination) async {
-    const String assetPath = 'assets/templates/manifest/manifest_example.json';
+    const String exampleManifestAssetPath = 'assets/templates/manifest/manifest_example.json';
 
     try {
-      final String content = await rootBundle.loadString(assetPath);
-      final File destinationFile = File('${destination.path}/manifest_example.json');
-      await destinationFile.writeAsString(content, flush: true);
+      // Load the template content and schema
+      final String templateContent = await rootBundle.loadString(exampleManifestAssetPath);
+
+      // Write the example file for Kiro reference
+      final File exampleFile = File('${destination.path}/manifest_example.json');
+      await exampleFile.writeAsString(templateContent, flush: true);
     } catch (e) {
       throw FileSystemException(
-        'Failed to copy manifest template from assets: $e',
-        assetPath,
+        'Failed to copy manifest template from assets with exception, $e',
+        exampleManifestAssetPath,
       );
     }
   }

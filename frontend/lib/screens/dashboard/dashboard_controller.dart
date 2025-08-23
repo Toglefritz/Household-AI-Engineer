@@ -271,7 +271,32 @@ class DashboardController extends State<DashboardRoute> {
           applicationToModify: applicationToModify,
         );
       },
-    );
+    ).then((_) {
+      // Refresh applications after conversation modal closes
+      // This ensures any new applications created during the conversation are displayed
+      debugPrint('Conversation modal closed, refreshing applications');
+      _refreshApplicationsAfterDelay();
+    });
+  }
+
+  /// Refreshes applications after a short delay.
+  ///
+  /// This method is called after conversation modals close to ensure
+  /// any newly created applications are detected and displayed.
+  /// The delay allows time for file system operations to complete.
+  void _refreshApplicationsAfterDelay() {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        _userApplicationService
+            .refreshApplications()
+            .then((List<UserApplication> apps) {
+              debugPrint('Manual refresh completed, found ${apps.length} applications');
+            })
+            .catchError((Object error) {
+              debugPrint('Manual refresh failed: $error');
+            });
+      }
+    });
   }
 
   @override

@@ -181,7 +181,10 @@ class ConversationService extends ChangeNotifier {
     String messageContent = messageText.trim();
     if (messageContent.isEmpty) return;
 
-    // Add guiding instructions to the user message.
+    // Add interaction guiding instructions to the user message.
+    messageContent += DefaultMessages.getInteractionGuidanceInstructions();
+
+    // Add spec guiding instructions to the user message.
     messageContent += DefaultMessages.getSpecGuidanceInstructions();
 
     // Add user message to the current conversation. The system guidance information
