@@ -1,7 +1,6 @@
 //
 // library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../services/conversation/conversation_service.dart';
