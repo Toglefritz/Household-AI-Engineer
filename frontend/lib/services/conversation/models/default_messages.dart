@@ -69,4 +69,19 @@ class DefaultMessages {
       ],
     );
   }
+
+  /// A system messaged that is added to messages by the user to help guide the Kiro IDE towards performing
+  /// spec-driven updates rather than "vibe" requests when there is a task in the spec tasklist relevant to the user's
+  /// query.
+  static String getSpecGuidanceInstructions() {
+    return '''
+      System Instructions: If there is a task in the tasklist in the user-application-template spec, use it to 
+      complete the request from the user. Also, regardless of whether a spec task is used for this request or not, be 
+      sure to update the manifest.json file so it reflects the state of the user application after any updates are made.
+      If a manifest.json file does not exist in the current directory, your first task should be to create one for the 
+      current user application based on the example provided by manifest_example.json. After each task in the spec is
+      completed, the manifest.json file should be updated to allow consumers of this manifest file to stay update on
+      development progress.
+      ''';
+  }
 }

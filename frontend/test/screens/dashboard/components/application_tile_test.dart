@@ -1,8 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/applications/application_tile.dart';
 import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
 import 'package:household_ai_engineer/services/user_application/models/development_progress.dart';
@@ -26,10 +24,6 @@ void main() {
         status: ApplicationStatus.ready,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        launchConfig: const LaunchConfiguration(
-          type: LaunchType.web,
-          url: 'http://localhost:3000',
-        ),
         tags: ['test', 'widget'],
       );
     });
@@ -92,7 +86,6 @@ void main() {
           progress: DevelopmentProgress(
             percentage: 65.0,
             currentPhase: 'Building User Interface',
-            milestones: [],
             lastUpdated: DateTime.now(),
           ),
         );
@@ -234,7 +227,6 @@ void main() {
           progress: DevelopmentProgress(
             percentage: 90.0,
             currentPhase: 'Running Integration Tests',
-            milestones: [],
             lastUpdated: DateTime.now(),
           ),
         );
@@ -256,7 +248,6 @@ void main() {
           progress: DevelopmentProgress(
             percentage: 25.0,
             currentPhase: 'Applying Updates',
-            milestones: [],
             lastUpdated: DateTime.now(),
           ),
         );

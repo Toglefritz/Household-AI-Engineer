@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../services/conversation/models/conversation_message.dart';
 import '../../services/conversation/models/conversation_thread.dart';
-import '../../services/conversation/models/message_sender.dart';
 import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
@@ -47,10 +45,10 @@ class DashboardController extends State<DashboardRoute> {
   /// in the application grid.
   final Set<String> _selectedApplicationIds = <String>{};
 
-  /// Service for managing user applications through Kiro Bridge integration.
+  /// Service for managing user applications through the local file system.
   ///
   /// Handles loading, creating, and managing applications with real-time updates.
-  late final UserApplicationService _userApplicationService;
+  final UserApplicationService _userApplicationService = UserApplicationService();
 
   /// Stream subscription for application updates.
   ///
@@ -84,9 +82,6 @@ class DashboardController extends State<DashboardRoute> {
   void initState() {
     super.initState();
 
-    // Initialize the user application service
-    _userApplicationService = UserApplicationService();
-
     // Load and watch for application updates
     _loadApplications();
   }
@@ -108,9 +103,6 @@ class DashboardController extends State<DashboardRoute> {
         (List<UserApplication> applications) {
           setState(() {
             _applications = applications;
-            _connectionStatus = _userApplicationService.isConnected
-                ? ConnectionStatus.connected
-                : ConnectionStatus.disconnected;
 
             // Set sidebar state based on application availability
             // Open sidebar if there are applications, keep closed if none
@@ -277,137 +269,9 @@ class DashboardController extends State<DashboardRoute> {
         return ConversationModal(
           initialConversation: initialConversation,
           applicationToModify: applicationToModify,
-          onConversationComplete: _onConversationComplete,
         );
       },
     );
-  }
-
-  /// Handles conversation completion.
-  ///
-  /// Called when a conversation is successfully completed and an application
-  /// specification has been generated and submitted to the Kiro Bridge.
-  ///
-  /// @param conversation The completed conversation thread
-  Future<void> _onConversationComplete(ConversationThread conversation) async {
-    debugPrint('Conversation completed: ${conversation.id}');
-
-    try {
-      if (conversation.context.isCreatingApplication) {
-        // Extract application description from conversation
-        final String description = _extractApplicationDescriptionFromConversation(conversation);
-
-        setState(() {
-          _connectionStatus = ConnectionStatus.connecting;
-        });
-
-        // Create the application through the Kiro Bridge
-        final UserApplication newApplication = await _userApplicationService.createApplication(
-          description: description,
-          conversationId: conversation.id,
-        );
-
-        setState(() {
-          _connectionStatus = ConnectionStatus.connected;
-        });
-
-        debugPrint('Successfully created application: ${newApplication.title}');
-
-        // Show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Created application: ${newApplication.title}'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else if (conversation.context.isModifyingApplication) {
-        // Handle application modification
-        final String applicationId = conversation.context.applicationId!;
-        final String modifications = _extractModificationsFromConversation(conversation);
-
-        setState(() {
-          _connectionStatus = ConnectionStatus.connecting;
-        });
-
-        final UserApplication updatedApplication = await _userApplicationService.modifyApplication(
-          applicationId: applicationId,
-          modifications: modifications,
-          conversationId: conversation.id,
-        );
-
-        setState(() {
-          _connectionStatus = ConnectionStatus.connected;
-        });
-
-        debugPrint('Successfully modified application: ${updatedApplication.title}');
-
-        // Show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Modified application: ${updatedApplication.title}'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('Failed to process conversation completion: $e');
-
-      setState(() {
-        _connectionStatus = ConnectionStatus.error;
-      });
-
-      // Show error message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to process request: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  /// Extracts the application description from a completed conversation.
-  ///
-  /// Analyzes the conversation messages to determine what the user wants to build.
-  /// This is a simplified implementation that would be enhanced with better NLP.
-  ///
-  /// @param conversation The completed conversation thread
-  /// @returns A description of the desired application
-  String _extractApplicationDescriptionFromConversation(ConversationThread conversation) {
-    // Find the first user message that describes what they want to build
-    for (final ConversationMessage message in conversation.messages) {
-      if (message.sender == MessageSender.user && message.content.isNotEmpty) {
-        return message.content;
-      }
-    }
-
-    // Fallback description
-    return 'Custom household application created through conversation';
-  }
-
-  /// Extracts the modification description from a completed conversation.
-  ///
-  /// Analyzes the conversation messages to determine what changes the user wants.
-  ///
-  /// @param conversation The completed conversation thread
-  /// @returns A description of the desired modifications
-  String _extractModificationsFromConversation(ConversationThread conversation) {
-    // Find user messages that describe modifications
-    final List<String> modifications = [];
-
-    for (final ConversationMessage message in conversation.messages) {
-      if (message.sender == MessageSender.user && message.content.isNotEmpty) {
-        modifications.add(message.content);
-      }
-    }
-
-    return modifications.join(' ');
   }
 
   @override

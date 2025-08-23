@@ -1,23 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 import '../config/app_config.dart';
 import 'models/user_application.dart';
 
-/// Service for managing household applications through the Kiro Bridge API.
+/// Service for managing household applications through the file system.
+///
+/// Each user application created by this system exists in a directory within the
+/// apps/ directory. Each of these user application directories contains a "manifest"
+/// JSON file that contains metadata about the application.
 ///
 /// This service provides a unified interface for loading, creating, and managing
-/// user applications by communicating with the Kiro Bridge REST API and WebSocket
-/// endpoints. It handles both file-system based manifest reading for deployed
-/// applications and real-time communication with the Kiro IDE for development
-/// operations.
-///
-/// The service supports:
-/// - Loading application metadata from local manifests and Kiro Bridge API
-/// - Real-time status updates through WebSocket connections
-/// - Application creation, modification, and lifecycle management
-/// - Error handling and offline fallback capabilities
+/// user applications stored in the local file system. It handles reading the manifest
+/// files for user applications and returning the user application metadata from
+/// these JSON files. It also handles the creation of new user applications, the
+/// modification of existing user applications, and the deletion of user applications.
 class UserApplicationService {
   /// Directory where per-app manifests (`*.json`) are stored.
   ///
@@ -29,55 +30,37 @@ class UserApplicationService {
   final StreamController<List<UserApplication>> _applicationUpdatesController =
       StreamController<List<UserApplication>>.broadcast();
 
-  /// Cache of currently loaded applications.
-  List<UserApplication> _cachedApplications = [];
-
-  /// Whether the service is currently connected to the Kiro Bridge.
-  bool _isConnected = false;
-
-  /// Loads all available [UserApplication]s from both local manifests and Kiro Bridge API.
+  /// Loads all available [UserApplication]s from local manifests.
   ///
-  /// This method combines data from local manifest files (for deployed applications)
-  /// with real-time data from the Kiro Bridge API (for applications in development).
-  /// The combined data provides a complete view of all user applications.
+  /// This method reads the JSON manifest files for all current user applications. Each of
+  /// these JSON files is used to create a [UserApplication] object. The resulting list
+  /// of user applications is returned.
   ///
   /// Returns applications sorted by update time (newest first) for optimal user experience.
-  Future<List<UserApplication>> loadApplications() async {
+  Future<List<UserApplication>> _loadApplications() async {
     try {
       // Load local manifest files for deployed applications
       final List<UserApplication> localApplications = await _loadLocalApplications();
 
-      // Merge the two lists, preferring bridge data for applications that exist in both
-      final Map<String, UserApplication> applicationMap = <String, UserApplication>{};
-
-      // Add local applications first
-      for (final UserApplication app in localApplications) {
-        applicationMap[app.id] = app;
-      }
-
-      final List<UserApplication> applications = applicationMap.values.toList()
+      final List<UserApplication> applications = localApplications
         // Sort newest updated first for a pleasant dashboard experience
         ..sort(
           (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
         );
 
-      _cachedApplications = applications;
-      _isConnected = true;
-
+      // Return the sorted list of applications.
       return applications;
     } catch (e) {
       // If bridge communication fails, fall back to local manifests only
-      _isConnected = false;
       return _loadLocalApplications();
     }
   }
 
-  /// Watches for application changes through both file system and WebSocket updates.
+  /// Watches for application changes through both file system.
   ///
-  /// This method provides a unified stream of application updates by monitoring:
-  /// - Local file system changes in the apps directory
-  /// - Real-time updates from the Kiro Bridge WebSocket connection
-  /// - Periodic polling of the Kiro Bridge API for status updates
+  /// This method monitors the local file system for changes in the apps/ directory.
+  /// When a user applications is added, removed, or modified, this [Stream]
+  /// returns the resulting user applications.
   ///
   /// Consumers receive updated application lists automatically without manual refresh.
   Stream<List<UserApplication>> watchApplications({
@@ -85,14 +68,11 @@ class UserApplicationService {
     Duration pollInterval = const Duration(seconds: 30),
   }) async* {
     // Initial emission
-    final List<UserApplication> initial = await loadApplications();
+    final List<UserApplication> initial = await _loadApplications();
     yield initial;
 
     // Set up file system watcher for local changes
     await _setupFileSystemWatcher(debounce);
-
-    // Set up periodic polling as fallback
-    _setupPeriodicPolling(pollInterval);
 
     // Yield from the application updates stream
     yield* _applicationUpdatesController.stream;
@@ -100,29 +80,38 @@ class UserApplicationService {
 
   /// Loads applications from local manifest files.
   ///
-  /// Reads JSON manifest files from the apps directory and parses them into
-  /// UserApplication objects. This provides data for deployed applications.
+  /// Reads manifest.json files from subdirectories within the apps directory
+  /// and parses them into UserApplication objects. Each user application
+  /// exists in its own subdirectory containing a manifest.json file.
   Future<List<UserApplication>> _loadLocalApplications() async {
-    // Get the apps/ directory.
-    final Directory directory = await appsDir;
+    // Resolve the base apps/ directory.
+    final Directory appsDirectory = await AppConfig.appsDirectory;
+
+    debugPrint('Getting user applications from directory, ${appsDirectory.path}');
 
     // Check that the directory exists.
-    final bool exists = directory.existsSync();
+    final bool exists = appsDirectory.existsSync();
     if (!exists) {
       return <UserApplication>[];
     }
 
     final List<UserApplication> applications = <UserApplication>[];
 
-    // Gather manifest files with a conservative read strategy
-    final List<FileSystemEntity> entries = directory.listSync(followLinks: false);
+    // Iterate through each subdirectory in the apps directory
+    final List<FileSystemEntity> entries = appsDirectory.listSync(followLinks: false);
     for (final FileSystemEntity entity in entries) {
-      if (entity is! File) continue;
-      final File file = entity;
-      final String path = file.path;
-      if (!path.toLowerCase().endsWith('.json')) continue;
+      // Skip if not a directory - each app should be in its own folder
+      if (entity is! Directory) continue;
+      final Directory appDirectory = entity;
 
-      final UserApplication? parsed = await _readManifest(file);
+      // Look for manifest.json file within this app directory
+      final File manifestFile = File('${appDirectory.path}/manifest.json');
+
+      // Skip if manifest.json doesn't exist in this directory
+      if (!manifestFile.existsSync()) continue;
+
+      // Attempt to read and parse the manifest file
+      final UserApplication? parsed = await _readManifest(manifestFile);
       if (parsed != null) {
         applications.add(parsed);
       }
@@ -136,37 +125,23 @@ class UserApplicationService {
   /// Monitors the apps directory for changes and triggers application list updates
   /// when manifest files are added, modified, or removed.
   Future<void> _setupFileSystemWatcher(Duration debounce) async {
-    // Get the apps/ directory.
-    final Directory directory = await appsDir;
+    // Resolve the base apps/ directory.
+    final Directory appsDirectory = await AppConfig.appsDirectory;
 
     // Check that the directory exists.
-    final bool exists = directory.existsSync();
+    final bool exists = appsDirectory.existsSync();
     if (!exists) return;
 
-    final Stream<FileSystemEvent> raw = directory.watch();
+    final Stream<FileSystemEvent> raw = appsDirectory.watch();
     Timer? timer;
 
+    // Add a listener for local file system changes
     raw.listen((FileSystemEvent _) {
       timer?.cancel();
       timer = Timer(debounce, () async {
-        final List<UserApplication> apps = await loadApplications();
+        final List<UserApplication> apps = await _loadApplications();
         _applicationUpdatesController.add(apps);
       });
-    });
-  }
-
-  /// Sets up periodic polling for application updates.
-  ///
-  /// Polls the Kiro Bridge API periodically to ensure we don't miss updates
-  /// if the WebSocket connection fails or is unavailable.
-  void _setupPeriodicPolling(Duration pollInterval) {
-    Timer.periodic(pollInterval, (Timer timer) async {
-      try {
-        final List<UserApplication> apps = await loadApplications();
-        _applicationUpdatesController.add(apps);
-      } catch (e) {
-        // Polling failed, continue with cached data
-      }
     });
   }
 
@@ -174,33 +149,70 @@ class UserApplicationService {
   /// [UserApplication]. Returns `null` if the file is unreadable or invalid.
   Future<UserApplication?> _readManifest(File file) async {
     try {
+      // Read the manifest JSON file
       final String contents = await file.readAsString();
       final Map<String, dynamic> jsonMap = json.decode(contents) as Map<String, dynamic>;
+
+      // Convert the JSON to a UserApplication object
       final UserApplication app = UserApplication.fromJson(jsonMap);
+
       return app;
     } on FormatException {
+      debugPrint('Failed to read user application manifest with exception, $e');
+
       // Malformed JSON or model validation: skip this manifest.
       return null;
     } on Object {
+      debugPrint('Failed to read user application manifest with exception, $e');
+
       // Any other I/O error: skip this manifest.
       return null;
     }
   }
 
-  /// Creates a new application through the Kiro Bridge.
+  /// Creates a new folder under the apps/ directory for the user application to be created.
   ///
-  /// Sends a request to create a new application based on the user's description.
-  /// The application will be queued for development and progress can be monitored
-  /// through the real-time updates.
+  /// Each user application exists in a separate folder within the *apps/* directory to keep
+  /// applications compartmentalized. This method creates a uniquely named folder (random
+  /// lowercase alphanumeric id) and returns its absolute path.
+  /// Creates a new folder under the apps/ directory for the user application to be created.
   ///
-  /// Returns the created application metadata or throws an exception if creation fails.
-  Future<UserApplication> createApplication({
-    required String description,
-    String? conversationId,
-    String priority = 'normal',
-  }) async {
-    // TODO(Scott): Implementation
-    throw UnimplementedError();
+  /// Each user application exists in a separate folder within the *apps/* directory to keep
+  /// applications compartmentalized. This method creates a uniquely named folder (random
+  /// lowercase alphanumeric id) and returns its absolute path.
+  Future<String> createNewApplicationDirectory() async {
+    // Resolve the base apps/ directory.
+    final Directory appsDirectory = await AppConfig.appsDirectory;
+
+    // Generate a unique folder name.
+    String id;
+    Directory newDir;
+    do {
+      id = _generateRandomId();
+      newDir = Directory('${appsDirectory.path}/$id');
+    } while (newDir.existsSync());
+
+    // Create the directory.
+    await newDir.create(recursive: true);
+
+    // Return the absolute path for convenience.
+    return newDir.absolute.path;
+  }
+
+  /// Generates a random lowercase alphanumeric identifier of the given [length].
+  String _generateRandomId([int length = 6]) {
+    // Create a list of characters from which the random identifier will be created
+    const String chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    // Build a random string from the list of characters.
+    final Random rng = Random.secure();
+    final StringBuffer buf = StringBuffer();
+    for (int i = 0; i < length; i++) {
+      buf.write(chars[rng.nextInt(chars.length)]);
+    }
+
+    // Return the random identifier.
+    return buf.toString();
   }
 
   /// Modifies an existing application through the Kiro Bridge.
@@ -235,22 +247,7 @@ class UserApplicationService {
     throw UnimplementedError();
   }
 
-  /// Returns whether the service is currently connected to the Kiro Bridge.
-  ///
-  /// Used by UI components to show connection status and enable/disable features
-  /// that require bridge connectivity.
-  bool get isConnected => _isConnected;
-
-  /// Returns the cached applications list.
-  ///
-  /// Provides immediate access to the last loaded application data without
-  /// requiring an async call. May be empty if no applications have been loaded yet.
-  List<UserApplication> get cachedApplications => List.unmodifiable(_cachedApplications);
-
   /// Disposes of resources used by this service.
-  ///
-  /// Closes WebSocket connections, cancels timers, and cleans up stream controllers.
-  /// Should be called when the service is no longer needed.
   void dispose() {
     _applicationUpdatesController.close();
   }

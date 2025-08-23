@@ -10,6 +10,7 @@ import 'models/message_action.dart';
 import 'models/message_sender.dart';
 
 /// Controller for managing conversation state and interactions.
+/// Controller for managing conversation state and interactions.
 ///
 /// Handles conversation flow, message management, and user interactions
 /// for the conversational interface used in application creation and modification.
@@ -177,14 +178,19 @@ class ConversationService extends ChangeNotifier {
   Future<void> sendMessage(String messageText) async {
     if (!canSendMessage) return;
 
-    final String messageContent = messageText.trim();
+    String messageContent = messageText.trim();
     if (messageContent.isEmpty) return;
 
-    // Add user message to the current conversation
+    // Add guiding instructions to the user message.
+    messageContent += DefaultMessages.getSpecGuidanceInstructions();
+
+    // Add user message to the current conversation. The system guidance information
+    // is not included in this message since it will be displayed in the frontend
+    // user interface.
     final ConversationMessage userMessage = ConversationMessage(
       id: 'msg_user_${DateTime.now().millisecondsSinceEpoch}',
       sender: MessageSender.user,
-      content: messageContent,
+      content:  messageText.trim(),
       timestamp: DateTime.now(),
     );
 

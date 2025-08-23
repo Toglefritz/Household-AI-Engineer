@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../config/app_config.dart';
+import '../user_application/user_application_service.dart';
 import 'models/kiro_status.dart';
 
 /// Service for communicating with the Kiro IDE through the communication bridge.
@@ -17,6 +17,9 @@ import 'models/kiro_status.dart';
 /// The service is designed to be lightweight and focused solely on communication
 /// with Kiro, without knowledge of application management or conversation flow.
 class KiroService {
+  /// A service used to manage user applications.
+  final UserApplicationService _applicationService = UserApplicationService();
+
   /// Base URL for the Kiro Bridge REST API.
   static String get _baseUrl => AppConfig.kiroBridgeBaseUrl;
 
@@ -87,54 +90,18 @@ class KiroService {
   /// and a [StateError] if the Kiro Bridge does not become available in time.
   Future<void> setupKiroForNewApplication() async {
     // Step 1: Create a new folder for the application.
-    final String newAppPath = await _createNewApplicationDirectory();
+    final String newAppPath = await _applicationService.createNewApplicationDirectory();
     final Directory newAppDir = Directory(newAppPath);
 
     // Step 2: Create the .kiro directory structure and copy template files.
     await _createKiroSpecStructure(newAppDir);
+    await _copyManifestTemplate(newAppDir);
+
+    // Step 2.5: Copy the manifest template into the new application directory.
+    await _copyManifestTemplate(newAppDir);
 
     // Step 3: Open Kiro into the new application directory and wait for readiness.
     await _openKiroInAppsDir(newAppDir);
-  }
-
-  /// Creates a new folder under the apps/ directory for the user application to be created.
-  ///
-  /// Each user application exists in a separate folder within the *apps/* directory to keep
-  /// applications compartmentalized. This method creates a uniquely named folder (random
-  /// lowercase alphanumeric id) and returns its absolute path.
-  Future<String> _createNewApplicationDirectory() async {
-    // Resolve the base apps/ directory.
-    final Directory appsDirectory = await AppConfig.appsDirectory;
-
-    // Generate a unique folder name.
-    String id;
-    Directory newDir;
-    do {
-      id = _generateRandomId();
-      newDir = Directory('${appsDirectory.path}/$id');
-    } while (newDir.existsSync());
-
-    // Create the directory.
-    await newDir.create(recursive: true);
-
-    // Return the absolute path for convenience.
-    return newDir.absolute.path;
-  }
-
-  /// Generates a random lowercase alphanumeric identifier of the given [length].
-  String _generateRandomId([int length = 6]) {
-    // Create a list of characters from which the random identifier will be created
-    const String chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-    // Build a random string from the list of characters.
-    final Random rng = Random.secure();
-    final StringBuffer buf = StringBuffer();
-    for (int i = 0; i < length; i++) {
-      buf.write(chars[rng.nextInt(chars.length)]);
-    }
-
-    // Return the random identifier.
-    return buf.toString();
   }
 
   /// Creates the `.kiro/specs/user-application-template/` directory structure
@@ -173,11 +140,36 @@ class KiroService {
         final File destinationFile = File('${templateDir.path}/$fileName');
         await destinationFile.writeAsString(content, flush: true);
       } catch (e) {
+        debugPrint('Failed to copy template file $fileName from assets with exception, $e');
+
         throw FileSystemException(
-          'Failed to copy template file $fileName from assets: $e',
+          'Failed to copy template file $fileName from assets with exception, $e',
           assetPath,
         );
       }
+    }
+  }
+
+  /// Copies the manifest template file into the given destination directory.
+  ///
+  /// This method loads the `manifest_example.json` from Flutter assets and writes
+  /// it as `manifest_example.json` into the provided destination directory. This
+  /// manifest file provides basic configuration or metadata needed by the Kiro IDE
+  /// for the new user application.
+  ///
+  /// Throws a [FileSystemException] if the asset cannot be loaded or written.
+  Future<void> _copyManifestTemplate(Directory destination) async {
+    const String assetPath = 'assets/templates/manifest/manifest_example.json';
+
+    try {
+      final String content = await rootBundle.loadString(assetPath);
+      final File destinationFile = File('${destination.path}/manifest_example.json');
+      await destinationFile.writeAsString(content, flush: true);
+    } catch (e) {
+      throw FileSystemException(
+        'Failed to copy manifest template from assets: $e',
+        assetPath,
+      );
     }
   }
 
@@ -288,7 +280,7 @@ class KiroService {
   /// @returns The response from Kiro as a string
   /// @throws [StateError] if not connected to the bridge
   /// @throws [HttpException] if the request fails
-  Future<String> sendMessage(String message) async {
+  Future<void> sendMessage(String message) async {
     debugPrint('Sending user message to Kiro IDE');
 
     if (!_isConnected) {
@@ -320,18 +312,7 @@ class KiroService {
       throw HttpException('HTTP ${response.statusCode}: $body', uri: uri);
     }
 
-    Map<String, Object?> result;
-    try {
-      result = jsonDecode(body) as Map<String, Object?>;
-    } catch (_) {
-      return body;
-    }
-
-    debugPrint('Successfully sent user message to the Kiro IDE');
-
     // TODO(Scott): process the result according to the data it contains
-
-    return body; // Fallback to raw content
   }
 
   /// Disposes of resources used by this service.

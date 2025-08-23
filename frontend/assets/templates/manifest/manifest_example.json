@@ -1,0 +1,16 @@
+{
+  "id": "app-12345",
+  "title": "Chore Tracker",
+  "description": "A household application to manage and rotate chores among family members.",
+  "status": "ready",
+  "createdAt": "2025-08-01T12:00:00Z",
+  "updatedAt": "2025-08-22T18:30:00Z",
+  "iconUrl": "https://example.com/icons/chore_tracker.png",
+  "tags": ["household", "chores", "family"],
+  "progress": {
+    "percentage": 100.0,
+    "currentPhase": "Finalizing",
+    "lastUpdated": "2025-08-22T18:30:00Z",
+    "estimatedCompletion": "2025-08-22T18:30:00Z"
+  }
+}

@@ -1,105 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
 import 'package:household_ai_engineer/services/user_application/models/application_status.dart';
-import 'package:household_ai_engineer/services/user_application/models/development_milestone.dart';
 import 'package:household_ai_engineer/services/user_application/models/development_progress.dart';
-import 'package:household_ai_engineer/services/user_application/models/milestone_status.dart';
 import 'package:household_ai_engineer/services/user_application/models/user_application.dart';
 
 void main() {
-  group('LaunchType', () {
-    test('should have all expected launch types', () {
-      expect(LaunchType.values, hasLength(2));
-      expect(LaunchType.values, contains(LaunchType.web));
-      expect(LaunchType.values, contains(LaunchType.native));
-    });
-
-    test('should return correct display names', () {
-      expect(LaunchType.web.displayName, equals('Web Application'));
-      expect(LaunchType.native.displayName, equals('Native Application'));
-    });
-
-    test('should identify embedded types correctly', () {
-      expect(LaunchType.web.isEmbedded, isTrue);
-      expect(LaunchType.native.isEmbedded, isFalse);
-    });
-
-    test('should identify separate window types correctly', () {
-      expect(LaunchType.native.usesSeparateWindow, isTrue);
-      expect(LaunchType.web.usesSeparateWindow, isFalse);
-    });
-  });
-
-  group('LaunchConfiguration', () {
-    const LaunchConfiguration testConfig = LaunchConfiguration(
-      type: LaunchType.web,
-      url: 'http://localhost:3000',
-      windowTitle: 'Test Application',
-      windowWidth: 800,
-      windowHeight: 600,
-    );
-
-    test('should create configuration with all fields', () {
-      expect(testConfig.type, equals(LaunchType.web));
-      expect(testConfig.url, equals('http://localhost:3000'));
-      expect(testConfig.windowTitle, equals('Test Application'));
-      expect(testConfig.windowWidth, equals(800));
-      expect(testConfig.windowHeight, equals(600));
-      expect(testConfig.allowResize, isTrue);
-      expect(testConfig.showNavigationControls, isFalse);
-    });
-
-    test('should create configuration from JSON', () {
-      final Map<String, dynamic> json = {
-        'type': 'native',
-        'url': '/usr/local/bin/myapp',
-        'windowTitle': 'My Native App',
-        'windowWidth': 1024,
-        'windowHeight': 768,
-        'allowResize': false,
-        'showNavigationControls': true,
-      };
-
-      final LaunchConfiguration config = LaunchConfiguration.fromJson(json);
-
-      expect(config.type, equals(LaunchType.native));
-      expect(config.url, equals('/usr/local/bin/myapp'));
-      expect(config.windowTitle, equals('My Native App'));
-      expect(config.windowWidth, equals(1024));
-      expect(config.windowHeight, equals(768));
-      expect(config.allowResize, isFalse);
-      expect(config.showNavigationControls, isTrue);
-    });
-
-    test('should convert configuration to JSON correctly', () {
-      final Map<String, dynamic> json = testConfig.toJson();
-
-      expect(json['type'], equals('web'));
-      expect(json['url'], equals('http://localhost:3000'));
-      expect(json['windowTitle'], equals('Test Application'));
-      expect(json['windowWidth'], equals(800));
-      expect(json['windowHeight'], equals(600));
-      expect(json['allowResize'], isTrue);
-      expect(json['showNavigationControls'], isFalse);
-    });
-  });
-
   group('ApplicationTile', () {
-    const LaunchConfiguration testLaunchConfig = LaunchConfiguration(type: LaunchType.web, url: 'http://localhost:3000');
-
     final DevelopmentProgress testProgress = DevelopmentProgress(
       percentage: 75,
       currentPhase: 'Running Tests',
-      milestones: [
-        const DevelopmentMilestone(
-          id: 'milestone_1',
-          name: 'Generate Code',
-          description: 'Generate application code',
-          status: MilestoneStatus.completed,
-          order: 1,
-        ),
-      ],
       lastUpdated: DateTime(2025, 1, 10, 14, 30),
     );
 
@@ -110,7 +18,6 @@ void main() {
       status: ApplicationStatus.developing,
       createdAt: DateTime(2025, 1, 10, 14),
       updatedAt: DateTime(2025, 1, 10, 14, 30),
-      launchConfig: testLaunchConfig,
       iconUrl: 'https://example.com/icon.png',
       tags: ['household', 'chores', 'family'],
       progress: testProgress,
@@ -123,7 +30,6 @@ void main() {
       expect(testTile.status, equals(ApplicationStatus.developing));
       expect(testTile.createdAt, equals(DateTime(2025, 1, 10, 14)));
       expect(testTile.updatedAt, equals(DateTime(2025, 1, 10, 14, 30)));
-      expect(testTile.launchConfig, equals(testLaunchConfig));
       expect(testTile.iconUrl, equals('https://example.com/icon.png'));
       expect(testTile.tags, equals(['household', 'chores', 'family']));
       expect(testTile.progress, equals(testProgress));
@@ -166,7 +72,6 @@ void main() {
         status: testTile.status,
         createdAt: testTile.createdAt,
         updatedAt: testTile.updatedAt,
-        launchConfig: testTile.launchConfig,
         tags: testTile.tags,
         progress: testTile.progress,
       );
@@ -179,7 +84,6 @@ void main() {
         status: testTile.status,
         createdAt: testTile.createdAt,
         updatedAt: testTile.updatedAt,
-        launchConfig: testTile.launchConfig,
         iconUrl: '',
         tags: testTile.tags,
         progress: testTile.progress,
@@ -197,7 +101,6 @@ void main() {
         status: testTile.status,
         createdAt: testTile.createdAt,
         updatedAt: testTile.updatedAt,
-        launchConfig: testTile.launchConfig,
         iconUrl: testTile.iconUrl,
         tags: [],
         progress: testTile.progress,

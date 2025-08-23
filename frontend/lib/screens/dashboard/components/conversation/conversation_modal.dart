@@ -31,7 +31,6 @@ class ConversationModal extends StatefulWidget {
   const ConversationModal({
     this.initialConversation,
     this.applicationToModify,
-    this.onConversationComplete,
     super.key,
   });
 
@@ -46,11 +45,6 @@ class ConversationModal extends StatefulWidget {
   /// If provided, the conversation will be set up for modifying
   /// this application instead of creating a new one.
   final UserApplication? applicationToModify;
-
-  /// Callback invoked when the conversation is completed.
-  ///
-  /// Receives the final conversation thread as a parameter.
-  final void Function(ConversationThread conversation)? onConversationComplete;
 
   @override
   State<ConversationModal> createState() => _ConversationModalState();

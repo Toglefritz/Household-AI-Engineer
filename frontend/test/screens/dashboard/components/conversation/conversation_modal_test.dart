@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_configuration.dart';
-import 'package:household_ai_engineer/models/launch_configuration/launch_type.dart';
 import 'package:household_ai_engineer/screens/dashboard/components/conversation/conversation_modal.dart';
 import 'package:household_ai_engineer/services/conversation/models/conversation_context.dart';
 import 'package:household_ai_engineer/services/conversation/models/conversation_message.dart';
@@ -30,10 +28,6 @@ void main() {
         status: ApplicationStatus.ready,
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        launchConfig: const LaunchConfiguration(
-          type: LaunchType.web,
-          url: 'http://localhost:3000',
-        ),
         tags: ['test', 'conversation'],
       );
     });

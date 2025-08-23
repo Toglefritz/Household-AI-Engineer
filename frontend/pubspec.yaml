@@ -37,3 +37,4 @@ flutter:
     - assets/
     - assets/templates/
     - assets/templates/kiro/specs/user-application-template/
+    - assets/templates/manifest/

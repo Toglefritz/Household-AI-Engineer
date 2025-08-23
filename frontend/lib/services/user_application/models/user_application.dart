@@ -1,4 +1,3 @@
-import '../../../models/launch_configuration/launch_configuration.dart';
 import 'application_status.dart';
 import 'development_progress.dart';
 
@@ -17,7 +16,6 @@ class UserApplication {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
-    required this.launchConfig,
     this.iconUrl,
     this.progress,
     this.tags = const [],
@@ -77,12 +75,6 @@ class UserApplication {
   /// Contains detailed progress tracking for active development.
   final DevelopmentProgress? progress;
 
-  /// Configuration for launching this application.
-  ///
-  /// Contains platform-specific settings and parameters needed
-  /// to properly launch and manage the running application.
-  final LaunchConfiguration launchConfig;
-
   /// Creates an ApplicationTile from JSON data.
   ///
   /// Parses application data received from the backend API and creates
@@ -102,10 +94,6 @@ class UserApplication {
         ),
         updatedAt: DateTime.parse(
           json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
-        ),
-        launchConfig: LaunchConfiguration.fromJson(
-          json['launchConfig'] as Map<String, dynamic>? ??
-              (throw ArgumentError('Missing required field: launchConfig')),
         ),
         iconUrl: json['iconUrl'] as String?,
         tags: (json['tags'] as List<dynamic>?)?.map((tag) => tag as String).toList() ?? [],
@@ -130,7 +118,6 @@ class UserApplication {
       'status': status.name,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'launchConfig': launchConfig.toJson(),
       'iconUrl': iconUrl,
       'tags': tags,
       'progress': progress?.toJson(),
@@ -151,7 +138,6 @@ class UserApplication {
     String? iconUrl,
     List<String>? tags,
     DevelopmentProgress? progress,
-    LaunchConfiguration? launchConfig,
   }) {
     return UserApplication(
       id: id ?? this.id,
@@ -163,7 +149,6 @@ class UserApplication {
       iconUrl: iconUrl ?? this.iconUrl,
       tags: tags ?? this.tags,
       progress: progress ?? this.progress,
-      launchConfig: launchConfig ?? this.launchConfig,
     );
   }
 
@@ -202,53 +187,41 @@ class UserApplication {
   /// development progress that should be displayed to users.
   bool get isInDevelopment => status.isActive && progress != null;
 
-
   /// Returns true if this application can be launched.
   ///
   /// Applications can be launched when they are ready or already running.
   /// Uses the status extension method for consistent behavior.
-  bool get canLaunch =>
-     status.canLaunch;
-
+  bool get canLaunch => status.canLaunch;
 
   /// Returns true if this application can be modified.
   ///
   /// Applications can be modified when they are in stable states.
   /// Uses the status extension method for consistent behavior.
-  bool get canModify =>
-     status.canModify;
-
+  bool get canModify => status.canModify;
 
   /// Returns true if this application has a custom icon.
   ///
   /// Used to determine whether to display a custom icon or
   /// fall back to a default application icon.
-  bool get hasCustomIcon =>
-     iconUrl != null && iconUrl!.isNotEmpty;
+  bool get hasCustomIcon => iconUrl != null && iconUrl!.isNotEmpty;
 
   /// Returns true if this application has tags.
   ///
   /// Used to determine whether to display tag information
   /// in the application tile interface.
-  bool get hasTags =>
-     tags.isNotEmpty;
-
+  bool get hasTags => tags.isNotEmpty;
 
   /// Returns the age of this application since creation.
   ///
   /// Calculated as the time between creation and now.
   /// Used for displaying creation time and analytics.
-  Duration get age =>
-     DateTime.now().difference(createdAt);
-
+  Duration get age => DateTime.now().difference(createdAt);
 
   /// Returns the time since this application was last updated.
   ///
   /// Calculated as the time between last update and now.
   /// Used for staleness detection and update indicators.
-  Duration get timeSinceUpdate =>
-     DateTime.now().difference(updatedAt);
-
+  Duration get timeSinceUpdate => DateTime.now().difference(updatedAt);
 
   /// Returns a formatted string describing when this application was created.
   ///

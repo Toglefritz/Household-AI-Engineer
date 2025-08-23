@@ -130,16 +130,6 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
                   horizontal: Insets.small,
                   vertical: Insets.small,
                 ),
-                suffixIcon: canSend
-                    ? IconButton(
-                        onPressed: _handleSendMessage,
-                        icon: Icon(
-                          Icons.send,
-                          color: colorScheme.primary,
-                        ),
-                        tooltip: AppLocalizations.of(context)!.tooltipSendMessage,
-                      )
-                    : null,
               ),
               onSubmitted: widget.enabled ? (_) => _handleSendMessage() : null,
             ),
