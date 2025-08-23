@@ -193,7 +193,7 @@ class ConversationService extends ChangeNotifier {
     final ConversationMessage userMessage = ConversationMessage(
       id: 'msg_user_${DateTime.now().millisecondsSinceEpoch}',
       sender: MessageSender.user,
-      content:  messageText.trim(),
+      content: messageText.trim(),
       timestamp: DateTime.now(),
     );
 
@@ -208,13 +208,25 @@ class ConversationService extends ChangeNotifier {
   ///
   /// @param action The action to send
   Future<void> sendAction(MessageAction action) async {
-    if (!hasActiveConversation || _isProcessing) return;
+    if (!canSendMessage) return;
 
-    // Add user message with the action value
+    // Get the action value and add system guidance instructions
+    String messageContent = action.value.trim();
+    if (messageContent.isEmpty) return;
+
+    // Add interaction guiding instructions to the action message.
+    messageContent += DefaultMessages.getInteractionGuidanceInstructions();
+
+    // Add spec guiding instructions to the action message.
+    messageContent += DefaultMessages.getSpecGuidanceInstructions();
+
+    // Add user message with the action value to the conversation.
+    // The system guidance information is not included in this message since it will be displayed in the frontend
+    // user interface.
     final ConversationMessage userMessage = ConversationMessage(
       id: 'msg_action_${DateTime.now().millisecondsSinceEpoch}',
       sender: MessageSender.user,
-      content: action.value,
+      content: action.value.trim(),
       timestamp: DateTime.now(),
     );
 
@@ -222,7 +234,7 @@ class ConversationService extends ChangeNotifier {
     notifyListeners();
 
     // Process the action and generate system response
-    // TODO(Scott): await _processUserMessage(action.value);
+    await _kiroService.sendMessage(messageContent);
   }
 
   /// Cancels the current conversation.
