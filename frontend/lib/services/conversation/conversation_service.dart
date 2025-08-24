@@ -31,8 +31,7 @@ class ConversationService extends ChangeNotifier {
   final KiroService _kiroService = KiroService();
 
   /// Service for monitoring user application progress.
-  final UserApplicationService _userApplicationService =
-      UserApplicationService();
+  final UserApplicationService _userApplicationService = UserApplicationService();
 
   /// The current active conversation thread.
   ///
@@ -43,6 +42,18 @@ class ConversationService extends ChangeNotifier {
   ///
   /// Used to show typing indicators and disable input during processing.
   bool _isProcessing = false;
+
+  /// Whether the system is showing immediate loading feedback after user input.
+  ///
+  /// This is true immediately after a user submits a message and before
+  /// any specific progress information becomes available.
+  bool _isShowingImmediateLoading = false;
+
+  /// Timer for clearing immediate loading state if it persists too long.
+  ///
+  /// This provides a fallback to ensure the loading indicator doesn't
+  /// persist indefinitely if something goes wrong with manifest detection.
+  Timer? _immediateLoadingTimer;
 
   /// Error message if something went wrong.
   ///
@@ -79,6 +90,12 @@ class ConversationService extends ChangeNotifier {
   /// Whether the system is currently processing a message.
   bool get isProcessing => _isProcessing;
 
+  /// Whether the system is showing immediate loading feedback.
+  ///
+  /// This indicates that a user message has been submitted and the system
+  /// is analyzing the input before specific progress information is available.
+  bool get isShowingImmediateLoading => _isShowingImmediateLoading;
+
   /// Error message if something went wrong.
   String? get error => _error;
 
@@ -86,18 +103,14 @@ class ConversationService extends ChangeNotifier {
   bool get hasActiveConversation => _currentConversation != null;
 
   /// Whether the conversation can accept new messages.
-  bool get canAcceptInput =>
-      hasActiveConversation &&
-      _currentConversation!.canAcceptMessages &&
-      !_isProcessing;
+  bool get canAcceptInput => hasActiveConversation && _currentConversation!.canAcceptMessages && !_isProcessing;
 
   /// Whether a message can be sent (conversation can accept input).
   /// The actual text validation is handled by the input widget.
   bool get canSendMessage => canAcceptInput;
 
   /// Whether the conversation can be cancelled.
-  bool get canCancel =>
-      hasActiveConversation && _currentConversation!.canCancel;
+  bool get canCancel => hasActiveConversation && _currentConversation!.canCancel;
 
   /// Whether development is currently in progress.
   bool get isDevelopmentInProgress => _isDevelopmentInProgress;
@@ -106,8 +119,7 @@ class ConversationService extends ChangeNotifier {
   UserApplication? get currentApplication => _currentApplication;
 
   /// Current development progress percentage (0-100).
-  double get developmentProgress =>
-      _currentApplication?.progress?.percentage ?? 0.0;
+  double get developmentProgress => _currentApplication?.progress?.percentage ?? 0.0;
 
   /// Starts a new conversation for creating an application.
   ///
@@ -117,11 +129,8 @@ class ConversationService extends ChangeNotifier {
 
     // Capture the current set of applications before starting the conversation
     // so we can detect when a new one is created
-    final List<UserApplication> currentApplications =
-        await _userApplicationService.getApplications();
-    _initialApplicationIds = currentApplications
-        .map((UserApplication app) => app.id)
-        .toSet();
+    final List<UserApplication> currentApplications = await _userApplicationService.getApplications();
+    _initialApplicationIds = currentApplications.map((UserApplication app) => app.id).toSet();
 
     // Perform Kiro setup for a new application.
     await _kiroService.setupKiroForNewApplication();
@@ -251,6 +260,17 @@ class ConversationService extends ChangeNotifier {
     String messageContent = messageText.trim();
     if (messageContent.isEmpty) return;
 
+    // Immediately show loading feedback when user submits a message
+    // This will persist until we detect that a manifest.json file has been created
+    debugPrint('ConversationService: Setting immediate loading state to true');
+    _isShowingImmediateLoading = true;
+    _isProcessing = true;
+
+    // Set up a fallback timer to clear loading state if it persists too long
+    _startImmediateLoadingTimer();
+
+    notifyListeners();
+
     // Add interaction guiding instructions to the user message.
     messageContent += DefaultMessages.getInteractionGuidanceInstructions();
 
@@ -273,8 +293,15 @@ class ConversationService extends ChangeNotifier {
     _currentConversation = _currentConversation!.addMessage(userMessage);
     notifyListeners();
 
-    // Process the message and generate system response
-    await _kiroService.sendMessage(messageContent);
+    try {
+      // Process the message and generate system response
+      await _kiroService.sendMessage(messageContent);
+    } finally {
+      // Only clear the processing flag, but keep immediate loading visible
+      // until we detect that an application manifest has been created
+      _isProcessing = false;
+      notifyListeners();
+    }
   }
 
   /// Sends a predefined action as a user message.
@@ -286,6 +313,17 @@ class ConversationService extends ChangeNotifier {
     // Get the action value and add system guidance instructions
     String messageContent = action.value.trim();
     if (messageContent.isEmpty) return;
+
+    // Immediately show loading feedback when user submits an action
+    // This will persist until we detect that a manifest.json file has been created
+    debugPrint('ConversationService: Setting immediate loading state to true for action');
+    _isShowingImmediateLoading = true;
+    _isProcessing = true;
+
+    // Set up a fallback timer to clear loading state if it persists too long
+    _startImmediateLoadingTimer();
+
+    notifyListeners();
 
     // Add interaction guiding instructions to the action message.
     messageContent += DefaultMessages.getInteractionGuidanceInstructions();
@@ -306,8 +344,15 @@ class ConversationService extends ChangeNotifier {
     _currentConversation = _currentConversation!.addMessage(userMessage);
     notifyListeners();
 
-    // Process the action and generate system response
-    await _kiroService.sendMessage(messageContent);
+    try {
+      // Process the action and generate system response
+      await _kiroService.sendMessage(messageContent);
+    } finally {
+      // Only clear the processing flag, but keep immediate loading visible
+      // until we detect that an application manifest has been created
+      _isProcessing = false;
+      notifyListeners();
+    }
   }
 
   /// Cancels the current conversation.
@@ -318,6 +363,11 @@ class ConversationService extends ChangeNotifier {
 
     // Stop monitoring application progress
     _stopProgressMonitoring();
+
+    // Clear immediate loading state if active
+    if (_isShowingImmediateLoading) {
+      _clearImmediateLoading();
+    }
 
     // Clean up the current conversation.
     _currentConversation = _currentConversation!.updateStatus(
@@ -339,11 +389,9 @@ class ConversationService extends ChangeNotifier {
   /// Watches for changes in application manifests and adds development statements
   /// as system messages when they are updated.
   void _startProgressMonitoring() {
-    _applicationSubscription = _userApplicationService
-        .watchApplications()
-        .listen(
-          _handleApplicationUpdates,
-        );
+    _applicationSubscription = _userApplicationService.watchApplications().listen(
+      _handleApplicationUpdates,
+    );
   }
 
   /// Stops monitoring application progress.
@@ -389,6 +437,13 @@ class ConversationService extends ChangeNotifier {
 
           // Start tracking this application for future updates
           _trackedApplicationId = app.id;
+
+          // Clear immediate loading since we've detected the manifest.json was created
+          if (_isShowingImmediateLoading) {
+            debugPrint('ConversationService: New application detected (${app.id}), clearing immediate loading');
+            _clearImmediateLoading();
+          }
+
           break;
         }
       }
@@ -398,13 +453,19 @@ class ConversationService extends ChangeNotifier {
     if (targetApplication != null) {
       _currentApplication = targetApplication;
 
-      final String? developmentStatement =
-          targetApplication.progress?.developmentStatement;
-      final double progressPercentage =
-          targetApplication.progress?.percentage ?? 0.0;
+      final String? developmentStatement = targetApplication.progress?.developmentStatement;
+      final double progressPercentage = targetApplication.progress?.percentage ?? 0.0;
 
       // Update development status based on progress
       _isDevelopmentInProgress = progressPercentage < 100.0;
+
+      // When we detect a new application (manifest.json created), transition from immediate loading
+      if (_isShowingImmediateLoading) {
+        debugPrint(
+          'ConversationService: Application manifest detected, transitioning from immediate loading to development progress',
+        );
+        _clearImmediateLoading();
+      }
 
       // Check if there's a new development statement
       if (developmentStatement != null &&
@@ -432,8 +493,36 @@ class ConversationService extends ChangeNotifier {
     }
   }
 
+  /// Starts a timer to clear immediate loading state if it persists too long.
+  ///
+  /// This provides a fallback mechanism to ensure the loading indicator
+  /// doesn't persist indefinitely if manifest detection fails.
+  void _startImmediateLoadingTimer() {
+    // Cancel any existing timer
+    _immediateLoadingTimer?.cancel();
+
+    // Set up a new timer for 2 minutes (reasonable timeout for Kiro to create manifest)
+    _immediateLoadingTimer = Timer(const Duration(minutes: 2), () {
+      if (_isShowingImmediateLoading) {
+        debugPrint('ConversationService: Immediate loading timeout reached, clearing loading state');
+        _clearImmediateLoading();
+      }
+    });
+  }
+
+  /// Clears the immediate loading state and cancels the timeout timer.
+  ///
+  /// This method ensures both the loading state and timer are properly cleaned up.
+  void _clearImmediateLoading() {
+    _isShowingImmediateLoading = false;
+    _immediateLoadingTimer?.cancel();
+    _immediateLoadingTimer = null;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
+    _immediateLoadingTimer?.cancel();
     _stopProgressMonitoring();
     super.dispose();
   }

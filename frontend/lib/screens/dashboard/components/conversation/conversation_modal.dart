@@ -10,6 +10,7 @@ import '../../../../services/conversation/models/message_action.dart';
 import '../../../../services/conversation/models/message_sender.dart';
 import '../../../../services/user_application/models/user_application.dart';
 import '../../../../theme/insets.dart';
+import 'conversation_immediate_loading_widget.dart';
 import 'conversation_input_widget.dart';
 import 'conversation_loading_indicator.dart';
 import 'conversation_message_widget.dart';
@@ -173,14 +174,20 @@ class _ConversationModalState extends State<ConversationModal> {
                         ),
                       ),
 
-                      // Development progress indicator
-                      if (_controller.isDevelopmentInProgress) ...[
+                      // Immediate loading indicator (shown right after user input)
+                      if (_controller.isShowingImmediateLoading) ...[
+                        Builder(
+                          builder: (context) {
+                            debugPrint('ConversationModal: Showing immediate loading widget');
+                            return const ConversationImmediateLoadingWidget();
+                          },
+                        ),
+                      ]
+                      // Development progress indicator (shown when specific progress is available)
+                      else if (_controller.isDevelopmentInProgress) ...[
                         ConversationLoadingIndicator(
                           progress: _controller.developmentProgress,
-                          currentPhase: _controller
-                              .currentApplication
-                              ?.progress
-                              ?.currentPhase,
+                          currentPhase: _controller.currentApplication?.progress?.currentPhase,
                         ),
                       ],
                     ],

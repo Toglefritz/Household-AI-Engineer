@@ -91,6 +91,14 @@
   - Write unit tests for search and filtering logic
   - _Requirements: 9.1, 9.2, 9.4, 9.5_
 
+- [x] 14.5. Implement immediate loading feedback in conversation modal
+  - Add immediate generic loading indicator when user submits a message
+  - Show processing message while system analyzes user input
+  - Transition from generic loading to specific progress when manifest is available
+  - Update conversation modal state management to handle immediate feedback
+  - Write tests for loading state transitions and user feedback
+  - _Requirements: 2.7, 2.8, 7.1_
+
 - [ ] 15. Implement error handling and user feedback
   - Create error display components with progressive disclosure
   - Add toast notification system for non-critical messages

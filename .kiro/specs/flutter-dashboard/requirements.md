@@ -31,6 +31,8 @@ The Flutter Dashboard is the primary user interface for the Household Software E
 4. WHEN the user provides sufficient information THEN the system SHALL summarize the request and ask for confirmation
 5. WHEN the user confirms the request THEN the system SHALL submit the specification to the backend and close the modal
 6. IF the user cancels the request THEN the system SHALL discard the conversation and return to the main dashboard
+7. WHEN a user submits a message THEN the system SHALL immediately show a generic loading indicator with processing message
+8. WHEN application development begins THEN the loading indicator SHALL update to show specific progress information
 
 ### Requirement 3
 

@@ -645,6 +645,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} applications deleted'**
   String applicationsDeleted(int count);
+
+  /// Message shown when the system is analyzing user input before specific progress is available
+  ///
+  /// In en, this message translates to:
+  /// **'Processing your request'**
+  String get conversationProcessingMessage;
 }
 
 class _AppLocalizationsDelegate

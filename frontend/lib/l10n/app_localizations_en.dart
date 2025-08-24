@@ -314,4 +314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String applicationsDeleted(int count) {
     return '$count applications deleted';
   }
+
+  @override
+  String get conversationProcessingMessage => 'Processing your request';
 }

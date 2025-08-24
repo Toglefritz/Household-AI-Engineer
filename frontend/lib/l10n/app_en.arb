@@ -441,5 +441,9 @@
         "description": "Number of applications deleted"
       }
     }
+  },
+  "conversationProcessingMessage": "Processing your request",
+  "@conversationProcessingMessage": {
+    "description": "Message shown when the system is analyzing user input before specific progress is available"
   }
 }
