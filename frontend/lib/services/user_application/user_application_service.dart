@@ -40,14 +40,12 @@ class UserApplicationService {
   Future<List<UserApplication>> _loadApplications() async {
     try {
       // Load local manifest files for deployed applications
-      final List<UserApplication> localApplications =
-          await _loadLocalApplications();
+      final List<UserApplication> localApplications = await _loadLocalApplications();
 
       final List<UserApplication> applications = localApplications
         // Sort newest updated first for a pleasant dashboard experience
         ..sort(
-          (UserApplication a, UserApplication b) =>
-              b.updatedAt.compareTo(a.updatedAt),
+          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
         );
 
       // Return the sorted list of applications.
@@ -219,8 +217,7 @@ class UserApplicationService {
     debugPrint('File system event: ${event.type} at $path');
 
     // Always trigger for directory changes (app creation/deletion)
-    if (event.type == FileSystemEvent.create ||
-        event.type == FileSystemEvent.delete) {
+    if (event.type == FileSystemEvent.create || event.type == FileSystemEvent.delete) {
       debugPrint('Triggering update for directory change: $path');
 
       return true;
@@ -234,9 +231,7 @@ class UserApplicationService {
 
     // Trigger for any changes within application directories
     // This catches cases where files are moved or renamed
-    if (path.contains('/') &&
-        !path.endsWith('.tmp') &&
-        !path.contains('.DS_Store')) {
+    if (path.contains('/') && !path.endsWith('.tmp') && !path.contains('.DS_Store')) {
       debugPrint('Triggering update for file change in app directory: $path');
 
       return true;
@@ -262,8 +257,7 @@ class UserApplicationService {
     try {
       // Read the manifest JSON file
       final String contents = await file.readAsString();
-      final Map<String, dynamic> jsonMap =
-          json.decode(contents) as Map<String, dynamic>;
+      final Map<String, dynamic> jsonMap = json.decode(contents) as Map<String, dynamic>;
 
       // Convert the JSON to a UserApplication object
       final UserApplication app = UserApplication.fromJson(jsonMap);
@@ -344,13 +338,46 @@ class UserApplicationService {
     throw UnimplementedError();
   }
 
-  /// Deletes an application through the Kiro Bridge.
+  /// Deletes an application through the file system.
   ///
-  /// Removes the application from the system and cleans up associated resources.
+  /// Removes the application directory and all associated files.
   /// This operation cannot be undone.
+  ///
+  /// @param applicationId The ID of the application to delete
   Future<void> deleteApplication(String applicationId) async {
-    // TODO(Scott): Implementation
-    throw UnimplementedError();
+    debugPrint('Deleting application: $applicationId');
+
+    try {
+      // Find the application directory
+      final Directory appsDirectory = await AppConfig.appsDirectory;
+      final List<FileSystemEntity> entries = appsDirectory.listSync(
+        followLinks: false,
+      );
+
+      for (final FileSystemEntity entity in entries) {
+        if (entity is! Directory) continue;
+
+        final Directory appDirectory = entity;
+        final File manifestFile = File('${appDirectory.path}/manifest.json');
+
+        if (!manifestFile.existsSync()) continue;
+
+        // Read the manifest to check if this is the application to delete
+        final UserApplication? app = await _readManifest(manifestFile);
+        if (app != null && app.id == applicationId) {
+          // Delete the entire application directory
+          await appDirectory.delete(recursive: true);
+          debugPrint('Successfully deleted application directory: ${appDirectory.path}');
+          return;
+        }
+      }
+
+      // If we get here, the application was not found
+      throw Exception('Application not found: $applicationId');
+    } catch (e) {
+      debugPrint('Failed to delete application $applicationId: $e');
+      rethrow;
+    }
   }
 
   /// Launches an application through the application launcher service.

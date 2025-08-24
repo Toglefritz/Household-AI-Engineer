@@ -333,5 +333,113 @@
   "refresh": "Refresh",
   "@refresh": {
     "description": "Button to refresh the current page"
+  },
+  "buttonLaunchApplication": "Launch",
+  "@buttonLaunchApplication": {
+    "description": "Button to launch an application"
+  },
+  "buttonBringToForeground": "Bring to Foreground",
+  "@buttonBringToForeground": {
+    "description": "Button to bring a running application to the foreground"
+  },
+  "buttonRestartApplication": "Restart",
+  "@buttonRestartApplication": {
+    "description": "Button to restart a running application"
+  },
+  "buttonStopApplication": "Stop",
+  "@buttonStopApplication": {
+    "description": "Button to stop a running application"
+  },
+  "buttonModifyApplication": "Modify",
+  "@buttonModifyApplication": {
+    "description": "Button to modify an existing application"
+  },
+  "buttonViewDetails": "View Details",
+  "@buttonViewDetails": {
+    "description": "Button to view application details"
+  },
+  "buttonRetryApplication": "Retry",
+  "@buttonRetryApplication": {
+    "description": "Button to retry a failed application"
+  },
+  "buttonDeleteApplication": "Delete",
+  "@buttonDeleteApplication": {
+    "description": "Button to delete an application"
+  },
+  "selectAll": "Select All",
+  "@selectAll": {
+    "description": "Button to select all applications"
+  },
+  "selectNone": "Select None",
+  "@selectNone": {
+    "description": "Button to deselect all applications"
+  },
+  "selectedCount": "{count} selected",
+  "@selectedCount": {
+    "description": "Shows the number of selected applications",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of selected applications"
+      }
+    }
+  },
+  "bulkActionsTitle": "Bulk Actions",
+  "@bulkActionsTitle": {
+    "description": "Title for bulk actions menu"
+  },
+  "bulkDeleteConfirmTitle": "Delete Applications",
+  "@bulkDeleteConfirmTitle": {
+    "description": "Title for bulk delete confirmation dialog"
+  },
+  "bulkDeleteConfirmMessage": "Are you sure you want to delete {count} applications? This action cannot be undone.",
+  "@bulkDeleteConfirmMessage": {
+    "description": "Message for bulk delete confirmation dialog",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of applications to delete"
+      }
+    }
+  },
+  "deleteConfirmTitle": "Delete Application",
+  "@deleteConfirmTitle": {
+    "description": "Title for single application delete confirmation dialog"
+  },
+  "deleteConfirmMessage": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+  "@deleteConfirmMessage": {
+    "description": "Message for single application delete confirmation dialog",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Title of the application to delete"
+      }
+    }
+  },
+  "buttonDelete": "Delete",
+  "@buttonDelete": {
+    "description": "Generic delete button text"
+  },
+  "applicationStopped": "Application stopped",
+  "@applicationStopped": {
+    "description": "Message shown when an application is stopped"
+  },
+  "applicationRestarted": "Application restarted",
+  "@applicationRestarted": {
+    "description": "Message shown when an application is restarted"
+  },
+  "applicationDeleted": "Application deleted",
+  "@applicationDeleted": {
+    "description": "Message shown when an application is deleted"
+  },
+  "applicationsDeleted": "{count} applications deleted",
+  "@applicationsDeleted": {
+    "description": "Message shown when multiple applications are deleted",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of applications deleted"
+      }
+    }
   }
 }

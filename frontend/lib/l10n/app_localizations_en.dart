@@ -243,4 +243,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refresh => 'Refresh';
+
+  @override
+  String get buttonLaunchApplication => 'Launch';
+
+  @override
+  String get buttonBringToForeground => 'Bring to Foreground';
+
+  @override
+  String get buttonRestartApplication => 'Restart';
+
+  @override
+  String get buttonStopApplication => 'Stop';
+
+  @override
+  String get buttonModifyApplication => 'Modify';
+
+  @override
+  String get buttonViewDetails => 'View Details';
+
+  @override
+  String get buttonRetryApplication => 'Retry';
+
+  @override
+  String get buttonDeleteApplication => 'Delete';
+
+  @override
+  String get selectAll => 'Select All';
+
+  @override
+  String get selectNone => 'Select None';
+
+  @override
+  String selectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get bulkActionsTitle => 'Bulk Actions';
+
+  @override
+  String get bulkDeleteConfirmTitle => 'Delete Applications';
+
+  @override
+  String bulkDeleteConfirmMessage(int count) {
+    return 'Are you sure you want to delete $count applications? This action cannot be undone.';
+  }
+
+  @override
+  String get deleteConfirmTitle => 'Delete Application';
+
+  @override
+  String deleteConfirmMessage(String title) {
+    return 'Are you sure you want to delete \"$title\"? This action cannot be undone.';
+  }
+
+  @override
+  String get buttonDelete => 'Delete';
+
+  @override
+  String get applicationStopped => 'Application stopped';
+
+  @override
+  String get applicationRestarted => 'Application restarted';
+
+  @override
+  String get applicationDeleted => 'Application deleted';
+
+  @override
+  String applicationsDeleted(int count) {
+    return '$count applications deleted';
+  }
 }

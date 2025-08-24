@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../l10n/app_localizations.dart';
+
 import '../../services/application_launcher/application_launcher_service.dart';
 import '../../services/application_launcher/models/application_process.dart';
 import '../../services/application_launcher/models/launch_result.dart';
@@ -12,6 +14,8 @@ import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
 import '../application_launcher/application_launcher_window.dart';
+import 'components/applications/application_context_menu.dart';
+import 'components/applications/application_details_dialog.dart';
 import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
@@ -55,8 +59,7 @@ class DashboardController extends State<DashboardRoute> {
   /// Service for managing user applications through the local file system.
   ///
   /// Handles loading, creating, and managing applications with real-time updates.
-  final UserApplicationService _userApplicationService =
-      UserApplicationService();
+  final UserApplicationService _userApplicationService = UserApplicationService();
 
   /// Service for launching and managing running applications.
   ///
@@ -94,8 +97,7 @@ class DashboardController extends State<DashboardRoute> {
   ///
   /// Used by the application grid to show selection states
   /// and enable multi-selection operations.
-  Set<String> get selectedApplicationIds =>
-      Set.unmodifiable(_selectedApplicationIds);
+  Set<String> get selectedApplicationIds => Set.unmodifiable(_selectedApplicationIds);
 
   @override
   void initState() {
@@ -114,8 +116,7 @@ class DashboardController extends State<DashboardRoute> {
     try {
       // Initialize dependencies for the launcher service
       final http.Client httpClient = http.Client();
-      final SharedPreferences preferences =
-          await SharedPreferences.getInstance();
+      final SharedPreferences preferences = await SharedPreferences.getInstance();
 
       // Create the application launcher service
       _applicationLauncherService = ApplicationLauncherService(
@@ -124,13 +125,12 @@ class DashboardController extends State<DashboardRoute> {
       );
 
       // Subscribe to launch events
-      _launchEventsSubscription = _applicationLauncherService!.launchEvents
-          .listen(
-            _handleLaunchEvent,
-            onError: (Object error) {
-              debugPrint('Launch event error: $error');
-            },
-          );
+      _launchEventsSubscription = _applicationLauncherService!.launchEvents.listen(
+        _handleLaunchEvent,
+        onError: (Object error) {
+          debugPrint('Launch event error: $error');
+        },
+      );
 
       debugPrint('Application launcher service initialized');
     } catch (e) {
@@ -154,9 +154,7 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // For successful launches, show the application in a WebView
-      if (result.process != null &&
-          result.message != null &&
-          !result.message!.contains('foreground')) {
+      if (result.process != null && result.message != null && !result.message!.contains('foreground')) {
         _showApplicationWindow(result.process!);
       }
 
@@ -236,25 +234,23 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // Set up stream subscription for real-time updates
-      _applicationSubscription = _userApplicationService
-          .watchApplications()
-          .listen(
-            (List<UserApplication> applications) {
-              setState(() {
-                _applications = applications;
+      _applicationSubscription = _userApplicationService.watchApplications().listen(
+        (List<UserApplication> applications) {
+          setState(() {
+            _applications = applications;
 
-                // Set sidebar state based on application availability
-                // Open sidebar if there are applications, keep closed if none
-                _isSidebarExpanded = applications.isNotEmpty;
-              });
-            },
-            onError: (Object error) {
-              debugPrint('Error loading applications: $error');
-              setState(() {
-                _connectionStatus = ConnectionStatus.error;
-              });
-            },
-          );
+            // Set sidebar state based on application availability
+            // Open sidebar if there are applications, keep closed if none
+            _isSidebarExpanded = applications.isNotEmpty;
+          });
+        },
+        onError: (Object error) {
+          debugPrint('Error loading applications: $error');
+          setState(() {
+            _connectionStatus = ConnectionStatus.error;
+          });
+        },
+      );
 
       setState(() {
         _connectionStatus = ConnectionStatus.connected;
@@ -314,10 +310,78 @@ class DashboardController extends State<DashboardRoute> {
   /// based on the current application status and capabilities.
   ///
   /// @param application The application that was right-clicked
-  void onApplicationSecondaryTap(UserApplication application) {
+  /// @param position Screen position where the menu should appear
+  void onApplicationSecondaryTap(UserApplication application, Offset position) {
     debugPrint('Application right-clicked: ${application.title}');
 
-    _showApplicationContextMenu(application);
+    _showApplicationContextMenu(application, position);
+  }
+
+  /// Handles application selection state changes.
+  ///
+  /// Updates the selected applications set and triggers UI updates.
+  ///
+  /// @param application The application whose selection changed
+  /// @param isSelected Whether the application should be selected
+  void onApplicationSelectionChanged(UserApplication application, {required bool isSelected}) {
+    setState(() {
+      if (isSelected) {
+        _selectedApplicationIds.add(application.id);
+      } else {
+        _selectedApplicationIds.remove(application.id);
+      }
+    });
+  }
+
+  /// Selects all applications in the current view.
+  ///
+  /// Adds all application IDs to the selection set.
+  void onSelectAllApplications() {
+    setState(() {
+      _selectedApplicationIds.addAll(
+        _applications.map((app) => app.id),
+      );
+    });
+  }
+
+  /// Clears all application selections.
+  ///
+  /// Removes all application IDs from the selection set.
+  void onSelectNoApplications() {
+    setState(() {
+      _selectedApplicationIds.clear();
+    });
+  }
+
+  /// Handles bulk delete operation for selected applications.
+  ///
+  /// Deletes multiple applications and shows appropriate feedback.
+  ///
+  /// @param applications List of applications to delete
+  void onBulkDeleteApplications(List<UserApplication> applications) {
+    debugPrint('Bulk deleting ${applications.length} applications');
+
+    // Delete each application
+    for (final UserApplication app in applications) {
+      _deleteApplication(app, showIndividualFeedback: false);
+    }
+
+    // Clear selection
+    setState(() {
+      _selectedApplicationIds.clear();
+    });
+
+    // Show bulk feedback
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.applicationsDeleted(applications.length),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 
   /// Launches the specified application.
@@ -349,8 +413,7 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // Launch the application using the launcher service
-      final LaunchResult result = await _applicationLauncherService!
-          .launchApplication(application);
+      final LaunchResult result = await _applicationLauncherService!.launchApplication(application);
 
       if (result.success) {
         debugPrint('Successfully launched application: ${application.title}');
@@ -391,7 +454,16 @@ class DashboardController extends State<DashboardRoute> {
   /// @param application The application to show details for
   void _showApplicationDetails(UserApplication application) {
     debugPrint('Showing details for application: ${application.title}');
-    // TODO(Scott): Implement application details view in future tasks
+
+    ApplicationDetailsDialog.show(
+      context: context,
+      application: application,
+      onLaunch: (app) => _launchApplication(app),
+      onModify: (app) => openModifyApplicationConversation(app),
+      onRestart: (app) => _restartApplication(app),
+      onStop: (app) => _stopApplication(app),
+      onDelete: (app) => _deleteApplication(app),
+    );
   }
 
   /// Shows a context menu for the specified application.
@@ -400,9 +472,21 @@ class DashboardController extends State<DashboardRoute> {
   /// status and user permissions.
   ///
   /// @param application The application to show context menu for
-  void _showApplicationContextMenu(UserApplication application) {
+  /// @param position Screen position where the menu should appear
+  void _showApplicationContextMenu(UserApplication application, Offset position) {
     debugPrint('Showing context menu for application: ${application.title}');
-    // TODO(Scott): Implement context menu in future tasks
+
+    ApplicationContextMenu.show(
+      context: context,
+      position: position,
+      application: application,
+      onLaunch: (app) => _launchApplication(app),
+      onModify: (app) => openModifyApplicationConversation(app),
+      onRestart: (app) => _restartApplication(app),
+      onStop: (app) => _stopApplication(app),
+      onDelete: (app) => _deleteApplication(app),
+      onViewDetails: (app) => _showApplicationDetails(app),
+    );
   }
 
   /// Opens the conversation modal for creating a new application.
@@ -467,6 +551,185 @@ class DashboardController extends State<DashboardRoute> {
             });
       }
     });
+  }
+
+  /// Restarts the specified application.
+  ///
+  /// Stops and then relaunches the application with proper error handling.
+  ///
+  /// @param application The application to restart
+  Future<void> _restartApplication(UserApplication application) async {
+    debugPrint('Restarting application: ${application.title}');
+
+    if (_applicationLauncherService == null) {
+      debugPrint('Application launcher service not initialized');
+      return;
+    }
+
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      // Stop the application first
+      await _applicationLauncherService!.stopApplication(application.id);
+
+      // Wait a moment for cleanup
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Launch it again
+      final LaunchResult result = await _applicationLauncherService!.launchApplication(application);
+
+      if (result.success) {
+        debugPrint('Successfully restarted application: ${application.title}');
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.applicationRestarted,
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        debugPrint('Failed to restart application: ${result.error}');
+        setState(() {
+          _connectionStatus = ConnectionStatus.error;
+        });
+      }
+    } catch (e) {
+      debugPrint('Exception during application restart: $e');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to restart ${application.title}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Stops the specified application.
+  ///
+  /// Terminates the application process and updates the UI accordingly.
+  ///
+  /// @param application The application to stop
+  Future<void> _stopApplication(UserApplication application) async {
+    debugPrint('Stopping application: ${application.title}');
+
+    if (_applicationLauncherService == null) {
+      debugPrint('Application launcher service not initialized');
+      return;
+    }
+
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      await _applicationLauncherService!.stopApplication(application.id);
+
+      debugPrint('Successfully stopped application: ${application.title}');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.applicationStopped,
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Exception during application stop: $e');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to stop ${application.title}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Deletes the specified application.
+  ///
+  /// Removes the application from the system with confirmation and cleanup.
+  ///
+  /// @param application The application to delete
+  /// @param showIndividualFeedback Whether to show feedback for this deletion
+  Future<void> _deleteApplication(
+    UserApplication application, {
+    bool showIndividualFeedback = true,
+  }) async {
+    debugPrint('Deleting application: ${application.title}');
+
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      // If the application is running, stop it first
+      if (application.status == ApplicationStatus.running && _applicationLauncherService != null) {
+        await _applicationLauncherService!.stopApplication(application.id);
+      }
+
+      // Delete the application through the service
+      await _userApplicationService.deleteApplication(application.id);
+
+      debugPrint('Successfully deleted application: ${application.title}');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+        // Remove from selection if it was selected
+        _selectedApplicationIds.remove(application.id);
+      });
+
+      if (showIndividualFeedback && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)!.applicationDeleted,
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Exception during application deletion: $e');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      if (showIndividualFeedback && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete ${application.title}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override

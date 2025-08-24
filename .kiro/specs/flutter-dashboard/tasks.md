@@ -75,7 +75,7 @@
   - Write integration tests for application launching
   - _Requirements: 4.1, 4.2, 4.3, 4.6_
 
-- [ ] 13. Implement application management features
+- [x] 13. Implement application management features
   - Add context menu actions for application management (modify, delete, restart)
   - Create application modification workflow with existing context
   - Implement application stopping and restarting functionality

@@ -519,6 +519,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh'**
   String get refresh;
+
+  /// Button to launch an application
+  ///
+  /// In en, this message translates to:
+  /// **'Launch'**
+  String get buttonLaunchApplication;
+
+  /// Button to bring a running application to the foreground
+  ///
+  /// In en, this message translates to:
+  /// **'Bring to Foreground'**
+  String get buttonBringToForeground;
+
+  /// Button to restart a running application
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get buttonRestartApplication;
+
+  /// Button to stop a running application
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get buttonStopApplication;
+
+  /// Button to modify an existing application
+  ///
+  /// In en, this message translates to:
+  /// **'Modify'**
+  String get buttonModifyApplication;
+
+  /// Button to view application details
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get buttonViewDetails;
+
+  /// Button to retry a failed application
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get buttonRetryApplication;
+
+  /// Button to delete an application
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get buttonDeleteApplication;
+
+  /// Button to select all applications
+  ///
+  /// In en, this message translates to:
+  /// **'Select All'**
+  String get selectAll;
+
+  /// Button to deselect all applications
+  ///
+  /// In en, this message translates to:
+  /// **'Select None'**
+  String get selectNone;
+
+  /// Shows the number of selected applications
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String selectedCount(int count);
+
+  /// Title for bulk actions menu
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk Actions'**
+  String get bulkActionsTitle;
+
+  /// Title for bulk delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Applications'**
+  String get bulkDeleteConfirmTitle;
+
+  /// Message for bulk delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete {count} applications? This action cannot be undone.'**
+  String bulkDeleteConfirmMessage(int count);
+
+  /// Title for single application delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Application'**
+  String get deleteConfirmTitle;
+
+  /// Message for single application delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{title}\"? This action cannot be undone.'**
+  String deleteConfirmMessage(String title);
+
+  /// Generic delete button text
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get buttonDelete;
+
+  /// Message shown when an application is stopped
+  ///
+  /// In en, this message translates to:
+  /// **'Application stopped'**
+  String get applicationStopped;
+
+  /// Message shown when an application is restarted
+  ///
+  /// In en, this message translates to:
+  /// **'Application restarted'**
+  String get applicationRestarted;
+
+  /// Message shown when an application is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Application deleted'**
+  String get applicationDeleted;
+
+  /// Message shown when multiple applications are deleted
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications deleted'**
+  String applicationsDeleted(int count);
 }
 
 class _AppLocalizationsDelegate
