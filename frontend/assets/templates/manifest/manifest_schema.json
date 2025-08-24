@@ -59,16 +59,22 @@
       "type": "string",
       "description": "Primary category for organizing and filtering the application.",
       "enum": [
-        "Home Management",
-        "Finance",
-        "Planning",
-        "Health & Fitness",
-        "Education",
-        "Entertainment",
-        "Utilities",
-        "Communication",
-        "Security",
-        "Other"
+        "homeManagement",
+        "finance",
+        "planning",
+        "healthAndFitness",
+        "education",
+        "entertainment",
+        "utilities",
+        "communication",
+        "security",
+        "shopping",
+        "transportation",
+        "petCare",
+        "gardenAndOutdoor",
+        "recipesAndCooking",
+        "workAndProductivity",
+        "other"
       ]
     },
     "tags": {
@@ -80,7 +86,11 @@
     },
     "progress": {
       "type": "object",
-      "required": ["percentage", "currentPhase", "lastUpdated"],
+      "required": [
+        "percentage",
+        "currentPhase",
+        "lastUpdated"
+      ],
       "properties": {
         "percentage": {
           "type": "number",
@@ -108,11 +118,21 @@
           "items": {
             "type": "object",
             "properties": {
-              "name": { "type": "string" },
-              "completed": { "type": "boolean" },
-              "timestamp": { "type": "string", "format": "date-time" }
+              "name": {
+                "type": "string"
+              },
+              "completed": {
+                "type": "boolean"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              }
             },
-            "required": ["name", "completed"]
+            "required": [
+              "name",
+              "completed"
+            ]
           }
         }
       }

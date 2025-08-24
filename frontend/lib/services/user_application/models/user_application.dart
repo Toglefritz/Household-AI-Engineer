@@ -1,3 +1,4 @@
+import 'application_category.dart';
 import 'application_status.dart';
 import 'development_progress.dart';
 
@@ -67,9 +68,9 @@ class UserApplication {
   /// Primary category for organizing and filtering applications.
   ///
   /// Used by the sidebar navigation to group applications into logical
-  /// categories for better organization and discovery. Should match one
-  /// of the predefined category values from the sidebar constants.
-  final String? category;
+  /// categories for better organization and discovery. Provides type-safe
+  /// categorization with associated icons and consistent display names.
+  final ApplicationCategory? category;
 
   /// List of tags for detailed categorization and search functionality.
   ///
@@ -105,7 +106,7 @@ class UserApplication {
           json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
         ),
         iconUrl: json['iconUrl'] as String?,
-        category: json['category'] as String?,
+        category: _parseCategory(json['category'] as String?),
         tags: (json['tags'] as List<dynamic>?)?.map((tag) => tag as String).toList() ?? [],
         progress: json['progress'] != null
             ? DevelopmentProgress.fromJson(json['progress'] as Map<String, dynamic>)
@@ -129,7 +130,7 @@ class UserApplication {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'iconUrl': iconUrl,
-      'category': category,
+      'category': category?.name,
       'tags': tags,
       'progress': progress?.toJson(),
     };
@@ -147,7 +148,7 @@ class UserApplication {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? iconUrl,
-    String? category,
+    ApplicationCategory? category,
     List<String>? tags,
     DevelopmentProgress? progress,
   }) {
@@ -194,6 +195,24 @@ class UserApplication {
     }
   }
 
+  /// Parses an application category string into the corresponding enum value.
+  ///
+  /// Handles case-insensitive parsing and returns null for null input.
+  /// Uses the ApplicationCategory.fromString method for consistent parsing.
+  static ApplicationCategory? _parseCategory(String? categoryString) {
+    if (categoryString == null) {
+      return null;
+    }
+
+    try {
+      return ApplicationCategory.fromString(categoryString);
+    } catch (e) {
+      // If parsing fails, return null rather than throwing
+      // This provides graceful handling of unknown categories
+      return null;
+    }
+  }
+
   /// Returns true if this application is currently in development.
   ///
   /// Convenience method for checking if the application has active
@@ -222,7 +241,7 @@ class UserApplication {
   ///
   /// Used to determine whether the application can be filtered
   /// by category in the sidebar navigation.
-  bool get hasCategory => category != null && category!.isNotEmpty;
+  bool get hasCategory => category != null;
 
   /// Returns true if this application has tags.
   ///

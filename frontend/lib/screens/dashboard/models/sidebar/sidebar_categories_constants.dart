@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../services/user_application/models/application_category.dart';
 import 'category_data.dart';
 
 /// Constants and default data for sidebar categories.
@@ -12,65 +13,22 @@ class SidebarCategoriesConstants {
 
   /// Default list of application categories.
   ///
-  /// Represents the standard categories available for organizing household
-  /// applications. Each category includes an appropriate icon, descriptive
-  /// label, and initial application count (will be dynamically updated).
+  /// Generates category data from the ApplicationCategory enum to ensure
+  /// consistency between the model and UI representation. Each category
+  /// includes the appropriate icon and descriptive label from the enum.
   ///
   /// Categories are ordered by typical usage frequency and importance
   /// in household management workflows. Matches the categories defined
   /// in the manifest schema for consistency.
-  static const List<CategoryData> defaultCategories = [
-    CategoryData(
-      icon: Icons.home,
-      label: 'Home Management',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.calculate,
-      label: 'Finance',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.calendar_today,
-      label: 'Planning',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.fitness_center,
-      label: 'Health & Fitness',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.school,
-      label: 'Education',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.movie,
-      label: 'Entertainment',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.build,
-      label: 'Utilities',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.chat,
-      label: 'Communication',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.security,
-      label: 'Security',
-      count: 0,
-    ),
-    CategoryData(
-      icon: Icons.folder,
-      label: 'Other',
-      count: 0,
-    ),
-  ];
+  static List<CategoryData> get defaultCategories {
+    return ApplicationCategory.values.map((ApplicationCategory category) {
+      return CategoryData(
+        icon: category.icon,
+        label: category.displayName,
+        count: 0,
+      );
+    }).toList();
+  }
 
   /// Gets the category data for a specific category by label.
   ///
@@ -88,6 +46,22 @@ class SidebarCategoriesConstants {
     } catch (e) {
       return null;
     }
+  }
+
+  /// Gets the category data for a specific ApplicationCategory enum.
+  ///
+  /// Creates CategoryData from the enum's properties. Useful for converting
+  /// between the enum representation and UI display data.
+  ///
+  /// @param category The ApplicationCategory enum value
+  /// @param count Optional application count for this category
+  /// @returns CategoryData with enum's icon and display name
+  static CategoryData getCategoryData(ApplicationCategory category, {int count = 0}) {
+    return CategoryData(
+      icon: category.icon,
+      label: category.displayName,
+      count: count,
+    );
   }
 
   /// Gets all category labels as a list of strings.

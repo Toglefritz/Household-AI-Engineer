@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../services/user_application/models/application_category.dart';
 import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
 import '../../../models/sidebar/category_data.dart';
-import '../../../models/sidebar/sidebar_categories_constants.dart';
 import '../../../models/sidebar/sidebar_spacing.dart';
 import 'sidebar_categories.dart';
 
@@ -42,50 +42,37 @@ class SidebarCategoriesSection extends StatelessWidget {
   ///
   /// Creates category data with accurate counts based on applications that
   /// actually have categories assigned. Only shows categories that have
-  /// at least one application.
+  /// at least one application. Uses the ApplicationCategory enum for
+  /// type-safe category handling with consistent icons and labels.
   List<CategoryData> _calculateDynamicCategories() {
     debugPrint('Calculating dynamic categories for ${applications.length} applications');
 
-    // Count applications by category
-    final Map<String, int> categoryCounts = <String, int>{};
+    // Count applications by category enum
+    final Map<ApplicationCategory, int> categoryCounts = <ApplicationCategory, int>{};
 
     for (final UserApplication app in applications) {
-      debugPrint('App: ${app.title}, hasCategory: ${app.hasCategory}, category: ${app.category}');
+      debugPrint('App: ${app.title}, hasCategory: ${app.hasCategory}, category: ${app.category?.displayName}');
 
       // Assign category - use app's category if it has one, otherwise "Other"
-      final String category = app.hasCategory ? app.category! : 'Other';
+      final ApplicationCategory category = app.hasCategory ? app.category! : ApplicationCategory.other;
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
-      debugPrint('Added to category "$category", count now: ${categoryCounts[category]}');
+      debugPrint('Added to category "${category.displayName}", count now: ${categoryCounts[category]}');
     }
 
-    debugPrint('Category counts: $categoryCounts');
+    debugPrint('Category counts: ${categoryCounts.map((k, v) => MapEntry(k.displayName, v))}');
 
     // Create category data for categories that have applications
     final List<CategoryData> dynamicCategories = <CategoryData>[];
 
-    for (final CategoryData defaultCategory in SidebarCategoriesConstants.defaultCategories) {
-      final int count = categoryCounts[defaultCategory.label] ?? 0;
-      if (count > 0) {
-        dynamicCategories.add(defaultCategory.copyWith(count: count));
-      }
-    }
-
-    // Add any categories from applications that aren't in the default list
-    for (final MapEntry<String, int> entry in categoryCounts.entries) {
-      final String categoryName = entry.key;
+    for (final MapEntry<ApplicationCategory, int> entry in categoryCounts.entries) {
+      final ApplicationCategory categoryEnum = entry.key;
       final int count = entry.value;
 
-      // Check if this category is already in our dynamic list
-      final bool alreadyExists = dynamicCategories.any(
-        (CategoryData cat) => cat.label == categoryName,
-      );
-
-      if (!alreadyExists) {
-        // Create a new category with a default icon
+      if (count > 0) {
         dynamicCategories.add(
           CategoryData(
-            icon: Icons.folder,
-            label: categoryName,
+            icon: categoryEnum.icon,
+            label: categoryEnum.displayName,
             count: count,
           ),
         );
