@@ -41,6 +41,7 @@ class DashboardView extends StatelessWidget {
             connectionStatus: state.connectionStatus,
             onToggleSidebar: state.toggleSidebar,
             isSidebarExpanded: state.isSidebarExpanded,
+            applications: state.applications,
           ),
 
           // Main content area with sidebar
@@ -51,6 +52,7 @@ class DashboardView extends StatelessWidget {
                 DashboardSidebar(
                   isExpanded: state.isSidebarExpanded,
                   onToggle: state.toggleSidebar,
+                  applications: state.applications,
                   openNewApplicationConversation: state.openNewApplicationConversation,
                 ),
 

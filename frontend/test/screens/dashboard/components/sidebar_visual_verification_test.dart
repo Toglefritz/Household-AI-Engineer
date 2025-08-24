@@ -30,6 +30,7 @@ void main() {
           body: DashboardSidebar(
             isExpanded: isExpanded,
             onToggle: () {},
+            applications: const [],
             openNewApplicationConversation: () {},
           ),
         ),

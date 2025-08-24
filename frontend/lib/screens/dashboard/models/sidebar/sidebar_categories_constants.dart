@@ -14,35 +14,61 @@ class SidebarCategoriesConstants {
   ///
   /// Represents the standard categories available for organizing household
   /// applications. Each category includes an appropriate icon, descriptive
-  /// label, and current application count.
+  /// label, and initial application count (will be dynamically updated).
   ///
   /// Categories are ordered by typical usage frequency and importance
-  /// in household management workflows.
+  /// in household management workflows. Matches the categories defined
+  /// in the manifest schema for consistency.
   static const List<CategoryData> defaultCategories = [
     CategoryData(
       icon: Icons.home,
       label: 'Home Management',
-      count: 5,
+      count: 0,
     ),
     CategoryData(
       icon: Icons.calculate,
       label: 'Finance',
-      count: 2,
+      count: 0,
     ),
     CategoryData(
       icon: Icons.calendar_today,
       label: 'Planning',
-      count: 3,
+      count: 0,
     ),
     CategoryData(
       icon: Icons.fitness_center,
       label: 'Health & Fitness',
-      count: 1,
+      count: 0,
     ),
     CategoryData(
       icon: Icons.school,
       label: 'Education',
-      count: 2,
+      count: 0,
+    ),
+    CategoryData(
+      icon: Icons.movie,
+      label: 'Entertainment',
+      count: 0,
+    ),
+    CategoryData(
+      icon: Icons.build,
+      label: 'Utilities',
+      count: 0,
+    ),
+    CategoryData(
+      icon: Icons.chat,
+      label: 'Communication',
+      count: 0,
+    ),
+    CategoryData(
+      icon: Icons.security,
+      label: 'Security',
+      count: 0,
+    ),
+    CategoryData(
+      icon: Icons.folder,
+      label: 'Other',
+      count: 0,
     ),
   ];
 

@@ -7,7 +7,7 @@ import 'development_progress.dart';
 class UserApplication {
   /// Creates a new application tile.
   ///
-  /// All parameters except [iconUrl], [progress], and [tags] are required
+  /// All parameters except [iconUrl], [progress], [category], and [tags] are required
   /// to ensure complete application information for proper management.
   const UserApplication({
     required this.id,
@@ -17,6 +17,7 @@ class UserApplication {
     required this.createdAt,
     required this.updatedAt,
     this.iconUrl,
+    this.category,
     this.progress,
     this.tags = const [],
   });
@@ -63,10 +64,18 @@ class UserApplication {
   /// Null if no custom icon is available (default icon will be used).
   final String? iconUrl;
 
-  /// List of tags for categorizing and organizing applications.
+  /// Primary category for organizing and filtering applications.
+  ///
+  /// Used by the sidebar navigation to group applications into logical
+  /// categories for better organization and discovery. Should match one
+  /// of the predefined category values from the sidebar constants.
+  final String? category;
+
+  /// List of tags for detailed categorization and search functionality.
   ///
   /// Used for filtering, searching, and organizing applications
-  /// within the dashboard interface.
+  /// within the dashboard interface. Provides more granular
+  /// categorization beyond the primary category.
   final List<String> tags;
 
   /// Development progress information for applications being built.
@@ -96,6 +105,7 @@ class UserApplication {
           json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
         ),
         iconUrl: json['iconUrl'] as String?,
+        category: json['category'] as String?,
         tags: (json['tags'] as List<dynamic>?)?.map((tag) => tag as String).toList() ?? [],
         progress: json['progress'] != null
             ? DevelopmentProgress.fromJson(json['progress'] as Map<String, dynamic>)
@@ -119,6 +129,7 @@ class UserApplication {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'iconUrl': iconUrl,
+      'category': category,
       'tags': tags,
       'progress': progress?.toJson(),
     };
@@ -136,6 +147,7 @@ class UserApplication {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? iconUrl,
+    String? category,
     List<String>? tags,
     DevelopmentProgress? progress,
   }) {
@@ -147,6 +159,7 @@ class UserApplication {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       iconUrl: iconUrl ?? this.iconUrl,
+      category: category ?? this.category,
       tags: tags ?? this.tags,
       progress: progress ?? this.progress,
     );
@@ -204,6 +217,12 @@ class UserApplication {
   /// Used to determine whether to display a custom icon or
   /// fall back to a default application icon.
   bool get hasCustomIcon => iconUrl != null && iconUrl!.isNotEmpty;
+
+  /// Returns true if this application has a category assigned.
+  ///
+  /// Used to determine whether the application can be filtered
+  /// by category in the sidebar navigation.
+  bool get hasCategory => category != null && category!.isNotEmpty;
 
   /// Returns true if this application has tags.
   ///

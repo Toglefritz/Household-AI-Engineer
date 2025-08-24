@@ -72,8 +72,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusConnecting => 'Connecting...';
 
   @override
-  String systemStatusRunningDeveloping(int activeApps, int developingApps) {
-    return '$activeApps running • $developingApps developing';
+  String systemStatusAvailableDeveloping(
+    int availableApps,
+    int developingApps,
+  ) {
+    return '$availableApps available • $developingApps developing';
   }
 
   @override

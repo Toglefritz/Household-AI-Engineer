@@ -30,6 +30,7 @@ void main() {
         home: Scaffold(
           body: SidebarCategoriesSection(
             showExpandedContent: showExpandedContent,
+            applications: const [],
           ),
         ),
       );

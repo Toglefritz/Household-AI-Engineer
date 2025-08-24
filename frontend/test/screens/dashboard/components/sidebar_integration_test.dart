@@ -33,6 +33,7 @@ void main() {
               DashboardSidebar(
                 isExpanded: isExpanded,
                 onToggle: () {}, // No-op for testing
+                applications: const [],
                 openNewApplicationConversation: () {},
               ),
               const Expanded(
@@ -402,6 +403,7 @@ void main() {
               body: DashboardSidebar(
                 isExpanded: true,
                 onToggle: () {},
+                applications: const [],
                 openNewApplicationConversation: () {},
               ),
             ),

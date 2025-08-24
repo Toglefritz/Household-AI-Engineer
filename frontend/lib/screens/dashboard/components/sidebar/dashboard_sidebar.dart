@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../services/user_application/models/user_application.dart';
 import 'navigation/sidebar_navigation_content.dart';
 import 'sidebar_header.dart';
 
@@ -67,9 +68,12 @@ class DashboardSidebar extends StatefulWidget {
   ///
   /// @param isExpanded Whether the sidebar should show full content or icons only
   /// @param onToggle Callback function when the user toggles sidebar state
+  /// @param applications List of applications for category calculation
+  /// @param openNewApplicationConversation Callback for creating new applications
   const DashboardSidebar({
     required this.isExpanded,
     required this.onToggle,
+    required this.applications,
     required this.openNewApplicationConversation,
     super.key,
   });
@@ -84,6 +88,12 @@ class DashboardSidebar extends StatefulWidget {
   ///
   /// Called when the user clicks the collapse/expand button or uses keyboard shortcuts to change sidebar visibility.
   final VoidCallback onToggle;
+
+  /// List of applications for dynamic category calculation.
+  ///
+  /// Used to determine which categories have applications and their counts
+  /// for accurate sidebar navigation and filtering.
+  final List<UserApplication> applications;
 
   /// A callback for when the button to create a new application is tapped.
   final VoidCallback openNewApplicationConversation;
@@ -246,7 +256,8 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
           Expanded(
             child: SidebarNavigationContent(
               showExpandedContent: _showExpandedContent,
-                openNewApplicationConversation: widget.openNewApplicationConversation
+              applications: widget.applications,
+              openNewApplicationConversation: widget.openNewApplicationConversation,
             ),
           ),
         ],

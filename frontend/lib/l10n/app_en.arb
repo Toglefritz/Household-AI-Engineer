@@ -84,13 +84,13 @@
   "@statusConnecting": {
     "description": "Status indicator showing system is attempting to connect"
   },
-  "systemStatusRunningDeveloping": "{activeApps} running • {developingApps} developing",
-  "@systemStatusRunningDeveloping": {
-    "description": "System status showing number of running and developing applications",
+  "systemStatusAvailableDeveloping": "{availableApps} available • {developingApps} developing",
+  "@systemStatusAvailableDeveloping": {
+    "description": "System status showing number of available and developing applications",
     "placeholders": {
-      "activeApps": {
+      "availableApps": {
         "type": "int",
-        "description": "Number of currently running applications"
+        "description": "Number of applications available to launch (ready or running)"
       },
       "developingApps": {
         "type": "int",

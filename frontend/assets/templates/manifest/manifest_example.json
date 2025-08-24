@@ -6,6 +6,7 @@
   "createdAt": "2025-08-01T12:00:00Z",
   "updatedAt": "2025-08-22T18:30:00Z",
   "iconUrl": "https://example.com/icons/chore_tracker.png",
+  "category": "Home Management",
   "tags": ["household", "chores", "family"],
   "progress": {
     "percentage": 100.0,

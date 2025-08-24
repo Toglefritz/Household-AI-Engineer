@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
 import '../categories/sidebar_categories_section.dart';
 import '../quick_actions/sidebar_quick_actions.dart';
@@ -14,8 +15,11 @@ class SidebarNavigationContent extends StatelessWidget {
   /// Creates a sidebar navigation content widget.
   ///
   /// @param showExpandedContent Whether to show expanded content based on actual width
+  /// @param applications List of applications for category calculation
+  /// @param openNewApplicationConversation Callback for creating new applications
   const SidebarNavigationContent({
     required this.showExpandedContent,
+    required this.applications,
     required this.openNewApplicationConversation,
     super.key,
   });
@@ -24,6 +28,12 @@ class SidebarNavigationContent extends StatelessWidget {
   ///
   /// Prevents content from appearing/disappearing abruptly during transitions.
   final bool showExpandedContent;
+
+  /// List of applications for dynamic category calculation.
+  ///
+  /// Used to determine which categories have applications and their counts
+  /// for accurate sidebar navigation and filtering.
+  final List<UserApplication> applications;
 
   /// A callback for when the button to create a new application is tapped.
   final VoidCallback openNewApplicationConversation;
@@ -54,6 +64,7 @@ class SidebarNavigationContent extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: Insets.medium),
           child: SidebarCategoriesSection(
             showExpandedContent: showExpandedContent,
+            applications: applications,
           ),
         ),
 

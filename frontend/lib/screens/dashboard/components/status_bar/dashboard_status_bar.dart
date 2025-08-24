@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../services/user_application/models/user_application.dart';
 import '../../../../theme/insets.dart';
 import '../../models/status_bar/connection_status.dart';
 import 'status_bar_left_section.dart';
@@ -21,10 +22,12 @@ class DashboardStatusBar extends StatelessWidget {
   /// @param connectionStatus Current connection status to display
   /// @param onToggleSidebar Callback for sidebar toggle button
   /// @param isSidebarExpanded Current sidebar expansion state
+  /// @param applications List of all user applications for status display
   const DashboardStatusBar({
     required this.connectionStatus,
     required this.onToggleSidebar,
     required this.isSidebarExpanded,
+    required this.applications,
     super.key,
   });
 
@@ -44,6 +47,11 @@ class DashboardStatusBar extends StatelessWidget {
   ///
   /// Used to determine the appropriate icon for the sidebar toggle button and adjust layout spacing accordingly.
   final bool isSidebarExpanded;
+
+  /// List of all user applications for status display.
+  ///
+  /// Used by the system status component to calculate and display the number of available and developing applications.
+  final List<UserApplication> applications;
 
   /// Height of the status bar component.
   ///
@@ -70,6 +78,7 @@ class DashboardStatusBar extends StatelessWidget {
             Expanded(
               child: StatusBarLeftSection(
                 connectionStatus: connectionStatus,
+                applications: applications,
               ),
             ),
 

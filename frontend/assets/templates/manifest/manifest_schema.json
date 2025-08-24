@@ -10,6 +10,7 @@
     "createdAt",
     "updatedAt",
     "iconUrl",
+    "category",
     "tags",
     "progress"
   ],
@@ -54,9 +55,25 @@
       "format": "uri",
       "description": "URL pointing to an icon representing the application."
     },
+    "category": {
+      "type": "string",
+      "description": "Primary category for organizing and filtering the application.",
+      "enum": [
+        "Home Management",
+        "Finance",
+        "Planning",
+        "Health & Fitness",
+        "Education",
+        "Entertainment",
+        "Utilities",
+        "Communication",
+        "Security",
+        "Other"
+      ]
+    },
     "tags": {
       "type": "array",
-      "description": "Tags that categorize the application.",
+      "description": "Additional tags for detailed categorization and search.",
       "items": {
         "type": "string"
       }

@@ -220,11 +220,11 @@ abstract class AppLocalizations {
   /// **'Connecting...'**
   String get statusConnecting;
 
-  /// System status showing number of running and developing applications
+  /// System status showing number of available and developing applications
   ///
   /// In en, this message translates to:
-  /// **'{activeApps} running • {developingApps} developing'**
-  String systemStatusRunningDeveloping(int activeApps, int developingApps);
+  /// **'{availableApps} available • {developingApps} developing'**
+  String systemStatusAvailableDeveloping(int availableApps, int developingApps);
 
   /// Tooltip for the settings button
   ///
