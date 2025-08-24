@@ -5,6 +5,7 @@ import '../../../../../theme/insets.dart';
 import '../categories/sidebar_categories_section.dart';
 import '../quick_actions/sidebar_quick_actions.dart';
 import '../search/sidebar_search.dart';
+import '../../search/search_controller.dart' as search;
 import 'sidebar_navigation_section.dart';
 
 /// Main navigation content component for the dashboard sidebar.
@@ -17,10 +18,12 @@ class SidebarNavigationContent extends StatelessWidget {
   /// @param showExpandedContent Whether to show expanded content based on actual width
   /// @param applications List of applications for category calculation
   /// @param openNewApplicationConversation Callback for creating new applications
+  /// @param searchController Search controller for managing search and filter state
   const SidebarNavigationContent({
     required this.showExpandedContent,
     required this.applications,
     required this.openNewApplicationConversation,
+    required this.searchController,
     super.key,
   });
 
@@ -38,6 +41,11 @@ class SidebarNavigationContent extends StatelessWidget {
   /// A callback for when the button to create a new application is tapped.
   final VoidCallback openNewApplicationConversation;
 
+  /// Search controller for managing search and filter state.
+  ///
+  /// Provides access to search functionality and filter management.
+  final search.ApplicationSearchController searchController;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -53,6 +61,7 @@ class SidebarNavigationContent extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: Insets.medium),
                   child: SidebarSearchSection(
                     showExpandedContent: showExpandedContent,
+                    searchController: searchController,
                   ),
                 ),
 
@@ -62,6 +71,7 @@ class SidebarNavigationContent extends StatelessWidget {
                   child: SidebarNavigationSection(
                     showExpandedContent: showExpandedContent,
                     applications: applications,
+                    searchController: searchController,
                   ),
                 ),
 
@@ -71,6 +81,7 @@ class SidebarNavigationContent extends StatelessWidget {
                   child: SidebarCategoriesSection(
                     showExpandedContent: showExpandedContent,
                     applications: applications,
+                    searchController: searchController,
                   ),
                 ),
               ],

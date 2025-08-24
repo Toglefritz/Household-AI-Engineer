@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../services/user_application/models/user_application.dart';
+import '../search/search_controller.dart' as search;
 import 'navigation/sidebar_navigation_content.dart';
 import 'sidebar_header.dart';
 
@@ -70,11 +71,13 @@ class DashboardSidebar extends StatefulWidget {
   /// @param onToggle Callback function when the user toggles sidebar state
   /// @param applications List of applications for category calculation
   /// @param openNewApplicationConversation Callback for creating new applications
+  /// @param searchController Search controller for managing search and filter state
   const DashboardSidebar({
     required this.isExpanded,
     required this.onToggle,
     required this.applications,
     required this.openNewApplicationConversation,
+    required this.searchController,
     super.key,
   });
 
@@ -98,6 +101,11 @@ class DashboardSidebar extends StatefulWidget {
   /// A callback for when the button to create a new application is tapped.
   final VoidCallback openNewApplicationConversation;
 
+  /// Search controller for managing search and filter state.
+  ///
+  /// Provides access to search functionality and filter management.
+  final search.ApplicationSearchController searchController;
+
   @override
   State<DashboardSidebar> createState() => _DashboardSidebarState();
 }
@@ -106,8 +114,7 @@ class DashboardSidebar extends StatefulWidget {
 ///
 /// Coordinates content transitions and width animations to prevent overflow
 /// errors and text wrapping during sidebar state changes.
-class _DashboardSidebarState extends State<DashboardSidebar>
-    with TickerProviderStateMixin {
+class _DashboardSidebarState extends State<DashboardSidebar> with TickerProviderStateMixin {
   /// Width of the sidebar when expanded to show full content.
   ///
   /// Provides enough space for navigation labels, search bar, and category listings while maintaining proper proportions.
@@ -184,9 +191,7 @@ class _DashboardSidebarState extends State<DashboardSidebar>
     // Listen to width animation to update current width
     _widthController.addListener(() {
       setState(() {
-        _currentWidth =
-            _collapsedWidth +
-            (_expandedWidth - _collapsedWidth) * _widthController.value;
+        _currentWidth = _collapsedWidth + (_expandedWidth - _collapsedWidth) * _widthController.value;
       });
     });
   }
@@ -262,8 +267,8 @@ class _DashboardSidebarState extends State<DashboardSidebar>
             child: SidebarNavigationContent(
               showExpandedContent: _showExpandedContent,
               applications: widget.applications,
-              openNewApplicationConversation:
-                  widget.openNewApplicationConversation,
+              openNewApplicationConversation: widget.openNewApplicationConversation,
+              searchController: widget.searchController,
             ),
           ),
         ],

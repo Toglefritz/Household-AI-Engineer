@@ -13,6 +13,7 @@ import '../../services/conversation/models/conversation_thread.dart';
 import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
+import 'components/search/search_controller.dart' as search;
 import '../application_launcher/application_launcher_window.dart';
 import 'components/applications/application_context_menu.dart';
 import 'components/applications/application_details_dialog.dart';
@@ -50,6 +51,12 @@ class DashboardController extends State<DashboardRoute> {
   /// but will be replaced with real data from the backend in future tasks.
   List<UserApplication> _applications = [];
 
+  /// List of filtered applications based on search and filter criteria.
+  ///
+  /// This list is updated by the search and filter interface and represents
+  /// the applications that should be displayed in the grid.
+  List<UserApplication> _filteredApplications = [];
+
   /// Set of currently selected application IDs.
   ///
   /// Used for multi-selection operations and visual feedback
@@ -76,6 +83,12 @@ class DashboardController extends State<DashboardRoute> {
   /// Listens to launch results and status updates from the launcher service.
   StreamSubscription<LaunchResult>? _launchEventsSubscription;
 
+  /// Search controller for managing search and filtering functionality.
+  ///
+  /// Handles text search, category filtering, status filtering, and sorting
+  /// for the application grid. Integrates with sidebar search components.
+  late search.ApplicationSearchController _searchController;
+
   /// Whether the sidebar is currently expanded.
   ///
   /// Used by the view to determine sidebar layout and animation states.
@@ -93,6 +106,12 @@ class DashboardController extends State<DashboardRoute> {
   /// external modification of the internal state.
   List<UserApplication> get applications => List.unmodifiable(_applications);
 
+  /// List of filtered applications for display in the grid.
+  ///
+  /// Returns the applications that match the current search and filter criteria.
+  /// This is what should be displayed in the application grid.
+  List<UserApplication> get filteredApplications => List.unmodifiable(_filteredApplications);
+
   /// Set of currently selected application IDs.
   ///
   /// Used by the application grid to show selection states
@@ -102,6 +121,10 @@ class DashboardController extends State<DashboardRoute> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize search controller
+    _searchController = search.ApplicationSearchController();
+    _searchController.addListener(_onSearchResultsChanged);
 
     // Initialize services and load applications
     _initializeServices();
@@ -238,6 +261,14 @@ class DashboardController extends State<DashboardRoute> {
         (List<UserApplication> applications) {
           setState(() {
             _applications = applications;
+
+            // Update search controller with new applications
+            _searchController.updateApplications(applications);
+
+            // Initialize filtered applications to show all applications by default
+            if (_filteredApplications.isEmpty) {
+              _filteredApplications = applications;
+            }
 
             // Set sidebar state based on application availability
             // Open sidebar if there are applications, keep closed if none
@@ -531,6 +562,22 @@ class DashboardController extends State<DashboardRoute> {
     });
   }
 
+  /// Handles changes in search results from the search controller.
+  ///
+  /// Updates the filtered applications list with the new search results
+  /// and triggers a UI update to reflect the changes in the grid.
+  void _onSearchResultsChanged() {
+    setState(() {
+      _filteredApplications = _searchController.filteredApplications;
+    });
+  }
+
+  /// Gets the search controller for use by sidebar components.
+  ///
+  /// Provides access to the search controller so sidebar components
+  /// can update search queries and filter criteria.
+  search.ApplicationSearchController get searchController => _searchController;
+
   /// Refreshes applications after a short delay.
   ///
   /// This method is called after conversation modals close to ensure
@@ -740,6 +787,8 @@ class DashboardController extends State<DashboardRoute> {
     // Clean up resources
     _applicationSubscription?.cancel();
     _launchEventsSubscription?.cancel();
+    _searchController.removeListener(_onSearchResultsChanged);
+    _searchController.dispose();
     _userApplicationService.dispose();
     _applicationLauncherService?.dispose();
     super.dispose();

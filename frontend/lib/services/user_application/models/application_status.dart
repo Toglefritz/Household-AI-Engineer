@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// An enumeration of values representing the status of a user application.
 ///
 /// This enum defines all possible states an application can be in throughout its lifecycle from initial request to
@@ -100,9 +102,7 @@ extension ApplicationStatusExtension on ApplicationStatus {
   /// Terminal states are ready, running, and failed where no further automatic progression will occur without user
   /// intervention.
   bool get isTerminal {
-    return this == ApplicationStatus.ready ||
-        this == ApplicationStatus.running ||
-        this == ApplicationStatus.failed;
+    return this == ApplicationStatus.ready || this == ApplicationStatus.running || this == ApplicationStatus.failed;
   }
 
   /// Returns true if the application can be launched by the user.
@@ -118,8 +118,50 @@ extension ApplicationStatusExtension on ApplicationStatus {
   /// Applications can be modified when they are in stable states (ready, running, or failed) but not during active
   /// development.
   bool get canModify {
-    return this == ApplicationStatus.ready ||
-        this == ApplicationStatus.running ||
-        this == ApplicationStatus.failed;
+    return this == ApplicationStatus.ready || this == ApplicationStatus.running || this == ApplicationStatus.failed;
+  }
+
+  /// Returns the appropriate icon for this status.
+  ///
+  /// Used in UI components to provide visual indicators for application states.
+  IconData get icon {
+    switch (this) {
+      case ApplicationStatus.requested:
+        return Icons.schedule;
+      case ApplicationStatus.developing:
+        return Icons.build;
+      case ApplicationStatus.testing:
+        return Icons.bug_report;
+      case ApplicationStatus.ready:
+        return Icons.check_circle;
+      case ApplicationStatus.running:
+        return Icons.play_circle_filled;
+      case ApplicationStatus.failed:
+        return Icons.error;
+      case ApplicationStatus.updating:
+        return Icons.refresh;
+    }
+  }
+
+  /// Returns the appropriate color for this status.
+  ///
+  /// Used in UI components to provide visual indicators for application states.
+  Color get color {
+    switch (this) {
+      case ApplicationStatus.requested:
+        return Colors.orange;
+      case ApplicationStatus.developing:
+        return Colors.blue;
+      case ApplicationStatus.testing:
+        return Colors.purple;
+      case ApplicationStatus.ready:
+        return Colors.green;
+      case ApplicationStatus.running:
+        return Colors.blue;
+      case ApplicationStatus.failed:
+        return Colors.red;
+      case ApplicationStatus.updating:
+        return Colors.amber;
+    }
   }
 }

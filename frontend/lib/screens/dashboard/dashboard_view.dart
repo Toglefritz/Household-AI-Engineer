@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/insets.dart';
 import 'components/applications/application_grid.dart';
+
 import 'components/sidebar/dashboard_sidebar.dart';
 import 'components/status_bar/dashboard_status_bar.dart';
 import 'dashboard_controller.dart';
@@ -54,6 +55,7 @@ class DashboardView extends StatelessWidget {
                   onToggle: state.toggleSidebar,
                   applications: state.applications,
                   openNewApplicationConversation: state.openNewApplicationConversation,
+                  searchController: state.searchController,
                 ),
 
                 // Main content area
@@ -92,7 +94,7 @@ class DashboardView extends StatelessWidget {
                             // Application grid
                             Expanded(
                               child: ApplicationGrid(
-                                applications: state.applications,
+                                applications: state.filteredApplications,
                                 selectedApplicationIds: state.selectedApplicationIds,
                                 onApplicationTap: state.onApplicationTap,
                                 onApplicationSecondaryTap: state.onApplicationSecondaryTap,

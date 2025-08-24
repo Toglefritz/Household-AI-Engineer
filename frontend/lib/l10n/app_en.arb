@@ -445,5 +445,139 @@
   "conversationProcessingMessage": "Processing your request",
   "@conversationProcessingMessage": {
     "description": "Message shown when the system is analyzing user input before specific progress is available"
+  },
+  "filters": "Filters",
+  "@filters": {
+    "description": "Title for the filters panel"
+  },
+  "categories": "Categories",
+  "@categories": {
+    "description": "Title for the categories filter section"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Title for the status filter section"
+  },
+  "dateRange": "Date Range",
+  "@dateRange": {
+    "description": "Title for the date range filter section"
+  },
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "Label for the start date picker"
+  },
+  "endDate": "End Date",
+  "@endDate": {
+    "description": "Label for the end date picker"
+  },
+  "noDateSelected": "No date selected",
+  "@noDateSelected": {
+    "description": "Text shown when no date is selected"
+  },
+  "clearAllFilters": "Clear All Filters",
+  "@clearAllFilters": {
+    "description": "Button text to clear all active filters"
+  },
+  "sortBy": "Sort by",
+  "@sortBy": {
+    "description": "Label for sort controls"
+  },
+  "newest": "Newest",
+  "@newest": {
+    "description": "Short label for newest first sort option"
+  },
+  "oldest": "Oldest",
+  "@oldest": {
+    "description": "Short label for oldest first sort option"
+  },
+  "recentlyUpdated": "Recently Updated",
+  "@recentlyUpdated": {
+    "description": "Short label for recently updated sort option"
+  },
+  "leastRecentlyUpdated": "Least Recently Updated",
+  "@leastRecentlyUpdated": {
+    "description": "Short label for least recently updated sort option"
+  },
+  "titleAZ": "Title A-Z",
+  "@titleAZ": {
+    "description": "Short label for alphabetical title sort"
+  },
+  "titleZA": "Title Z-A",
+  "@titleZA": {
+    "description": "Short label for reverse alphabetical title sort"
+  },
+  "statusPriority": "Status Priority",
+  "@statusPriority": {
+    "description": "Short label for status priority sort"
+  },
+  "oneResult": "1 result",
+  "@oneResult": {
+    "description": "Text shown when there is exactly one result"
+  },
+  "multipleResults": "{count} results",
+  "@multipleResults": {
+    "description": "Text shown when there are multiple results",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of results"
+      }
+    }
+  },
+  "noSearchResults": "No applications match your search",
+  "@noSearchResults": {
+    "description": "Message shown when search returns no results"
+  },
+  "oneSearchResult": "1 application matches your search",
+  "@oneSearchResult": {
+    "description": "Message shown when search returns exactly one result"
+  },
+  "multipleSearchResults": "{count} applications match your search",
+  "@multipleSearchResults": {
+    "description": "Message shown when search returns multiple results",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of search results"
+      }
+    }
+  },
+  "noFilterResults": "No applications match the current filters",
+  "@noFilterResults": {
+    "description": "Message shown when filters return no results"
+  },
+  "allApplicationsShown": "All {count} applications shown",
+  "@allApplicationsShown": {
+    "description": "Message shown when all applications are displayed",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Total number of applications"
+      }
+    }
+  },
+  "filteredApplicationsShown": "Showing {filtered} of {total} applications",
+  "@filteredApplicationsShown": {
+    "description": "Message shown when filters are applied",
+    "placeholders": {
+      "filtered": {
+        "type": "int",
+        "description": "Number of filtered applications"
+      },
+      "total": {
+        "type": "int",
+        "description": "Total number of applications"
+      }
+    }
+  },
+  "applicationCount": "{count} applications",
+  "@applicationCount": {
+    "description": "Shows the count of applications in a category or status",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Number of applications"
+      }
+    }
   }
 }

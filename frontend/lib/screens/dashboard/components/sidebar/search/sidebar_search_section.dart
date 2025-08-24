@@ -9,8 +9,10 @@ class SidebarSearchSection extends StatelessWidget {
   /// Creates a sidebar search section widget.
   ///
   /// @param showExpandedContent Whether to show expanded content based on actual width
+  /// @param searchController Search controller for managing search state
   const SidebarSearchSection({
     required this.showExpandedContent,
+    required this.searchController,
     super.key,
   });
 
@@ -19,6 +21,11 @@ class SidebarSearchSection extends StatelessWidget {
   /// Prevents content from appearing/disappearing abruptly during transitions.
   /// When true, shows full search field. When false, shows search icon button.
   final bool showExpandedContent;
+
+  /// Search controller for managing search state and operations.
+  ///
+  /// Provides access to search functionality and state management.
+  final search.ApplicationSearchController searchController;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,10 @@ class SidebarSearchSection extends StatelessWidget {
             );
           },
           child: showExpandedContent
-              ? const _ExpandedSearchField(key: ValueKey('expanded'))
+              ? _ExpandedSearchField(
+                  key: const ValueKey('expanded'),
+                  searchController: searchController,
+                )
               : const _CollapsedSearchButton(key: ValueKey('collapsed')),
         ),
       ),

@@ -317,4 +317,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get conversationProcessingMessage => 'Processing your request';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get dateRange => 'Date Range';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get endDate => 'End Date';
+
+  @override
+  String get noDateSelected => 'No date selected';
+
+  @override
+  String get clearAllFilters => 'Clear All Filters';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get newest => 'Newest';
+
+  @override
+  String get oldest => 'Oldest';
+
+  @override
+  String get recentlyUpdated => 'Recently Updated';
+
+  @override
+  String get leastRecentlyUpdated => 'Least Recently Updated';
+
+  @override
+  String get titleAZ => 'Title A-Z';
+
+  @override
+  String get titleZA => 'Title Z-A';
+
+  @override
+  String get statusPriority => 'Status Priority';
+
+  @override
+  String get oneResult => '1 result';
+
+  @override
+  String multipleResults(int count) {
+    return '$count results';
+  }
+
+  @override
+  String get noSearchResults => 'No applications match your search';
+
+  @override
+  String get oneSearchResult => '1 application matches your search';
+
+  @override
+  String multipleSearchResults(int count) {
+    return '$count applications match your search';
+  }
+
+  @override
+  String get noFilterResults => 'No applications match the current filters';
+
+  @override
+  String allApplicationsShown(int count) {
+    return 'All $count applications shown';
+  }
+
+  @override
+  String filteredApplicationsShown(int filtered, int total) {
+    return 'Showing $filtered of $total applications';
+  }
+
+  @override
+  String applicationCount(int count) {
+    return '$count applications';
+  }
 }

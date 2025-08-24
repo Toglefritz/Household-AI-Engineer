@@ -6,6 +6,7 @@ import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
 import '../../../models/sidebar/category_data.dart';
 import '../../../models/sidebar/sidebar_spacing.dart';
+import '../../search/search_controller.dart' as search;
 import 'sidebar_categories.dart';
 
 /// Categories section component for the dashboard sidebar.
@@ -19,9 +20,11 @@ class SidebarCategoriesSection extends StatelessWidget {
   ///
   /// @param showExpandedContent Whether to show expanded content based on actual width
   /// @param applications List of applications for dynamic category calculation
+  /// @param searchController Search controller for managing filter state
   const SidebarCategoriesSection({
     required this.showExpandedContent,
     required this.applications,
+    required this.searchController,
     super.key,
   });
 
@@ -38,6 +41,11 @@ class SidebarCategoriesSection extends StatelessWidget {
   /// for accurate sidebar navigation and filtering.
   final List<UserApplication> applications;
 
+  /// Search controller for managing filter state and operations.
+  ///
+  /// Provides access to search functionality and filter management.
+  final search.ApplicationSearchController searchController;
+
   /// Calculates dynamic categories based on the current applications.
   ///
   /// Creates category data with accurate counts based on applications that
@@ -50,8 +58,7 @@ class SidebarCategoriesSection extends StatelessWidget {
     );
 
     // Count applications by category enum
-    final Map<ApplicationCategory, int> categoryCounts =
-        <ApplicationCategory, int>{};
+    final Map<ApplicationCategory, int> categoryCounts = <ApplicationCategory, int>{};
 
     for (final UserApplication app in applications) {
       debugPrint(
@@ -59,9 +66,7 @@ class SidebarCategoriesSection extends StatelessWidget {
       );
 
       // Assign category - use app's category if it has one, otherwise "Other"
-      final ApplicationCategory category = app.hasCategory
-          ? app.category!
-          : ApplicationCategory.other;
+      final ApplicationCategory category = app.hasCategory ? app.category! : ApplicationCategory.other;
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
       debugPrint(
         'Added to category "${category.displayName}", count now: ${categoryCounts[category]}',
@@ -75,8 +80,7 @@ class SidebarCategoriesSection extends StatelessWidget {
     // Create category data for categories that have applications
     final List<CategoryData> dynamicCategories = <CategoryData>[];
 
-    for (final MapEntry<ApplicationCategory, int> entry
-        in categoryCounts.entries) {
+    for (final MapEntry<ApplicationCategory, int> entry in categoryCounts.entries) {
       final ApplicationCategory categoryEnum = entry.key;
       final int count = entry.value;
 
@@ -126,11 +130,10 @@ class SidebarCategoriesSection extends StatelessWidget {
                           header: true,
                           child: Text(
                             AppLocalizations.of(context)!.categoriesTitle,
-                            style: Theme.of(context).textTheme.labelMedium
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.tertiary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       )
@@ -146,6 +149,7 @@ class SidebarCategoriesSection extends StatelessWidget {
               label: category.label,
               count: category.count,
               showExpandedContent: showExpandedContent,
+              searchController: searchController,
             ),
           ),
         ],

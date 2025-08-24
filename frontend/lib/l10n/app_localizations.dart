@@ -651,6 +651,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Processing your request'**
   String get conversationProcessingMessage;
+
+  /// Title for the filters panel
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// Title for the categories filter section
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// Title for the status filter section
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// Title for the date range filter section
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get dateRange;
+
+  /// Label for the start date picker
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get startDate;
+
+  /// Label for the end date picker
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get endDate;
+
+  /// Text shown when no date is selected
+  ///
+  /// In en, this message translates to:
+  /// **'No date selected'**
+  String get noDateSelected;
+
+  /// Button text to clear all active filters
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Filters'**
+  String get clearAllFilters;
+
+  /// Label for sort controls
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// Short label for newest first sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get newest;
+
+  /// Short label for oldest first sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest'**
+  String get oldest;
+
+  /// Short label for recently updated sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Recently Updated'**
+  String get recentlyUpdated;
+
+  /// Short label for least recently updated sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Least Recently Updated'**
+  String get leastRecentlyUpdated;
+
+  /// Short label for alphabetical title sort
+  ///
+  /// In en, this message translates to:
+  /// **'Title A-Z'**
+  String get titleAZ;
+
+  /// Short label for reverse alphabetical title sort
+  ///
+  /// In en, this message translates to:
+  /// **'Title Z-A'**
+  String get titleZA;
+
+  /// Short label for status priority sort
+  ///
+  /// In en, this message translates to:
+  /// **'Status Priority'**
+  String get statusPriority;
+
+  /// Text shown when there is exactly one result
+  ///
+  /// In en, this message translates to:
+  /// **'1 result'**
+  String get oneResult;
+
+  /// Text shown when there are multiple results
+  ///
+  /// In en, this message translates to:
+  /// **'{count} results'**
+  String multipleResults(int count);
+
+  /// Message shown when search returns no results
+  ///
+  /// In en, this message translates to:
+  /// **'No applications match your search'**
+  String get noSearchResults;
+
+  /// Message shown when search returns exactly one result
+  ///
+  /// In en, this message translates to:
+  /// **'1 application matches your search'**
+  String get oneSearchResult;
+
+  /// Message shown when search returns multiple results
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications match your search'**
+  String multipleSearchResults(int count);
+
+  /// Message shown when filters return no results
+  ///
+  /// In en, this message translates to:
+  /// **'No applications match the current filters'**
+  String get noFilterResults;
+
+  /// Message shown when all applications are displayed
+  ///
+  /// In en, this message translates to:
+  /// **'All {count} applications shown'**
+  String allApplicationsShown(int count);
+
+  /// Message shown when filters are applied
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {filtered} of {total} applications'**
+  String filteredApplicationsShown(int filtered, int total);
+
+  /// Shows the count of applications in a category or status
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications'**
+  String applicationCount(int count);
 }
 
 class _AppLocalizationsDelegate

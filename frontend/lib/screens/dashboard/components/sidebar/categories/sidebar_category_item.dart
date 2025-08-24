@@ -12,11 +12,13 @@ class SidebarCategoryItem extends StatelessWidget {
   /// @param label Category name to display
   /// @param count Number of applications in this category
   /// @param showExpandedContent Whether to show expanded content based on actual width
+  /// @param searchController Search controller for managing filter state
   const SidebarCategoryItem({
     required this.icon,
     required this.label,
     required this.count,
     required this.showExpandedContent,
+    required this.searchController,
     super.key,
   });
 
@@ -43,12 +45,24 @@ class SidebarCategoryItem extends StatelessWidget {
   /// containing category information.
   final bool showExpandedContent;
 
+  /// Search controller for managing filter state and operations.
+  ///
+  /// Provides access to search functionality and filter management.
+  final search.ApplicationSearchController searchController;
+
   /// Handles category selection when the item is tapped.
   ///
-  /// Triggers category filtering functionality. In a full implementation, this would filter the applications list to
-  /// show only items in this category.
+  /// Triggers category filtering functionality by finding the corresponding
+  /// ApplicationCategory enum and toggling it in the search controller.
   void _handleCategoryTap() {
-    // TODO(Toglefritz): Implement category filtering
+    // Find the corresponding ApplicationCategory enum by display name
+    final category = ApplicationCategory.values.firstWhere(
+      (cat) => cat.displayName == label,
+      orElse: () => ApplicationCategory.other,
+    );
+
+    // Toggle the category filter
+    searchController.toggleCategory(category);
   }
 
   @override
