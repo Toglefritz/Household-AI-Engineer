@@ -60,6 +60,18 @@ class ConversationService extends ChangeNotifier {
   /// Whether development is currently in progress.
   bool _isDevelopmentInProgress = false;
 
+  /// The application ID that this conversation is tracking for progress updates.
+  ///
+  /// When set, only progress updates for this specific application will be
+  /// added to the conversation. Null when no specific application is being tracked.
+  String? _trackedApplicationId;
+
+  /// Set of application IDs that existed when the conversation started.
+  ///
+  /// Used to detect new applications created during this conversation.
+  /// Only populated for new application conversations.
+  Set<String>? _initialApplicationIds;
+
   /// The current active conversation thread.
   ConversationThread? get currentConversation => _currentConversation;
 
@@ -97,6 +109,11 @@ class ConversationService extends ChangeNotifier {
   Future<void> startNewApplicationConversation() async {
     _error = null;
 
+    // Capture the current set of applications before starting the conversation
+    // so we can detect when a new one is created
+    final List<UserApplication> currentApplications = await _userApplicationService.getApplications();
+    _initialApplicationIds = currentApplications.map((UserApplication app) => app.id).toSet();
+
     // Perform Kiro setup for a new application.
     await _kiroService.setupKiroForNewApplication();
 
@@ -108,6 +125,9 @@ class ConversationService extends ChangeNotifier {
     // Add a default message to the conversation.
     final ConversationMessage welcomeMessage = _createWelcomeMessage(conversationId: _currentConversation!.id);
     _currentConversation = _currentConversation!.addMessage(welcomeMessage);
+
+    // Clear any previous application tracking since this is a new conversation
+    _trackedApplicationId = null;
 
     // Start monitoring application progress for development statements
     _startProgressMonitoring();
@@ -142,6 +162,12 @@ class ConversationService extends ChangeNotifier {
         applicationName: application.title,
       ),
     );*/
+
+    // Track this specific application for progress updates
+    _trackedApplicationId = application.id;
+
+    // Clear initial application IDs since this is not a new application conversation
+    _initialApplicationIds = null;
 
     // After Kiro is open and the conversation is set up, processing is complete.
     _isProcessing = false;
@@ -282,6 +308,8 @@ class ConversationService extends ChangeNotifier {
     _currentConversation = _currentConversation!.updateStatus(ConversationStatus.cancelled);
     _currentConversation = null;
     _error = null;
+    _trackedApplicationId = null;
+    _initialApplicationIds = null;
 
     // Close the Kiro IDE
     await _kiroService.closeKiro();
@@ -307,23 +335,52 @@ class ConversationService extends ChangeNotifier {
     _applicationSubscription?.cancel();
     _applicationSubscription = null;
     _lastDevelopmentStatement = null;
+    _trackedApplicationId = null;
+    _initialApplicationIds = null;
   }
 
   /// Handles application updates and injects development statements as messages.
   ///
   /// Checks for new development statements in application progress and adds them
-  /// as system messages to the current conversation.
+  /// as system messages to the current conversation. Only processes updates for
+  /// the application currently being tracked by this conversation.
   void _handleApplicationUpdates(List<UserApplication> applications) {
+    // If there is no current conversation, there is no need to process the update.
     if (_currentConversation == null) return;
 
-    // Look for applications that might be related to this conversation
-    // For now, we'll monitor the most recently updated application
-    if (applications.isNotEmpty) {
-      final UserApplication mostRecent = applications.first;
-      _currentApplication = mostRecent;
+    UserApplication? targetApplication;
 
-      final String? developmentStatement = mostRecent.progress?.developmentStatement;
-      final double progressPercentage = mostRecent.progress?.percentage ?? 0.0;
+    // If we're tracking a specific application, find it in the list
+    if (_trackedApplicationId != null) {
+      try {
+        targetApplication = applications.firstWhere(
+          (UserApplication app) => app.id == _trackedApplicationId,
+        );
+      } catch (e) {
+        // Application not found in the list, it might not exist yet or be removed
+        return;
+      }
+    } else if (_initialApplicationIds != null) {
+      // For new application conversations, look for applications that weren't
+      // in the initial set when the conversation started
+      for (final UserApplication app in applications) {
+        if (!_initialApplicationIds!.contains(app.id)) {
+          // Found a new application that was created after this conversation started
+          targetApplication = app;
+
+          // Start tracking this application for future updates
+          _trackedApplicationId = app.id;
+          break;
+        }
+      }
+    }
+
+    // If we found a target application, process its updates
+    if (targetApplication != null) {
+      _currentApplication = targetApplication;
+
+      final String? developmentStatement = targetApplication.progress?.developmentStatement;
+      final double progressPercentage = targetApplication.progress?.percentage ?? 0.0;
 
       // Update development status based on progress
       _isDevelopmentInProgress = progressPercentage < 100.0;
