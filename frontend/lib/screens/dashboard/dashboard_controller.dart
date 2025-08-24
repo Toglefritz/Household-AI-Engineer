@@ -1,10 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/application_launcher/application_launcher_service.dart';
+import '../../services/application_launcher/models/application_process.dart';
+import '../../services/application_launcher/models/launch_result.dart';
+import '../../services/application_launcher/models/window_state.dart';
 import '../../services/conversation/models/conversation_thread.dart';
 import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
+import '../application_launcher/application_launcher_window.dart';
 import 'components/conversation/conversation_modal.dart';
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
@@ -50,10 +57,20 @@ class DashboardController extends State<DashboardRoute> {
   /// Handles loading, creating, and managing applications with real-time updates.
   final UserApplicationService _userApplicationService = UserApplicationService();
 
+  /// Service for launching and managing running applications.
+  ///
+  /// Handles WebView integration, process monitoring, and window state management.
+  ApplicationLauncherService? _applicationLauncherService;
+
   /// Stream subscription for application updates.
   ///
   /// Listens to real-time application changes and updates the UI accordingly.
   StreamSubscription<List<UserApplication>>? _applicationSubscription;
+
+  /// Stream subscription for application launch events.
+  ///
+  /// Listens to launch results and status updates from the launcher service.
+  StreamSubscription<LaunchResult>? _launchEventsSubscription;
 
   /// Whether the sidebar is currently expanded.
   ///
@@ -82,8 +99,122 @@ class DashboardController extends State<DashboardRoute> {
   void initState() {
     super.initState();
 
-    // Load and watch for application updates
+    // Initialize services and load applications
+    _initializeServices();
     _loadApplications();
+  }
+
+  /// Initializes the application launcher service and sets up event listeners.
+  ///
+  /// Creates the launcher service with required dependencies and subscribes
+  /// to launch events for UI updates and error handling.
+  Future<void> _initializeServices() async {
+    try {
+      // Initialize dependencies for the launcher service
+      final http.Client httpClient = http.Client();
+      final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+      // Create the application launcher service
+      _applicationLauncherService = ApplicationLauncherService(httpClient, preferences);
+
+      // Subscribe to launch events
+      _launchEventsSubscription = _applicationLauncherService!.launchEvents.listen(
+        (LaunchResult result) {
+          _handleLaunchEvent(result);
+        },
+        onError: (Object error) {
+          debugPrint('Launch event error: $error');
+        },
+      );
+
+      debugPrint('Application launcher service initialized');
+    } catch (e) {
+      debugPrint('Failed to initialize application launcher service: $e');
+    }
+  }
+
+  /// Handles launch events from the application launcher service.
+  ///
+  /// Updates UI state and shows user feedback based on launch results.
+  /// For successful launches, opens the application in a WebView window.
+  ///
+  /// @param result The launch result containing success/failure information
+  void _handleLaunchEvent(LaunchResult result) {
+    if (result.success) {
+      debugPrint('Launch event: ${result.description}');
+
+      // Update connection status to show successful operation
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+      });
+
+      // For successful launches, show the application in a WebView
+      if (result.process != null && result.message != null && !result.message!.contains('foreground')) {
+        _showApplicationWindow(result.process!);
+      }
+
+      // Show success message for foreground events
+      if (result.message != null && result.message!.contains('foreground')) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.description),
+              backgroundColor: Colors.blue,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } else {
+      debugPrint('Launch error: ${result.description}');
+
+      // Update connection status to show error
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      // Show error message to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.description),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
+  }
+
+  /// Shows the application in a WebView window.
+  ///
+  /// Creates a full-screen dialog containing the WebView for the application.
+  /// The dialog can be closed by the user, which will stop the application process.
+  ///
+  /// @param process The application process to display
+  void _showApplicationWindow(ApplicationProcess process) {
+    if (!mounted) return;
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ApplicationLauncherWindow(
+          process: process,
+          onWindowStateChanged: (WindowState windowState) {
+            // Update the process with new window state
+            process.updateWindowState(windowState);
+          },
+          onApplicationClosed: (String applicationId) {
+            // Close the dialog
+            Navigator.of(context).pop();
+
+            // Stop the application process
+            _applicationLauncherService?.stopApplication(applicationId);
+          },
+        );
+      },
+    );
   }
 
   /// Loads applications from the user application service and sets up real-time updates.
@@ -181,27 +312,49 @@ class DashboardController extends State<DashboardRoute> {
 
   /// Launches the specified application.
   ///
-  /// Handles launching applications through the Kiro Bridge service.
-  /// Updates the connection status based on the success of the operation.
+  /// Uses the application launcher service to create a WebView window
+  /// for web-based applications with proper process monitoring.
   ///
   /// @param application The application to launch
   Future<void> _launchApplication(UserApplication application) async {
     debugPrint('Launching application: ${application.title}');
+
+    if (_applicationLauncherService == null) {
+      debugPrint('Application launcher service not initialized');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Application launcher not ready. Please try again.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
 
     try {
       setState(() {
         _connectionStatus = ConnectionStatus.connecting;
       });
 
-      await _userApplicationService.launchApplication(application.id);
+      // Launch the application using the launcher service
+      final LaunchResult result = await _applicationLauncherService!.launchApplication(application);
 
-      setState(() {
-        _connectionStatus = ConnectionStatus.connected;
-      });
+      if (result.success) {
+        debugPrint('Successfully launched application: ${application.title}');
 
-      debugPrint('Successfully launched application: ${application.title}');
+        // The launch event handler will update the UI state
+        // No need to manually update connection status here
+      } else {
+        debugPrint('Failed to launch application: ${result.error}');
+
+        setState(() {
+          _connectionStatus = ConnectionStatus.error;
+        });
+      }
     } catch (e) {
-      debugPrint('Failed to launch application: $e');
+      debugPrint('Exception during application launch: $e');
 
       setState(() {
         _connectionStatus = ConnectionStatus.error;
@@ -310,7 +463,9 @@ class DashboardController extends State<DashboardRoute> {
   void dispose() {
     // Clean up resources
     _applicationSubscription?.cancel();
+    _launchEventsSubscription?.cancel();
     _userApplicationService.dispose();
+    _applicationLauncherService?.dispose();
     super.dispose();
   }
 }

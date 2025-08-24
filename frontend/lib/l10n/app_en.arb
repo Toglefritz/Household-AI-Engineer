@@ -321,5 +321,17 @@
   "sendMessage": "Send message",
   "@sendMessage": {
     "description": "A tooltip for the interface allowing the user to send a message to the agent"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Navigation button to go back in browser history"
+  },
+  "forward": "Forward",
+  "@forward": {
+    "description": "Navigation button to go forward in browser history"
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Button to refresh the current page"
   }
 }

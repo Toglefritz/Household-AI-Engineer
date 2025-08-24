@@ -22,12 +22,19 @@ dependencies:
   shared_preferences: ^2.2.2
   # Window management for macOS
   window_manager: ^0.3.8
+  # WebView support for launching web applications
+  webview_flutter: ^4.4.2
+  # HTTP client for health checking
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   # Lint rules for Dart and Flutter used internally at Very Good Ventures
   very_good_analysis: ^7.0.0
+  # Mocking framework for testing
+  mockito: ^5.4.2
+  build_runner: ^2.4.7
 
 flutter:
   uses-material-design: true

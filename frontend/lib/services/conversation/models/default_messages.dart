@@ -99,7 +99,8 @@ class DefaultMessages {
     should be updated to allow consumers of this manifest file to stay update on development progress. Again, the
     updates to the manifest must conform to the schema in manifest_schema.json. The manifest.json file contains several
     timestamps. Always make sure to check the current time before updating these timestamps to make sure that the 
-    information represented by the timestamps is accurate.
+    information represented by the timestamps is accurate. Last, always attempt to complete the user's request without
+    creating new specs because the user is unlikely to be able to write or confirm specs or tasks.
     
     Progress Communication: When updating the manifest.json file, always include a user-friendly "developmentStatement" 
     in the progress section. This statement should be written as a conversational message from you (Kiro IDE) to the 
@@ -119,7 +120,8 @@ class DefaultMessages {
     System Instructions: All user applications produced by this IDE must be web-based apps that can run locally
     (no servers required to try the app). Choose technologies appropriate to the problem (e.g., HTML/CSS/JS,
     Web Components, lightweight client frameworks, or Flutter Web), but ensure the resulting artifact can be opened
-    locally in a browser or bundled as a desktop webview.
+    locally in a browser or bundled as a desktop webview. Ideally, all applications will be able to run by simply
+    opening an index.html file, without requiring any scripts or npm commands.
 
     Requirements:
     - Default to a self-contained client app runnable from local files.
