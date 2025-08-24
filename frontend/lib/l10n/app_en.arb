@@ -194,6 +194,18 @@
   "@conversationStartMessage": {
     "description": "Message shown when no conversation messages exist yet"
   },
+  "conversationDevelopmentInProgress": "Development in progress",
+  "@conversationDevelopmentInProgress": {
+    "description": "Title shown when application development is ongoing"
+  },
+  "conversationDevelopmentTimeExpectation": "This process may take a few minutes to complete.",
+  "@conversationDevelopmentTimeExpectation": {
+    "description": "Message explaining that development takes time"
+  },
+  "conversationDevelopmentBackgroundInfo": "You can close this window and the development will continue in the background.",
+  "@conversationDevelopmentBackgroundInfo": {
+    "description": "Message explaining that development continues in background"
+  },
   "tooltipSendMessage": "Send message",
   "@tooltipSendMessage": {
     "description": "Tooltip for the send message button"

@@ -346,6 +346,24 @@ abstract class AppLocalizations {
   /// **'Start the conversation'**
   String get conversationStartMessage;
 
+  /// Title shown when application development is ongoing
+  ///
+  /// In en, this message translates to:
+  /// **'Development in progress'**
+  String get conversationDevelopmentInProgress;
+
+  /// Message explaining that development takes time
+  ///
+  /// In en, this message translates to:
+  /// **'This process may take a few minutes to complete.'**
+  String get conversationDevelopmentTimeExpectation;
+
+  /// Message explaining that development continues in background
+  ///
+  /// In en, this message translates to:
+  /// **'You can close this window and the development will continue in the background.'**
+  String get conversationDevelopmentBackgroundInfo;
+
   /// Tooltip for the send message button
   ///
   /// In en, this message translates to:

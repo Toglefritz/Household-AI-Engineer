@@ -13,6 +13,7 @@ class DevelopmentProgress {
     required this.percentage,
     required this.currentPhase,
     required this.lastUpdated,
+    this.developmentStatement,
     this.estimatedCompletion,
   });
 
@@ -27,6 +28,13 @@ class DevelopmentProgress {
   /// Provides context about what work is currently being performed.
   /// Examples: "Generating Code", "Running Tests", "Building Container"
   final String currentPhase;
+
+  /// User-friendly message about the current development phase.
+  ///
+  /// This message is formatted as a chat message from Kiro IDE to the user
+  /// and provides conversational updates about development progress.
+  /// Examples: "I'm working on the user interface now", "Almost done! Just testing the final features"
+  final String? developmentStatement;
 
   /// Timestamp of the last progress update.
   ///
@@ -56,6 +64,7 @@ class DevelopmentProgress {
         lastUpdated: DateTime.parse(
           json['lastUpdated'] as String? ?? (throw ArgumentError('Missing required field: lastUpdated')),
         ),
+        developmentStatement: json['developmentStatement'] as String?,
         estimatedCompletion: json['estimatedCompletion'] != null
             ? DateTime.parse(json['estimatedCompletion'] as String)
             : null,
@@ -74,6 +83,7 @@ class DevelopmentProgress {
       'percentage': percentage,
       'currentPhase': currentPhase,
       'lastUpdated': lastUpdated.toIso8601String(),
+      'developmentStatement': developmentStatement,
       'estimatedCompletion': estimatedCompletion?.toIso8601String(),
     };
   }
@@ -86,12 +96,14 @@ class DevelopmentProgress {
     double? percentage,
     String? currentPhase,
     DateTime? lastUpdated,
+    String? developmentStatement,
     DateTime? estimatedCompletion,
   }) {
     return DevelopmentProgress(
       percentage: percentage ?? this.percentage,
       currentPhase: currentPhase ?? this.currentPhase,
       lastUpdated: lastUpdated ?? this.lastUpdated,
+      developmentStatement: developmentStatement ?? this.developmentStatement,
       estimatedCompletion: estimatedCompletion ?? this.estimatedCompletion,
     );
   }

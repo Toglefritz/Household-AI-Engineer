@@ -11,6 +11,7 @@ import '../../../../services/conversation/models/message_sender.dart';
 import '../../../../services/user_application/models/user_application.dart';
 import '../../../../theme/insets.dart';
 import 'conversation_input_widget.dart';
+import 'conversation_loading_indicator.dart';
 import 'conversation_message_widget.dart';
 
 // Parts
@@ -154,10 +155,30 @@ class _ConversationModalState extends State<ConversationModal> {
 
             // Messages
             Expanded(
-              child: ConversationMessagesList(
-                controller: _controller,
-                scrollController: _scrollController,
-                onActionTap: _handleActionTap,
+              child: ListenableBuilder(
+                listenable: _controller,
+                builder: (BuildContext context, Widget? child) {
+                  return Column(
+                    children: [
+                      // Messages list
+                      Expanded(
+                        child: ConversationMessagesList(
+                          controller: _controller,
+                          scrollController: _scrollController,
+                          onActionTap: _handleActionTap,
+                        ),
+                      ),
+
+                      // Development progress indicator
+                      if (_controller.isDevelopmentInProgress) ...[
+                        ConversationLoadingIndicator(
+                          progress: _controller.developmentProgress,
+                          currentPhase: _controller.currentApplication?.progress?.currentPhase,
+                        ),
+                      ],
+                    ],
+                  );
+                },
               ),
             ),
 

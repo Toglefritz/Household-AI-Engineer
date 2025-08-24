@@ -146,6 +146,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get conversationStartMessage => 'Start the conversation';
 
   @override
+  String get conversationDevelopmentInProgress => 'Development in progress';
+
+  @override
+  String get conversationDevelopmentTimeExpectation =>
+      'This process may take a few minutes to complete.';
+
+  @override
+  String get conversationDevelopmentBackgroundInfo =>
+      'You can close this window and the development will continue in the background.';
+
+  @override
   String get tooltipSendMessage => 'Send message';
 
   @override

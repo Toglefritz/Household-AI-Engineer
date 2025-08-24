@@ -61,6 +61,7 @@ class SidebarNavigationContent extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: Insets.medium),
                   child: SidebarNavigationSection(
                     showExpandedContent: showExpandedContent,
+                    applications: applications,
                   ),
                 ),
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../../../../services/user_application/models/application_category.dart';
 import 'category_data.dart';
 

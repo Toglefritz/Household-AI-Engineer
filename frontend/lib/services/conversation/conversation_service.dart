@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../kiro/kiro_service.dart';
 import '../user_application/models/user_application.dart';
+import '../user_application/user_application_service.dart';
 import 'models/conversation_context.dart';
 import 'models/conversation_message.dart';
 import 'models/conversation_status.dart';
@@ -28,6 +30,9 @@ class ConversationService extends ChangeNotifier {
   /// A service used to communicate with the Kiro IDE via the communication bridge extension.
   final KiroService _kiroService = KiroService();
 
+  /// Service for monitoring user application progress.
+  final UserApplicationService _userApplicationService = UserApplicationService();
+
   /// The current active conversation thread.
   ///
   /// Null when no conversation is active.
@@ -42,6 +47,18 @@ class ConversationService extends ChangeNotifier {
   ///
   /// Displayed to the user when an error occurs during conversation.
   String? _error;
+
+  /// Subscription to application updates for monitoring progress.
+  StreamSubscription<List<UserApplication>>? _applicationSubscription;
+
+  /// The last known development statement to avoid duplicate messages.
+  String? _lastDevelopmentStatement;
+
+  /// The current application being developed, if any.
+  UserApplication? _currentApplication;
+
+  /// Whether development is currently in progress.
+  bool _isDevelopmentInProgress = false;
 
   /// The current active conversation thread.
   ConversationThread? get currentConversation => _currentConversation;
@@ -65,6 +82,15 @@ class ConversationService extends ChangeNotifier {
   /// Whether the conversation can be cancelled.
   bool get canCancel => hasActiveConversation && _currentConversation!.canCancel;
 
+  /// Whether development is currently in progress.
+  bool get isDevelopmentInProgress => _isDevelopmentInProgress;
+
+  /// The current application being developed.
+  UserApplication? get currentApplication => _currentApplication;
+
+  /// Current development progress percentage (0-100).
+  double get developmentProgress => _currentApplication?.progress?.percentage ?? 0.0;
+
   /// Starts a new conversation for creating an application.
   ///
   /// Creates a new conversation thread and adds the initial welcome message.
@@ -82,6 +108,9 @@ class ConversationService extends ChangeNotifier {
     // Add a default message to the conversation.
     final ConversationMessage welcomeMessage = _createWelcomeMessage(conversationId: _currentConversation!.id);
     _currentConversation = _currentConversation!.addMessage(welcomeMessage);
+
+    // Start monitoring application progress for development statements
+    _startProgressMonitoring();
 
     // After Kiro is open and the conversation is set up, processing is complete.
     _isProcessing = false;
@@ -187,6 +216,9 @@ class ConversationService extends ChangeNotifier {
     // Add spec guiding instructions to the user message.
     messageContent += DefaultMessages.getSpecGuidanceInstructions();
 
+    // Add app architecture guiding instructions to the user message.
+    messageContent += DefaultMessages.getAppTypeGuidanceInstructions();
+
     // Add user message to the current conversation. The system guidance information
     // is not included in this message since it will be displayed in the frontend
     // user interface.
@@ -243,6 +275,9 @@ class ConversationService extends ChangeNotifier {
   Future<void> cancelConversation() async {
     if (!canCancel) return;
 
+    // Stop monitoring application progress
+    _stopProgressMonitoring();
+
     // Clean up the current conversation.
     _currentConversation = _currentConversation!.updateStatus(ConversationStatus.cancelled);
     _currentConversation = null;
@@ -252,5 +287,74 @@ class ConversationService extends ChangeNotifier {
     await _kiroService.closeKiro();
 
     notifyListeners();
+  }
+
+  /// Starts monitoring application progress to inject development statements as messages.
+  ///
+  /// Watches for changes in application manifests and adds development statements
+  /// as system messages when they are updated.
+  void _startProgressMonitoring() {
+    _applicationSubscription = _userApplicationService.watchApplications().listen(
+      _handleApplicationUpdates,
+    );
+  }
+
+  /// Stops monitoring application progress.
+  ///
+  /// Cancels the subscription to application updates to prevent memory leaks
+  /// and unnecessary processing when the conversation is no longer active.
+  void _stopProgressMonitoring() {
+    _applicationSubscription?.cancel();
+    _applicationSubscription = null;
+    _lastDevelopmentStatement = null;
+  }
+
+  /// Handles application updates and injects development statements as messages.
+  ///
+  /// Checks for new development statements in application progress and adds them
+  /// as system messages to the current conversation.
+  void _handleApplicationUpdates(List<UserApplication> applications) {
+    if (_currentConversation == null) return;
+
+    // Look for applications that might be related to this conversation
+    // For now, we'll monitor the most recently updated application
+    if (applications.isNotEmpty) {
+      final UserApplication mostRecent = applications.first;
+      _currentApplication = mostRecent;
+
+      final String? developmentStatement = mostRecent.progress?.developmentStatement;
+      final double progressPercentage = mostRecent.progress?.percentage ?? 0.0;
+
+      // Update development status based on progress
+      _isDevelopmentInProgress = progressPercentage < 100.0;
+
+      // Check if there's a new development statement
+      if (developmentStatement != null &&
+          developmentStatement.isNotEmpty &&
+          developmentStatement != _lastDevelopmentStatement) {
+        // Create a system message with the development statement
+        final ConversationMessage progressMessage = ConversationMessage(
+          id: 'msg_progress_${DateTime.now().millisecondsSinceEpoch}',
+          sender: MessageSender.system,
+          content: developmentStatement,
+          timestamp: DateTime.now(),
+        );
+
+        // Add the message to the conversation
+        _currentConversation = _currentConversation!.addMessage(progressMessage);
+        _lastDevelopmentStatement = developmentStatement;
+
+        notifyListeners();
+      } else {
+        // Still notify listeners for progress updates even without new statements
+        notifyListeners();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _stopProgressMonitoring();
+    super.dispose();
   }
 }

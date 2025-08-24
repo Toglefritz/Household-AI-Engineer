@@ -102,6 +102,10 @@
           "type": "string",
           "description": "Human-readable label for the current development phase."
         },
+        "developmentStatement": {
+          "type": "string",
+          "description": "User-friendly message about the current development phase, formatted as a chat message from Kiro IDE to the user."
+        },
         "lastUpdated": {
           "type": "string",
           "format": "date-time",
