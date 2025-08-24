@@ -18,7 +18,8 @@ class DefaultMessages {
     return ConversationMessage(
       id: messageId,
       sender: MessageSender.system,
-      content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
+      content:
+          "Hi! I'll help you create a custom application for your household. What would you like to build?",
       timestamp: DateTime.now(),
       actions: [
         const MessageAction(
@@ -48,7 +49,8 @@ class DefaultMessages {
     return ConversationMessage(
       id: messageId,
       sender: MessageSender.system,
-      content: 'I can help you modify your $applicationName application. What changes would you like to make?',
+      content:
+          'I can help you modify your $applicationName application. What changes would you like to make?',
       timestamp: DateTime.now(),
       actions: [
         const MessageAction(

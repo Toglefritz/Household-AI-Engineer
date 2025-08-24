@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 /// Provides [ThemeData] for the application.
 class AppTheme {
   // ===== Brand & Neutrals =====
-  static const Color _brandAccent = Color(0xFFFF8A00); // notification dot / accent
+  static const Color _brandAccent = Color(
+    0xFFFF8A00,
+  ); // notification dot / accent
   static const Color _lightBg = Color(0xFFF3F4F6); // subtle gray background
   static const Color _lightSurface = Colors.white; // cards / surfaces
   static const Color _lightOnBg = Color(0xFF111111); // primary text on light
@@ -96,7 +98,9 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
-        overlayColor: WidgetStateProperty.all<Color>(_lightOnBg.withValues(alpha: 0.06)),
+        overlayColor: WidgetStateProperty.all<Color>(
+          _lightOnBg.withValues(alpha: 0.06),
+        ),
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -191,7 +195,9 @@ class AppTheme {
         textStyle: WidgetStateProperty.all<TextStyle>(
           const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
-        overlayColor: WidgetStateProperty.all<Color>(_darkOnBg.withValues(alpha: 0.08)),
+        overlayColor: WidgetStateProperty.all<Color>(
+          _darkOnBg.withValues(alpha: 0.08),
+        ),
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(

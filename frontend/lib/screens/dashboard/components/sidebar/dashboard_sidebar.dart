@@ -106,7 +106,8 @@ class DashboardSidebar extends StatefulWidget {
 ///
 /// Coordinates content transitions and width animations to prevent overflow
 /// errors and text wrapping during sidebar state changes.
-class _DashboardSidebarState extends State<DashboardSidebar> with TickerProviderStateMixin {
+class _DashboardSidebarState extends State<DashboardSidebar>
+    with TickerProviderStateMixin {
   /// Width of the sidebar when expanded to show full content.
   ///
   /// Provides enough space for navigation labels, search bar, and category listings while maintaining proper proportions.
@@ -120,7 +121,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
   /// Duration for content transition (stage 1).
   ///
   /// Content elements fade between expanded and collapsed states during this period.
-  static const Duration _contentTransitionDuration = Duration(milliseconds: 100);
+  static const Duration _contentTransitionDuration = Duration(
+    milliseconds: 100,
+  );
 
   /// Duration for width transition (stage 2).
   ///
@@ -181,7 +184,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
     // Listen to width animation to update current width
     _widthController.addListener(() {
       setState(() {
-        _currentWidth = _collapsedWidth + (_expandedWidth - _collapsedWidth) * _widthController.value;
+        _currentWidth =
+            _collapsedWidth +
+            (_expandedWidth - _collapsedWidth) * _widthController.value;
       });
     });
   }
@@ -257,7 +262,8 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
             child: SidebarNavigationContent(
               showExpandedContent: _showExpandedContent,
               applications: widget.applications,
-              openNewApplicationConversation: widget.openNewApplicationConversation,
+              openNewApplicationConversation:
+                  widget.openNewApplicationConversation,
             ),
           ),
         ],

@@ -159,7 +159,9 @@ void main() {
       /// property values.
       test('should not be equal when labels differ', () {
         final CategoryData category1 = createTestCategory();
-        final CategoryData category2 = category1.copyWith(label: 'Different Label');
+        final CategoryData category2 = category1.copyWith(
+          label: 'Different Label',
+        );
 
         expect(category1, isNot(equals(category2)));
         expect(category1.hashCode, isNot(equals(category2.hashCode)));
@@ -220,17 +222,20 @@ void main() {
       ///
       /// Should adapt the string representation based on the actual
       /// property values of the instance.
-      test('should handle different property values in string representation', () {
-        const CategoryData category = CategoryData(
-          icon: Icons.star,
-          label: 'Special Category',
-          count: 99,
-        );
-        final String stringRepresentation = category.toString();
+      test(
+        'should handle different property values in string representation',
+        () {
+          const CategoryData category = CategoryData(
+            icon: Icons.star,
+            label: 'Special Category',
+            count: 99,
+          );
+          final String stringRepresentation = category.toString();
 
-        expect(stringRepresentation, contains('Special Category'));
-        expect(stringRepresentation, contains('99'));
-      });
+          expect(stringRepresentation, contains('Special Category'));
+          expect(stringRepresentation, contains('99'));
+        },
+      );
     });
   });
 }

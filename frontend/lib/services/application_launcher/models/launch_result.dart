@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../user_application/models/user_application.dart';
 import 'application_process.dart';
 
@@ -6,6 +8,7 @@ import 'application_process.dart';
 /// This class provides structured information about the outcome of launching
 /// an application, including success/failure status, process information,
 /// and error details for failed launches.
+@immutable
 class LaunchResult {
   /// Creates a new launch result.
   ///
@@ -19,13 +22,13 @@ class LaunchResult {
   /// @param timestamp When this result was created
   const LaunchResult({
     required this.success,
+    required this.timestamp,
     this.application,
     this.applicationId,
     this.process,
     this.message,
     this.error,
     this.errorCode,
-    required this.timestamp,
   });
 
   /// Whether the launch operation was successful.
@@ -85,7 +88,8 @@ class LaunchResult {
   ///
   /// Provides a consistent way to get a display name for the application
   /// involved in this launch operation.
-  String? get effectiveApplicationTitle => application?.title ?? process?.applicationTitle;
+  String? get effectiveApplicationTitle =>
+      application?.title ?? process?.applicationTitle;
 
   /// Creates a successful launch result.
   ///
@@ -116,9 +120,9 @@ class LaunchResult {
   /// @param errorCode Machine-readable error code
   /// @returns LaunchResult indicating launch failure
   factory LaunchResult.failure({
+    required String error,
     UserApplication? application,
     String? applicationId,
-    required String error,
     String? errorCode,
   }) {
     return LaunchResult(
@@ -190,10 +194,14 @@ class LaunchResult {
     return LaunchResult(
       success: json['success'] as bool,
       application: json['application'] != null
-          ? UserApplication.fromJson(json['application'] as Map<String, dynamic>)
+          ? UserApplication.fromJson(
+              json['application'] as Map<String, dynamic>,
+            )
           : null,
       applicationId: json['applicationId'] as String?,
-      process: json['process'] != null ? ApplicationProcess.fromJson(json['process'] as Map<String, dynamic>) : null,
+      process: json['process'] != null
+          ? ApplicationProcess.fromJson(json['process'] as Map<String, dynamic>)
+          : null,
       message: json['message'] as String?,
       error: json['error'] as String?,
       errorCode: json['errorCode'] as String?,
@@ -205,7 +213,8 @@ class LaunchResult {
   ///
   /// Provides human-readable information suitable for logging or display.
   String get description {
-    final String appName = effectiveApplicationTitle ?? effectiveApplicationId ?? 'Unknown';
+    final String appName =
+        effectiveApplicationTitle ?? effectiveApplicationId ?? 'Unknown';
 
     if (success) {
       return message ?? 'Successfully launched $appName';

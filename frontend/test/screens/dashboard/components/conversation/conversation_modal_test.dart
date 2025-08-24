@@ -33,7 +33,9 @@ void main() {
     });
 
     group('rendering', () {
-      testWidgets('displays create application modal correctly', (WidgetTester tester) async {
+      testWidgets('displays create application modal correctly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const ConversationModal(),
@@ -41,11 +43,16 @@ void main() {
         );
 
         expect(find.text('Create New Application'), findsOneWidget);
-        expect(find.text('Describe what you need and I\'ll help you build it'), findsOneWidget);
+        expect(
+          find.text('Describe what you need and I\'ll help you build it'),
+          findsOneWidget,
+        );
         expect(find.byIcon(Icons.close), findsOneWidget);
       });
 
-      testWidgets('displays modify application modal correctly', (WidgetTester tester) async {
+      testWidgets('displays modify application modal correctly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ConversationModal(
@@ -58,7 +65,9 @@ void main() {
         expect(find.byIcon(Icons.edit), findsOneWidget);
       });
 
-      testWidgets('displays conversation messages', (WidgetTester tester) async {
+      testWidgets('displays conversation messages', (
+        WidgetTester tester,
+      ) async {
         final ConversationThread sampleConversation = _createTestConversation();
 
         await tester.pumpWidget(
@@ -70,7 +79,10 @@ void main() {
         );
 
         // Should display the welcome message
-        expect(find.textContaining('Hi! I\'ll help you create'), findsOneWidget);
+        expect(
+          find.textContaining('Hi! I\'ll help you create'),
+          findsOneWidget,
+        );
 
         // Should display suggestion chips
         expect(find.text('Chore Tracker'), findsOneWidget);
@@ -91,7 +103,9 @@ void main() {
     });
 
     group('interactions', () {
-      testWidgets('closes modal when close button is tapped', (WidgetTester tester) async {
+      testWidgets('closes modal when close button is tapped', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: Builder(
@@ -100,7 +114,8 @@ void main() {
                   onPressed: () {
                     showDialog<void>(
                       context: context,
-                      builder: (BuildContext context) => const ConversationModal(),
+                      builder: (BuildContext context) =>
+                          const ConversationModal(),
                     );
                   },
                   child: const Text('Open Modal'),
@@ -142,7 +157,10 @@ void main() {
 
         // Verify the text field contains the entered text
         final TextField textFieldWidget = tester.widget<TextField>(textField);
-        expect(textFieldWidget.controller?.text, equals('I need a chore tracker'));
+        expect(
+          textFieldWidget.controller?.text,
+          equals('I need a chore tracker'),
+        );
       });
 
       testWidgets('handles suggestion chip taps', (WidgetTester tester) async {
@@ -170,7 +188,9 @@ void main() {
     });
 
     group('conversation flow', () {
-      testWidgets('shows typing indicator when processing', (WidgetTester tester) async {
+      testWidgets('shows typing indicator when processing', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const ConversationModal(),
@@ -193,7 +213,9 @@ void main() {
         }
       });
 
-      testWidgets('displays different conversation types correctly', (WidgetTester tester) async {
+      testWidgets('displays different conversation types correctly', (
+        WidgetTester tester,
+      ) async {
         // Test create conversation
         await tester.pumpWidget(
           createTestApp(
@@ -264,7 +286,8 @@ ConversationThread _createTestConversation() {
       ConversationMessage(
         id: 'msg_001',
         sender: MessageSender.system,
-        content: "Hi! I'll help you create a custom application for your household. What would you like to build?",
+        content:
+            "Hi! I'll help you create a custom application for your household. What would you like to build?",
         timestamp: now.subtract(const Duration(minutes: 2)),
         actions: [
           const MessageAction(

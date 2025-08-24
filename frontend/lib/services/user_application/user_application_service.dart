@@ -40,12 +40,14 @@ class UserApplicationService {
   Future<List<UserApplication>> _loadApplications() async {
     try {
       // Load local manifest files for deployed applications
-      final List<UserApplication> localApplications = await _loadLocalApplications();
+      final List<UserApplication> localApplications =
+          await _loadLocalApplications();
 
       final List<UserApplication> applications = localApplications
         // Sort newest updated first for a pleasant dashboard experience
         ..sort(
-          (UserApplication a, UserApplication b) => b.updatedAt.compareTo(a.updatedAt),
+          (UserApplication a, UserApplication b) =>
+              b.updatedAt.compareTo(a.updatedAt),
         );
 
       // Return the sorted list of applications.
@@ -110,7 +112,9 @@ class UserApplicationService {
     // Resolve the base apps/ directory.
     final Directory appsDirectory = await AppConfig.appsDirectory;
 
-    debugPrint('Getting user applications from directory, ${appsDirectory.path}');
+    debugPrint(
+      'Getting user applications from directory, ${appsDirectory.path}',
+    );
 
     // Check that the directory exists.
     final bool exists = appsDirectory.existsSync();
@@ -122,7 +126,9 @@ class UserApplicationService {
     final List<UserApplication> applications = <UserApplication>[];
 
     // Iterate through each subdirectory in the apps directory
-    final List<FileSystemEntity> entries = appsDirectory.listSync(followLinks: false);
+    final List<FileSystemEntity> entries = appsDirectory.listSync(
+      followLinks: false,
+    );
     debugPrint('Found ${entries.length} entries in apps directory');
 
     for (final FileSystemEntity entity in entries) {
@@ -213,7 +219,8 @@ class UserApplicationService {
     debugPrint('File system event: ${event.type} at $path');
 
     // Always trigger for directory changes (app creation/deletion)
-    if (event.type == FileSystemEvent.create || event.type == FileSystemEvent.delete) {
+    if (event.type == FileSystemEvent.create ||
+        event.type == FileSystemEvent.delete) {
       debugPrint('Triggering update for directory change: $path');
 
       return true;
@@ -227,7 +234,9 @@ class UserApplicationService {
 
     // Trigger for any changes within application directories
     // This catches cases where files are moved or renamed
-    if (path.contains('/') && !path.endsWith('.tmp') && !path.contains('.DS_Store')) {
+    if (path.contains('/') &&
+        !path.endsWith('.tmp') &&
+        !path.contains('.DS_Store')) {
       debugPrint('Triggering update for file change in app directory: $path');
 
       return true;
@@ -253,7 +262,8 @@ class UserApplicationService {
     try {
       // Read the manifest JSON file
       final String contents = await file.readAsString();
-      final Map<String, dynamic> jsonMap = json.decode(contents) as Map<String, dynamic>;
+      final Map<String, dynamic> jsonMap =
+          json.decode(contents) as Map<String, dynamic>;
 
       // Convert the JSON to a UserApplication object
       final UserApplication app = UserApplication.fromJson(jsonMap);
@@ -351,14 +361,18 @@ class UserApplicationService {
     debugPrint('Launching application: $applicationId');
 
     // Get the application to launch
-    final UserApplication? application = await getApplicationById(applicationId);
+    final UserApplication? application = await getApplicationById(
+      applicationId,
+    );
     if (application == null) {
       throw Exception('Application not found: $applicationId');
     }
 
     // Validate application can be launched
     if (!application.canLaunch) {
-      throw Exception('Application cannot be launched in current state: ${application.status.name}');
+      throw Exception(
+        'Application cannot be launched in current state: ${application.status.name}',
+      );
     }
 
     // For now, we'll simulate launching by updating the status to running
@@ -382,7 +396,9 @@ class UserApplicationService {
   Future<UserApplication?> getApplicationById(String applicationId) async {
     final List<UserApplication> applications = await _loadApplications();
     try {
-      return applications.firstWhere((UserApplication app) => app.id == applicationId);
+      return applications.firstWhere(
+        (UserApplication app) => app.id == applicationId,
+      );
     } catch (e) {
       // No application found with the given ID
       return null;

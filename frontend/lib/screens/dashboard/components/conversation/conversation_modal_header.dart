@@ -4,7 +4,9 @@ part of 'conversation_modal.dart';
 class ConversationModalHeader extends StatelessWidget {
   /// Creates an instance of [ConversationModalHeader].
   const ConversationModalHeader({
-    required this.applicationToModify, required this.onClose, super.key,
+    required this.applicationToModify,
+    required this.onClose,
+    super.key,
   });
 
   /// The user application to modify.
@@ -19,8 +21,9 @@ class ConversationModalHeader extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     final String title = applicationToModify != null
-        ? AppLocalizations.of(context)!
-        .modifyApplication(applicationToModify!.title)
+        ? AppLocalizations.of(
+            context,
+          )!.modifyApplication(applicationToModify!.title)
         : AppLocalizations.of(context)!.createNewApplication;
 
     return Container(
@@ -67,8 +70,7 @@ class ConversationModalHeader extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  AppLocalizations.of(context)!
-                      .applicationCreationDescription,
+                  AppLocalizations.of(context)!.applicationCreationDescription,
                   style: textTheme.bodySmall?.copyWith(
                     color: colorScheme.tertiary,
                   ),

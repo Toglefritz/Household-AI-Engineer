@@ -29,7 +29,7 @@ class NavigationItemData {
 
   /// Whether this navigation item is currently selected.
   ///
-  /// Selected items are highlighted with different colors and styling to indicate the current location or active 
+  /// Selected items are highlighted with different colors and styling to indicate the current location or active
   /// filter.
   final bool isSelected;
 

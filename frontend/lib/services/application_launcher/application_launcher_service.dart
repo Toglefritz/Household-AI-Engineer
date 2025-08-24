@@ -46,7 +46,8 @@ class ApplicationLauncherService {
   ///
   /// Emits launch results and status updates for UI components
   /// to display appropriate feedback and update application states.
-  final StreamController<LaunchResult> _launchEventsController = StreamController<LaunchResult>.broadcast();
+  final StreamController<LaunchResult> _launchEventsController =
+      StreamController<LaunchResult>.broadcast();
 
   /// Timer for periodic health checks of running applications.
   ///
@@ -72,7 +73,8 @@ class ApplicationLauncherService {
   ///
   /// Provides information about active applications including process IDs,
   /// launch times, health status, and resource usage information.
-  List<ApplicationProcess> get runningProcesses => List.unmodifiable(_runningProcesses.values);
+  List<ApplicationProcess> get runningProcesses =>
+      List.unmodifiable(_runningProcesses.values);
 
   /// Launches the specified application with optional configuration.
   ///
@@ -94,7 +96,9 @@ class ApplicationLauncherService {
     UserApplication application, {
     ApplicationLaunchConfig? config,
   }) async {
-    debugPrint('Launching application: ${application.title} (${application.id})');
+    debugPrint(
+      'Launching application: ${application.title} (${application.id})',
+    );
 
     try {
       // Validate application can be launched
@@ -107,8 +111,11 @@ class ApplicationLauncherService {
 
       // Check if application is already running
       if (_runningProcesses.containsKey(application.id)) {
-        debugPrint('Application already running, bringing to foreground: ${application.title}');
-        final ApplicationProcess existingProcess = _runningProcesses[application.id]!;
+        debugPrint(
+          'Application already running, bringing to foreground: ${application.title}',
+        );
+        final ApplicationProcess existingProcess =
+            _runningProcesses[application.id]!;
         await _bringToForeground(existingProcess);
 
         final LaunchResult result = LaunchResult.success(
@@ -121,7 +128,8 @@ class ApplicationLauncherService {
       }
 
       // Load or create launch configuration
-      final ApplicationLaunchConfig launchConfig = config ?? await _loadLaunchConfiguration(application);
+      final ApplicationLaunchConfig launchConfig =
+          config ?? await _loadLaunchConfiguration(application);
 
       // Restore previous window state
       final WindowState? windowState = await _loadWindowState(application.id);
@@ -223,7 +231,7 @@ class ApplicationLauncherService {
       await stopApplication(application.id);
 
       // Wait a moment for cleanup to complete
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
     }
 
     // Launch a new instance
@@ -257,10 +265,12 @@ class ApplicationLauncherService {
       return;
     }
 
-    debugPrint('Performing health checks on ${_runningProcesses.length} running applications');
+    debugPrint(
+      'Performing health checks on ${_runningProcesses.length} running applications',
+    );
 
     final List<Future<void>> healthCheckFutures = _runningProcesses.values
-        .map((ApplicationProcess process) => _performHealthCheck(process))
+        .map(_performHealthCheck)
         .toList();
 
     await Future.wait(healthCheckFutures);
@@ -278,7 +288,9 @@ class ApplicationLauncherService {
       final Directory appsDirectory = await _getAppsDirectory();
 
       // Look for the application directory
-      final List<FileSystemEntity> entries = appsDirectory.listSync(followLinks: false);
+      final List<FileSystemEntity> entries = appsDirectory.listSync(
+        followLinks: false,
+      );
 
       String? applicationPath;
       for (final FileSystemEntity entity in entries) {
@@ -288,7 +300,8 @@ class ApplicationLauncherService {
           if (manifestFile.existsSync()) {
             try {
               final String manifestContent = await manifestFile.readAsString();
-              final Map<String, dynamic> manifest = json.decode(manifestContent) as Map<String, dynamic>;
+              final Map<String, dynamic> manifest =
+                  json.decode(manifestContent) as Map<String, dynamic>;
 
               if (manifest['id'] == application.id) {
                 applicationPath = entity.path;
@@ -327,15 +340,12 @@ class ApplicationLauncherService {
         applicationType: ApplicationType.web,
         url: fileUrl,
         windowTitle: application.title,
-        initialWidth: 1200,
-        initialHeight: 800,
-        resizable: true,
         showNavigationControls: false, // Disable navigation for local files
-        enableJavaScript: true,
-        enableLocalStorage: true,
       );
     } catch (e) {
-      debugPrint('Failed to load launch configuration for ${application.id}: $e');
+      debugPrint(
+        'Failed to load launch configuration for ${application.id}: $e',
+      );
       rethrow;
     }
   }
@@ -358,12 +368,15 @@ class ApplicationLauncherService {
   /// information from shared preferences for restoration.
   Future<WindowState?> _loadWindowState(String applicationId) async {
     try {
-      final String? stateJson = _preferences.getString('window_state_$applicationId');
+      final String? stateJson = _preferences.getString(
+        'window_state_$applicationId',
+      );
       if (stateJson == null) {
         return null;
       }
 
-      final Map<String, dynamic> stateMap = json.decode(stateJson) as Map<String, dynamic>;
+      final Map<String, dynamic> stateMap =
+          json.decode(stateJson) as Map<String, dynamic>;
       return WindowState.fromJson(stateMap);
     } catch (e) {
       debugPrint('Failed to load window state for $applicationId: $e');
@@ -379,11 +392,16 @@ class ApplicationLauncherService {
     try {
       if (process.windowState != null) {
         final String stateJson = json.encode(process.windowState!.toJson());
-        await _preferences.setString('window_state_${process.applicationId}', stateJson);
+        await _preferences.setString(
+          'window_state_${process.applicationId}',
+          stateJson,
+        );
         debugPrint('Saved window state for ${process.applicationId}');
       }
     } catch (e) {
-      debugPrint('Failed to save window state for ${process.applicationId}: $e');
+      debugPrint(
+        'Failed to save window state for ${process.applicationId}: $e',
+      );
     }
   }
 
@@ -397,9 +415,8 @@ class ApplicationLauncherService {
     switch (process.launchConfig.applicationType) {
       case ApplicationType.web:
         await _startWebApplication(process);
-        break;
       case ApplicationType.desktop:
-        throw LaunchException(
+        throw const LaunchException(
           'Desktop applications are not yet supported',
           'UNSUPPORTED_TYPE',
         );
@@ -421,7 +438,9 @@ class ApplicationLauncherService {
 
     // Web applications are handled by the WebView widget in the UI
     // The actual WebView creation happens in the UI layer
-    debugPrint('Web application validated and ready: ${process.applicationTitle}');
+    debugPrint(
+      'Web application validated and ready: ${process.applicationTitle}',
+    );
   }
 
   /// Validates that the application URL is accessible.
@@ -497,13 +516,17 @@ class ApplicationLauncherService {
   ///
   /// Makes the application window active and visible to the user.
   Future<void> _bringToForeground(ApplicationProcess process) async {
-    debugPrint('Bringing application to foreground: ${process.applicationTitle}');
+    debugPrint(
+      'Bringing application to foreground: ${process.applicationTitle}',
+    );
 
     // Update last accessed time
     process.updateLastAccessed();
 
     // For web applications, window management happens in the UI layer
-    debugPrint('Application brought to foreground: ${process.applicationTitle}');
+    debugPrint(
+      'Application brought to foreground: ${process.applicationTitle}',
+    );
   }
 
   /// Performs a health check on the specified application process.
@@ -563,7 +586,7 @@ class ApplicationLauncherService {
 
     // Stop all running applications
     final List<Future<void>> stopFutures = _runningProcesses.keys
-        .map((String applicationId) => stopApplication(applicationId))
+        .map(stopApplication)
         .toList();
     await Future.wait(stopFutures);
 

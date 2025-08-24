@@ -18,8 +18,8 @@ class ApplicationProcess {
     required this.applicationId,
     required this.applicationTitle,
     required this.launchConfig,
-    this.windowState,
     required this.launchedAt,
+    this.windowState,
   }) : _status = ProcessStatus.starting,
        _lastHealthCheck = DateTime.now(),
        _lastAccessed = DateTime.now();
@@ -87,7 +87,8 @@ class ApplicationProcess {
   Duration get uptime => DateTime.now().difference(launchedAt);
 
   /// Duration since the last health check was performed.
-  Duration get timeSinceLastHealthCheck => DateTime.now().difference(_lastHealthCheck);
+  Duration get timeSinceLastHealthCheck =>
+      DateTime.now().difference(_lastHealthCheck);
 
   /// Duration since this application was last accessed by the user.
   Duration get timeSinceLastAccess => DateTime.now().difference(_lastAccessed);
@@ -96,7 +97,8 @@ class ApplicationProcess {
   bool get isRunning => _status == ProcessStatus.running;
 
   /// Returns true if this process is in a terminal state.
-  bool get isTerminated => _status == ProcessStatus.stopped || _status == ProcessStatus.crashed;
+  bool get isTerminated =>
+      _status == ProcessStatus.stopped || _status == ProcessStatus.crashed;
 
   /// Marks this process as running.
   ///
@@ -155,6 +157,7 @@ class ApplicationProcess {
   /// modified to preserve state for future restoration.
   ///
   /// @param newWindowState Updated window state information
+  // ignore: use_setters_to_change_properties
   void updateWindowState(WindowState newWindowState) {
     windowState = newWindowState;
   }
@@ -181,27 +184,29 @@ class ApplicationProcess {
   ///
   /// Parses JSON representation and creates a properly typed process object.
   factory ApplicationProcess.fromJson(Map<String, dynamic> json) {
-    final ApplicationProcess process = ApplicationProcess(
-      applicationId: json['applicationId'] as String,
-      applicationTitle: json['applicationTitle'] as String,
-      launchConfig: ApplicationLaunchConfig.fromJson(
-        json['launchConfig'] as Map<String, dynamic>,
-      ),
-      windowState: json['windowState'] != null
-          ? WindowState.fromJson(json['windowState'] as Map<String, dynamic>)
-          : null,
-      launchedAt: DateTime.parse(json['launchedAt'] as String),
-    );
-
-    // Restore internal state
-    process._status = ProcessStatus.values.firstWhere(
-      (ProcessStatus status) => status.name == json['status'],
-      orElse: () => ProcessStatus.starting,
-    );
-    process._lastHealthCheck = DateTime.parse(json['lastHealthCheck'] as String);
-    process._lastAccessed = DateTime.parse(json['lastAccessed'] as String);
-    process._isHealthy = json['isHealthy'] as bool? ?? true;
-    process._healthCheckError = json['healthCheckError'] as String?;
+    final ApplicationProcess process =
+        ApplicationProcess(
+            applicationId: json['applicationId'] as String,
+            applicationTitle: json['applicationTitle'] as String,
+            launchConfig: ApplicationLaunchConfig.fromJson(
+              json['launchConfig'] as Map<String, dynamic>,
+            ),
+            windowState: json['windowState'] != null
+                ? WindowState.fromJson(
+                    json['windowState'] as Map<String, dynamic>,
+                  )
+                : null,
+            launchedAt: DateTime.parse(json['launchedAt'] as String),
+          )
+          // Restore internal state
+          .._status = ProcessStatus.values.firstWhere(
+            (ProcessStatus status) => status.name == json['status'],
+            orElse: () => ProcessStatus.starting,
+          )
+          .._lastHealthCheck = DateTime.parse(json['lastHealthCheck'] as String)
+          .._lastAccessed = DateTime.parse(json['lastAccessed'] as String)
+          .._isHealthy = json['isHealthy'] as bool? ?? true
+          .._healthCheckError = json['healthCheckError'] as String?;
 
     return process;
   }

@@ -73,7 +73,10 @@ class ConversationMessage {
       timestamp: DateTime.parse(json['timestamp'] as String),
       actions:
           (json['actions'] as List<dynamic>?)
-              ?.map((dynamic action) => MessageAction.fromJson(action as Map<String, dynamic>))
+              ?.map(
+                (dynamic action) =>
+                    MessageAction.fromJson(action as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       isTyping: json['isTyping'] as bool? ?? false,
@@ -89,7 +92,9 @@ class ConversationMessage {
       'sender': sender.name,
       'content': content,
       'timestamp': timestamp.toIso8601String(),
-      'actions': actions.map((MessageAction action) => action.toJson()).toList(),
+      'actions': actions
+          .map((MessageAction action) => action.toJson())
+          .toList(),
       'isTyping': isTyping,
     };
   }

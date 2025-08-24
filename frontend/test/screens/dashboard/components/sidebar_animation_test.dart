@@ -31,7 +31,9 @@ void main() {
       ///
       /// Should include AnimatedSwitcher widget to provide smooth transitions
       /// between expanded and collapsed states.
-      testWidgets('should use AnimatedSwitcher for smooth transitions', (WidgetTester tester) async {
+      testWidgets('should use AnimatedSwitcher for smooth transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: true),
@@ -45,7 +47,9 @@ void main() {
       ///
       /// Should use 250ms duration to match the sidebar expansion animation
       /// for consistent timing across all transitions.
-      testWidgets('should have correct animation duration', (WidgetTester tester) async {
+      testWidgets('should have correct animation duration', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: true),
@@ -62,7 +66,9 @@ void main() {
       ///
       /// Should animate between expanded and collapsed states without
       /// jarring jumps or visual artifacts.
-      testWidgets('should transition smoothly between states', (WidgetTester tester) async {
+      testWidgets('should transition smoothly between states', (
+        WidgetTester tester,
+      ) async {
         Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
@@ -86,7 +92,9 @@ void main() {
       ///
       /// Should handle multiple quick state changes without errors
       /// or animation conflicts.
-      testWidgets('should handle rapid state changes gracefully', (WidgetTester tester) async {
+      testWidgets('should handle rapid state changes gracefully', (
+        WidgetTester tester,
+      ) async {
         Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
@@ -116,7 +124,9 @@ void main() {
       ///
       /// Should include AnimatedSwitcher widget to provide smooth transitions
       /// between expanded and collapsed presentations.
-      testWidgets('should use AnimatedSwitcher for smooth transitions', (WidgetTester tester) async {
+      testWidgets('should use AnimatedSwitcher for smooth transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoryItem(
@@ -135,7 +145,9 @@ void main() {
       ///
       /// Should use 250ms duration to match other sidebar animations
       /// for consistent timing.
-      testWidgets('should have correct animation duration', (WidgetTester tester) async {
+      testWidgets('should have correct animation duration', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoryItem(
@@ -157,7 +169,9 @@ void main() {
       ///
       /// Should animate between expanded (icon + label + count) and
       /// collapsed (icon only) states smoothly.
-      testWidgets('should transition smoothly between states', (WidgetTester tester) async {
+      testWidgets('should transition smoothly between states', (
+        WidgetTester tester,
+      ) async {
         Widget buildCategoryItem({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoryItem(
@@ -188,7 +202,9 @@ void main() {
       ///
       /// Should keep the same height throughout the transition to prevent
       /// layout shifts in the sidebar.
-      testWidgets('should maintain consistent height during animation', (WidgetTester tester) async {
+      testWidgets('should maintain consistent height during animation', (
+        WidgetTester tester,
+      ) async {
         Widget buildCategoryItem({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoryItem(
@@ -202,13 +218,17 @@ void main() {
 
         // Start with expanded state
         await tester.pumpWidget(buildCategoryItem(expanded: true));
-        final RenderBox expandedBox = tester.renderObject(find.byType(SidebarCategoryItem));
+        final RenderBox expandedBox = tester.renderObject(
+          find.byType(SidebarCategoryItem),
+        );
         final double expandedHeight = expandedBox.size.height;
 
         // Change to collapsed state
         await tester.pumpWidget(buildCategoryItem(expanded: false));
         await tester.pumpAndSettle();
-        final RenderBox collapsedBox = tester.renderObject(find.byType(SidebarCategoryItem));
+        final RenderBox collapsedBox = tester.renderObject(
+          find.byType(SidebarCategoryItem),
+        );
         final double collapsedHeight = collapsedBox.size.height;
 
         expect(expandedHeight, equals(collapsedHeight));
@@ -220,7 +240,9 @@ void main() {
       ///
       /// Should include AnimatedSwitcher for smooth transitions between
       /// header text and empty spacing.
-      testWidgets('should use AnimatedSwitcher for header transitions', (WidgetTester tester) async {
+      testWidgets('should use AnimatedSwitcher for header transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoriesSection(showExpandedContent: true),
@@ -234,7 +256,9 @@ void main() {
       ///
       /// Should animate the header appearance/disappearance while
       /// maintaining consistent spacing.
-      testWidgets('should transition header smoothly between states', (WidgetTester tester) async {
+      testWidgets('should transition header smoothly between states', (
+        WidgetTester tester,
+      ) async {
         Widget buildCategoriesSection({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoriesSection(showExpandedContent: expanded),
@@ -257,7 +281,9 @@ void main() {
       ///
       /// Should keep the same overall structure and spacing even when
       /// individual category items are animating.
-      testWidgets('should maintain layout during category item animations', (WidgetTester tester) async {
+      testWidgets('should maintain layout during category item animations', (
+        WidgetTester tester,
+      ) async {
         Widget buildCategoriesSection({required bool expanded}) {
           return createTestApp(
             child: SidebarCategoriesSection(showExpandedContent: expanded),
@@ -266,13 +292,17 @@ void main() {
 
         // Start with expanded state
         await tester.pumpWidget(buildCategoriesSection(expanded: true));
-        final RenderBox expandedBox = tester.renderObject(find.byType(SidebarCategoriesSection));
+        final RenderBox expandedBox = tester.renderObject(
+          find.byType(SidebarCategoriesSection),
+        );
         final double expandedHeight = expandedBox.size.height;
 
         // Change to collapsed state
         await tester.pumpWidget(buildCategoriesSection(expanded: false));
         await tester.pumpAndSettle();
-        final RenderBox collapsedBox = tester.renderObject(find.byType(SidebarCategoriesSection));
+        final RenderBox collapsedBox = tester.renderObject(
+          find.byType(SidebarCategoriesSection),
+        );
         final double collapsedHeight = collapsedBox.size.height;
 
         // Height should remain consistent (or very close due to text vs spacing)
@@ -285,7 +315,9 @@ void main() {
       ///
       /// Should use fade transitions rather than slide or scale transitions
       /// for better performance and visual appeal.
-      testWidgets('should use FadeTransition for smooth visual effects', (WidgetTester tester) async {
+      testWidgets('should use FadeTransition for smooth visual effects', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: true),
@@ -298,8 +330,13 @@ void main() {
 
         // Test the transition builder
         final Widget testChild = Container();
-        const Animation<double> testAnimation = AlwaysStoppedAnimation<double>(1.0);
-        final Widget result = switcher.transitionBuilder(testChild, testAnimation);
+        const Animation<double> testAnimation = AlwaysStoppedAnimation<double>(
+          1.0,
+        );
+        final Widget result = switcher.transitionBuilder(
+          testChild,
+          testAnimation,
+        );
 
         expect(result, isA<FadeTransition>());
       });
@@ -308,7 +345,9 @@ void main() {
       ///
       /// Should complete all animations within the specified 250ms duration
       /// plus a small buffer for processing time.
-      testWidgets('should complete animations within expected timeframe', (WidgetTester tester) async {
+      testWidgets('should complete animations within expected timeframe', (
+        WidgetTester tester,
+      ) async {
         Widget buildSearchSection({required bool expanded}) {
           return createTestApp(
             child: SidebarSearchSection(showExpandedContent: expanded),
@@ -333,7 +372,9 @@ void main() {
       ///
       /// Should handle multiple components animating at the same time
       /// without significant performance degradation.
-      testWidgets('should handle multiple simultaneous animations', (WidgetTester tester) async {
+      testWidgets('should handle multiple simultaneous animations', (
+        WidgetTester tester,
+      ) async {
         Widget buildMultipleComponents({required bool expanded}) {
           return createTestApp(
             child: Column(

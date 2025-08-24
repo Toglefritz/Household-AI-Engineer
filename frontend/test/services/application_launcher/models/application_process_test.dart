@@ -87,7 +87,10 @@ void main() {
         expect(testProcess.isRunning, false);
         expect(testProcess.isTerminated, true);
         expect(testProcess.isHealthy, false);
-        expect(testProcess.healthCheckError, 'Application crashed unexpectedly');
+        expect(
+          testProcess.healthCheckError,
+          'Application crashed unexpectedly',
+        );
       });
     });
 
@@ -115,22 +118,30 @@ void main() {
         expect(testProcess.status, ProcessStatus.crashed);
       });
 
-      test('should not change status if not running during health check failure', () {
-        // Process is still starting
-        testProcess.updateHealthCheck(
-          healthy: false,
-          error: 'Health check failed',
-        );
+      test(
+        'should not change status if not running during health check failure',
+        () {
+          // Process is still starting
+          testProcess.updateHealthCheck(
+            healthy: false,
+            error: 'Health check failed',
+          );
 
-        expect(testProcess.isHealthy, false);
-        expect(testProcess.healthCheckError, 'Health check failed');
-        expect(testProcess.status, ProcessStatus.starting); // Should not change
-      });
+          expect(testProcess.isHealthy, false);
+          expect(testProcess.healthCheckError, 'Health check failed');
+          expect(
+            testProcess.status,
+            ProcessStatus.starting,
+          ); // Should not change
+        },
+      );
     });
 
     group('time calculations', () {
       test('should calculate uptime correctly', () {
-        final DateTime launchTime = DateTime.now().subtract(const Duration(minutes: 30));
+        final DateTime launchTime = DateTime.now().subtract(
+          const Duration(minutes: 30),
+        );
         final ApplicationProcess process = ApplicationProcess(
           applicationId: 'test-app',
           applicationTitle: 'Test App',
@@ -154,7 +165,8 @@ void main() {
       test('should calculate time since last health check correctly', () {
         testProcess.updateHealthCheck(healthy: true);
 
-        final Duration timeSinceHealthCheck = testProcess.timeSinceLastHealthCheck;
+        final Duration timeSinceHealthCheck =
+            testProcess.timeSinceLastHealthCheck;
         expect(timeSinceHealthCheck.inMilliseconds, lessThan(100));
       });
     });
@@ -239,7 +251,8 @@ void main() {
 
         expect(json['windowState'], isA<Map<String, dynamic>>());
 
-        final ApplicationProcess deserializedProcess = ApplicationProcess.fromJson(json);
+        final ApplicationProcess deserializedProcess =
+            ApplicationProcess.fromJson(json);
         expect(deserializedProcess.windowState, isNotNull);
         expect(deserializedProcess.windowState!.x, 100);
         expect(deserializedProcess.windowState!.y, 200);
@@ -271,7 +284,9 @@ void main() {
           applicationId: 'test',
           applicationTitle: 'Test',
           launchConfig: testConfig,
-          launchedAt: DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
+          launchedAt: DateTime.now().subtract(
+            const Duration(hours: 2, minutes: 30),
+          ),
         );
         expect(hoursProcess.uptimeDescription, contains('2 hours'));
         expect(hoursProcess.uptimeDescription, contains('30 minutes'));
@@ -281,7 +296,9 @@ void main() {
           applicationId: 'test',
           applicationTitle: 'Test',
           launchConfig: testConfig,
-          launchedAt: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
+          launchedAt: DateTime.now().subtract(
+            const Duration(days: 1, hours: 3),
+          ),
         );
         expect(daysProcess.uptimeDescription, contains('1 day'));
         expect(daysProcess.uptimeDescription, contains('3 hours'));

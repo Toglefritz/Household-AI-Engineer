@@ -64,7 +64,8 @@ extension ConversationStatusExtension on ConversationStatus {
   ///
   /// Active states allow user interaction and message sending.
   bool get isActive {
-    return this == ConversationStatus.active || this == ConversationStatus.waitingForInput;
+    return this == ConversationStatus.active ||
+        this == ConversationStatus.waitingForInput;
   }
 
   /// Returns true if the conversation is in a terminal state.

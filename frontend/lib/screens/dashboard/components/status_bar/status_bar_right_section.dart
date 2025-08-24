@@ -4,7 +4,7 @@ import '../../../../theme/insets.dart';
 
 /// Right section component for the status bar.
 ///
-/// Contains action buttons, settings access, and other controls that users might need quick access to from anywhere in 
+/// Contains action buttons, settings access, and other controls that users might need quick access to from anywhere in
 /// the application.
 class StatusBarRightSection extends StatelessWidget {
   /// Creates a status bar right section widget.

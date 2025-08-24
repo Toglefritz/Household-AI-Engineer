@@ -38,7 +38,9 @@ void main() {
       ///
       /// Should show the full search text field with proper styling
       /// and maintain the correct height for layout consistency.
-      testWidgets('should render expanded search field', (WidgetTester tester) async {
+      testWidgets('should render expanded search field', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         expect(find.byType(SidebarSearchSection), findsOneWidget);
@@ -53,7 +55,9 @@ void main() {
       ///
       /// Should maintain the standard section height to prevent layout
       /// shifts during state transitions.
-      testWidgets('should have correct height in expanded state', (WidgetTester tester) async {
+      testWidgets('should have correct height in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         final SizedBox container = tester.widget<SizedBox>(
@@ -70,10 +74,14 @@ void main() {
       ///
       /// Should allow users to type search queries and maintain
       /// proper text styling and behavior.
-      testWidgets('should accept text input in expanded state', (WidgetTester tester) async {
+      testWidgets('should accept text input in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
-        final TextField textField = tester.widget<TextField>(find.byType(TextField));
+        final TextField textField = tester.widget<TextField>(
+          find.byType(TextField),
+        );
         expect(textField.enabled, true);
 
         await tester.enterText(find.byType(TextField), 'test search');
@@ -86,7 +94,9 @@ void main() {
       ///
       /// Should show only the search icon button with proper tooltip
       /// and maintain the same height as the expanded state.
-      testWidgets('should render collapsed search button', (WidgetTester tester) async {
+      testWidgets('should render collapsed search button', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         expect(find.byType(SidebarSearchSection), findsOneWidget);
@@ -101,7 +111,9 @@ void main() {
       ///
       /// Should maintain the same height as the expanded state to prevent
       /// layout shifts during transitions.
-      testWidgets('should have correct height in collapsed state', (WidgetTester tester) async {
+      testWidgets('should have correct height in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         final SizedBox container = tester.widget<SizedBox>(
@@ -118,10 +130,14 @@ void main() {
       ///
       /// Should provide accessibility information and user guidance
       /// about the button's function.
-      testWidgets('should show tooltip on collapsed search button', (WidgetTester tester) async {
+      testWidgets('should show tooltip on collapsed search button', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
-        final IconButton button = tester.widget<IconButton>(find.byType(IconButton));
+        final IconButton button = tester.widget<IconButton>(
+          find.byType(IconButton),
+        );
         expect(button.tooltip, isNotNull);
         expect(button.tooltip, isNotEmpty);
       });
@@ -130,7 +146,9 @@ void main() {
       ///
       /// Should show a dialog with search functionality when the user
       /// clicks the search icon in collapsed state.
-      testWidgets('should open search overlay when tapped', (WidgetTester tester) async {
+      testWidgets('should open search overlay when tapped', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Tap the search button
@@ -148,7 +166,9 @@ void main() {
       ///
       /// Should show a dialog with search field, clear button, and
       /// action buttons for search and cancel operations.
-      testWidgets('should render search overlay correctly', (WidgetTester tester) async {
+      testWidgets('should render search overlay correctly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Open the search overlay
@@ -165,7 +185,9 @@ void main() {
       ///
       /// Should allow users to enter search queries in the overlay
       /// text field with proper focus management.
-      testWidgets('should accept text input in overlay', (WidgetTester tester) async {
+      testWidgets('should accept text input in overlay', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Open the search overlay
@@ -181,7 +203,9 @@ void main() {
       ///
       /// Should clear the search text when the clear icon is tapped
       /// and maintain focus on the search field.
-      testWidgets('should clear text when clear button is tapped', (WidgetTester tester) async {
+      testWidgets('should clear text when clear button is tapped', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Open the search overlay
@@ -203,7 +227,9 @@ void main() {
       ///
       /// Should dismiss the dialog when the cancel button is pressed
       /// without performing any search action.
-      testWidgets('should close overlay when cancel is tapped', (WidgetTester tester) async {
+      testWidgets('should close overlay when cancel is tapped', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Open the search overlay
@@ -226,7 +252,9 @@ void main() {
       ///
       /// Should prevent layout shifts by ensuring consistent dimensions
       /// regardless of the expansion state.
-      testWidgets('should maintain consistent height across states', (WidgetTester tester) async {
+      testWidgets('should maintain consistent height across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state height
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
@@ -256,7 +284,9 @@ void main() {
       ///
       /// Should transition between expanded and collapsed states without
       /// errors or visual artifacts.
-      testWidgets('should handle state changes gracefully', (WidgetTester tester) async {
+      testWidgets('should handle state changes gracefully', (
+        WidgetTester tester,
+      ) async {
         // Start with expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
         expect(find.byType(TextField), findsOneWidget);

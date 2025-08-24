@@ -33,7 +33,9 @@ void main() {
 
     group('Basic rendering', () {
       /// Verifies that the sidebar renders in expanded state.
-      testWidgets('should render in expanded state', (WidgetTester tester) async {
+      testWidgets('should render in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -42,7 +44,9 @@ void main() {
       });
 
       /// Verifies that the sidebar renders in collapsed state.
-      testWidgets('should render in collapsed state', (WidgetTester tester) async {
+      testWidgets('should render in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
 
@@ -51,7 +55,9 @@ void main() {
       });
 
       /// Verifies that the sidebar can transition between states.
-      testWidgets('should transition between states without errors', (WidgetTester tester) async {
+      testWidgets('should transition between states without errors', (
+        WidgetTester tester,
+      ) async {
         // Start expanded
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
@@ -72,7 +78,9 @@ void main() {
       });
 
       /// Verifies that rapid state changes don't cause errors.
-      testWidgets('should handle rapid state changes', (WidgetTester tester) async {
+      testWidgets('should handle rapid state changes', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -90,16 +98,22 @@ void main() {
 
     group('Width behavior', () {
       /// Verifies that sidebar has different widths in different states.
-      testWidgets('should have different widths for expanded vs collapsed', (WidgetTester tester) async {
+      testWidgets('should have different widths for expanded vs collapsed', (
+        WidgetTester tester,
+      ) async {
         // Test expanded width
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
-        final double expandedWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double expandedWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
 
         // Test collapsed width
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
-        final double collapsedWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double collapsedWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
 
         // Widths should be different
         expect(expandedWidth, greaterThan(collapsedWidth));
@@ -110,7 +124,9 @@ void main() {
 
     group('Animation stability', () {
       /// Verifies that animations complete without leaving pending timers.
-      testWidgets('should complete animations cleanly', (WidgetTester tester) async {
+      testWidgets('should complete animations cleanly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 

@@ -55,7 +55,10 @@ class SidebarCategoriesConstants {
   /// @param category The ApplicationCategory enum value
   /// @param count Optional application count for this category
   /// @returns CategoryData with enum's icon and display name
-  static CategoryData getCategoryData(ApplicationCategory category, {int count = 0}) {
+  static CategoryData getCategoryData(
+    ApplicationCategory category, {
+    int count = 0,
+  }) {
     return CategoryData(
       icon: category.icon,
       label: category.displayName,
@@ -70,7 +73,9 @@ class SidebarCategoriesConstants {
   ///
   /// @returns List of all category labels
   static List<String> get categoryLabels {
-    return defaultCategories.map((CategoryData category) => category.label).toList();
+    return defaultCategories
+        .map((CategoryData category) => category.label)
+        .toList();
   }
 
   /// Gets the total number of applications across all categories.

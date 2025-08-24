@@ -32,7 +32,9 @@ void main() {
       ///
       /// Should provide appropriate labels and hints for screen readers
       /// when the search field is visible and interactive.
-      testWidgets('should have proper accessibility labels in expanded state', (WidgetTester tester) async {
+      testWidgets('should have proper accessibility labels in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: true),
@@ -42,7 +44,9 @@ void main() {
         // Search field should be accessible
         expect(find.byType(TextField), findsOneWidget);
 
-        final TextField textField = tester.widget<TextField>(find.byType(TextField));
+        final TextField textField = tester.widget<TextField>(
+          find.byType(TextField),
+        );
         expect(textField.decoration?.hintText, isNotNull);
         expect(textField.decoration?.hintText, isNotEmpty);
       });
@@ -51,33 +55,40 @@ void main() {
       ///
       /// Should provide semantic labels, hints, and tooltip information
       /// for screen readers when in collapsed state.
-      testWidgets('should have proper accessibility support in collapsed state', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          createTestApp(
-            child: const SidebarSearchSection(showExpandedContent: false),
-          ),
-        );
+      testWidgets(
+        'should have proper accessibility support in collapsed state',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            createTestApp(
+              child: const SidebarSearchSection(showExpandedContent: false),
+            ),
+          );
 
-        // Should have semantic information
-        expect(find.byType(Semantics), findsOneWidget);
+          // Should have semantic information
+          expect(find.byType(Semantics), findsOneWidget);
 
-        final Semantics semantics = tester.widget<Semantics>(find.byType(Semantics));
-        expect(semantics.properties.label, isNotNull);
-        expect(semantics.properties.hint, isNotNull);
-        expect(semantics.properties.button, isTrue);
+          final Semantics semantics = tester.widget<Semantics>(
+            find.byType(Semantics),
+          );
+          expect(semantics.properties.label, isNotNull);
+          expect(semantics.properties.hint, isNotNull);
+          expect(semantics.properties.button, isTrue);
 
-        // Should have tooltip
-        expect(find.byType(Tooltip), findsOneWidget);
-        final Tooltip tooltip = tester.widget<Tooltip>(find.byType(Tooltip));
-        expect(tooltip.message, isNotNull);
-        expect(tooltip.message, isNotEmpty);
-      });
+          // Should have tooltip
+          expect(find.byType(Tooltip), findsOneWidget);
+          final Tooltip tooltip = tester.widget<Tooltip>(find.byType(Tooltip));
+          expect(tooltip.message, isNotNull);
+          expect(tooltip.message, isNotEmpty);
+        },
+      );
 
       /// Verifies that search overlay has proper accessibility structure.
       ///
       /// Should provide semantic labels for the dialog and its contents
       /// to help screen reader users understand the interface.
-      testWidgets('should have accessible search overlay', (WidgetTester tester) async {
+      testWidgets('should have accessible search overlay', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: false),
@@ -103,7 +114,9 @@ void main() {
       ///
       /// Should support keyboard navigation through the search interface
       /// including tab navigation and enter key submission.
-      testWidgets('should support keyboard navigation', (WidgetTester tester) async {
+      testWidgets('should support keyboard navigation', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: true),
@@ -131,7 +144,9 @@ void main() {
       ///
       /// Should provide semantic information about the category name,
       /// count, and interaction hints for screen readers.
-      testWidgets('should have proper accessibility labels in expanded state', (WidgetTester tester) async {
+      testWidgets('should have proper accessibility labels in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoryItem(
@@ -146,7 +161,9 @@ void main() {
         // Should have semantic information
         expect(find.byType(Semantics), findsOneWidget);
 
-        final Semantics semantics = tester.widget<Semantics>(find.byType(Semantics));
+        final Semantics semantics = tester.widget<Semantics>(
+          find.byType(Semantics),
+        );
         expect(semantics.properties.label, contains(testLabel));
         expect(semantics.properties.hint, contains(testCount.toString()));
         expect(semantics.properties.button, isTrue);
@@ -156,31 +173,36 @@ void main() {
       ///
       /// Should provide both tooltip and semantic information when only
       /// the icon is visible to ensure accessibility.
-      testWidgets('should have tooltip and semantic support in collapsed state', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          createTestApp(
-            child: const SidebarCategoryItem(
-              icon: testIcon,
-              label: testLabel,
-              count: testCount,
-              showExpandedContent: false,
+      testWidgets(
+        'should have tooltip and semantic support in collapsed state',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            createTestApp(
+              child: const SidebarCategoryItem(
+                icon: testIcon,
+                label: testLabel,
+                count: testCount,
+                showExpandedContent: false,
+              ),
             ),
-          ),
-        );
+          );
 
-        // Should have tooltip
-        expect(find.byType(Tooltip), findsOneWidget);
-        final Tooltip tooltip = tester.widget<Tooltip>(find.byType(Tooltip));
-        expect(tooltip.message, contains(testLabel));
-        expect(tooltip.message, contains(testCount.toString()));
+          // Should have tooltip
+          expect(find.byType(Tooltip), findsOneWidget);
+          final Tooltip tooltip = tester.widget<Tooltip>(find.byType(Tooltip));
+          expect(tooltip.message, contains(testLabel));
+          expect(tooltip.message, contains(testCount.toString()));
 
-        // Should have semantic information
-        expect(find.byType(Semantics), findsOneWidget);
-        final Semantics semantics = tester.widget<Semantics>(find.byType(Semantics));
-        expect(semantics.properties.label, contains(testLabel));
-        expect(semantics.properties.hint, contains(testCount.toString()));
-        expect(semantics.properties.button, isTrue);
-      });
+          // Should have semantic information
+          expect(find.byType(Semantics), findsOneWidget);
+          final Semantics semantics = tester.widget<Semantics>(
+            find.byType(Semantics),
+          );
+          expect(semantics.properties.label, contains(testLabel));
+          expect(semantics.properties.hint, contains(testCount.toString()));
+          expect(semantics.properties.button, isTrue);
+        },
+      );
 
       /// Verifies that category items are keyboard accessible.
       ///
@@ -207,7 +229,9 @@ void main() {
       ///
       /// Should provide similar accessibility information in both expanded
       /// and collapsed states for consistent user experience.
-      testWidgets('should have consistent semantic information across states', (WidgetTester tester) async {
+      testWidgets('should have consistent semantic information across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state
         await tester.pumpWidget(
           createTestApp(
@@ -220,7 +244,9 @@ void main() {
           ),
         );
 
-        final Semantics expandedSemantics = tester.widget<Semantics>(find.byType(Semantics));
+        final Semantics expandedSemantics = tester.widget<Semantics>(
+          find.byType(Semantics),
+        );
 
         // Test collapsed state
         await tester.pumpWidget(
@@ -234,10 +260,15 @@ void main() {
           ),
         );
 
-        final Semantics collapsedSemantics = tester.widget<Semantics>(find.byType(Semantics));
+        final Semantics collapsedSemantics = tester.widget<Semantics>(
+          find.byType(Semantics),
+        );
 
         // Both should have similar semantic properties
-        expect(expandedSemantics.properties.button, collapsedSemantics.properties.button);
+        expect(
+          expandedSemantics.properties.button,
+          collapsedSemantics.properties.button,
+        );
         expect(expandedSemantics.properties.label, contains(testLabel));
         expect(collapsedSemantics.properties.label, contains(testLabel));
       });
@@ -248,7 +279,9 @@ void main() {
       ///
       /// Should mark the "Categories" title as a header for proper
       /// screen reader navigation and document structure.
-      testWidgets('should have proper heading structure', (WidgetTester tester) async {
+      testWidgets('should have proper heading structure', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoriesSection(showExpandedContent: true),
@@ -256,8 +289,12 @@ void main() {
         );
 
         // Should have header semantic
-        final List<Semantics> semanticsWidgets = tester.widgetList<Semantics>(find.byType(Semantics)).toList();
-        final bool hasHeader = semanticsWidgets.any((Semantics s) => s.properties.header ?? false);
+        final List<Semantics> semanticsWidgets = tester
+            .widgetList<Semantics>(find.byType(Semantics))
+            .toList();
+        final bool hasHeader = semanticsWidgets.any(
+          (Semantics s) => s.properties.header ?? false,
+        );
         expect(hasHeader, isTrue);
       });
 
@@ -265,7 +302,9 @@ void main() {
       ///
       /// Should ensure that each category item in the section provides
       /// proper accessibility support for screen readers.
-      testWidgets('should have accessible category items', (WidgetTester tester) async {
+      testWidgets('should have accessible category items', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoriesSection(showExpandedContent: true),
@@ -291,7 +330,9 @@ void main() {
       ///
       /// Should provide appropriate accessibility support even when
       /// the section header is not visible.
-      testWidgets('should maintain accessibility in collapsed state', (WidgetTester tester) async {
+      testWidgets('should maintain accessibility in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoriesSection(showExpandedContent: false),
@@ -315,7 +356,9 @@ void main() {
       ///
       /// Should support keyboard navigation through all category items
       /// in the section for users who rely on keyboard input.
-      testWidgets('should support keyboard navigation through categories', (WidgetTester tester) async {
+      testWidgets('should support keyboard navigation through categories', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarCategoriesSection(showExpandedContent: true),
@@ -341,33 +384,40 @@ void main() {
       ///
       /// Should ensure that buttons, links, and other interactive elements
       /// provide appropriate labels for screen reader users.
-      testWidgets('should have proper semantic labels for interactive elements', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          createTestApp(
-            child: const Column(
-              children: [
-                SidebarSearchSection(showExpandedContent: false),
-                SidebarCategoriesSection(showExpandedContent: false),
-              ],
+      testWidgets(
+        'should have proper semantic labels for interactive elements',
+        (WidgetTester tester) async {
+          await tester.pumpWidget(
+            createTestApp(
+              child: const Column(
+                children: [
+                  SidebarSearchSection(showExpandedContent: false),
+                  SidebarCategoriesSection(showExpandedContent: false),
+                ],
+              ),
             ),
-          ),
-        );
+          );
 
-        // All interactive elements should have semantic information
-        final List<Semantics> semanticsWidgets = tester.widgetList<Semantics>(find.byType(Semantics)).toList();
+          // All interactive elements should have semantic information
+          final List<Semantics> semanticsWidgets = tester
+              .widgetList<Semantics>(find.byType(Semantics))
+              .toList();
 
-        for (final Semantics semantics in semanticsWidgets) {
-          if (semantics.properties.button ?? false) {
-            expect(semantics.properties.label, isNotNull);
+          for (final Semantics semantics in semanticsWidgets) {
+            if (semantics.properties.button ?? false) {
+              expect(semantics.properties.label, isNotNull);
+            }
           }
-        }
-      });
+        },
+      );
 
       /// Verifies that tooltips provide meaningful information.
       ///
       /// Should ensure that all tooltips contain useful information
       /// that helps users understand element functionality.
-      testWidgets('should provide meaningful tooltips', (WidgetTester tester) async {
+      testWidgets('should provide meaningful tooltips', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const Column(
@@ -380,12 +430,17 @@ void main() {
         );
 
         // All tooltips should have meaningful messages
-        final List<Tooltip> tooltips = tester.widgetList<Tooltip>(find.byType(Tooltip)).toList();
+        final List<Tooltip> tooltips = tester
+            .widgetList<Tooltip>(find.byType(Tooltip))
+            .toList();
 
         for (final Tooltip tooltip in tooltips) {
           expect(tooltip.message, isNotNull);
           expect(tooltip.message, isNotEmpty);
-          expect(tooltip.message?.length ?? 0, greaterThan(3)); // Should be descriptive
+          expect(
+            tooltip.message?.length ?? 0,
+            greaterThan(3),
+          ); // Should be descriptive
         }
       });
 
@@ -393,7 +448,9 @@ void main() {
       ///
       /// Should handle focus transitions appropriately when elements
       /// change state or when dialogs are opened/closed.
-      testWidgets('should handle focus management properly', (WidgetTester tester) async {
+      testWidgets('should handle focus management properly', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: const SidebarSearchSection(showExpandedContent: false),
@@ -419,7 +476,9 @@ void main() {
       ///
       /// Should preserve accessibility information even during state
       /// transitions and animations.
-      testWidgets('should maintain semantic structure during animations', (WidgetTester tester) async {
+      testWidgets('should maintain semantic structure during animations', (
+        WidgetTester tester,
+      ) async {
         Widget buildTestWidget({required bool expanded}) {
           return createTestApp(
             child: Column(
@@ -433,12 +492,16 @@ void main() {
 
         // Start with expanded state
         await tester.pumpWidget(buildTestWidget(expanded: true));
-        final int expandedSemanticsCount = tester.widgetList<Semantics>(find.byType(Semantics)).length;
+        final int expandedSemanticsCount = tester
+            .widgetList<Semantics>(find.byType(Semantics))
+            .length;
 
         // Change to collapsed state
         await tester.pumpWidget(buildTestWidget(expanded: false));
         await tester.pumpAndSettle();
-        final int collapsedSemanticsCount = tester.widgetList<Semantics>(find.byType(Semantics)).length;
+        final int collapsedSemanticsCount = tester
+            .widgetList<Semantics>(find.byType(Semantics))
+            .length;
 
         // Should maintain semantic elements (may be different but should exist)
         expect(expandedSemanticsCount, greaterThan(0));

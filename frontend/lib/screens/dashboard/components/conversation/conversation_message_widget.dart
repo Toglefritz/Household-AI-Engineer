@@ -87,17 +87,27 @@ class ConversationMessageWidget extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Column(
-      crossAxisAlignment: message.isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: message.isUserMessage
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(Insets.small),
           decoration: BoxDecoration(
-            color: message.isUserMessage ? colorScheme.primary : colorScheme.surface,
+            color: message.isUserMessage
+                ? colorScheme.primary
+                : colorScheme.surface,
             borderRadius: BorderRadius.circular(16).copyWith(
-              topLeft: message.isSystemMessage ? Radius.zero : const Radius.circular(16),
-              topRight: message.isUserMessage ? Radius.zero : const Radius.circular(16),
+              topLeft: message.isSystemMessage
+                  ? Radius.zero
+                  : const Radius.circular(16),
+              topRight: message.isUserMessage
+                  ? Radius.zero
+                  : const Radius.circular(16),
             ),
-            border: message.isSystemMessage ? Border.all(color: colorScheme.outline.withValues(alpha: 0.3)) : null,
+            border: message.isSystemMessage
+                ? Border.all(color: colorScheme.outline.withValues(alpha: 0.3))
+                : null,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +115,9 @@ class ConversationMessageWidget extends StatelessWidget {
               Text(
                 message.content,
                 style: textTheme.bodyMedium?.copyWith(
-                  color: message.isUserMessage ? colorScheme.onPrimary : colorScheme.onSurface,
+                  color: message.isUserMessage
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurface,
                 ),
               ),
 
@@ -115,7 +127,9 @@ class ConversationMessageWidget extends StatelessWidget {
                 child: Text(
                   message.formattedTimestamp,
                   style: textTheme.bodySmall?.copyWith(
-                    color: message.isUserMessage ? colorScheme.onPrimary.withValues(alpha: 0.7) : colorScheme.tertiary,
+                    color: message.isUserMessage
+                        ? colorScheme.onPrimary.withValues(alpha: 0.7)
+                        : colorScheme.tertiary,
                     fontSize: 11,
                   ),
                 ),
@@ -222,7 +236,9 @@ class ConversationMessageWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(16).copyWith(
                 topLeft: Radius.zero,
               ),
-              border: Border.all(color: colorScheme.outline.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -254,7 +270,9 @@ class ConversationMessageWidget extends StatelessWidget {
           height: 6,
           margin: const EdgeInsets.symmetric(horizontal: Insets.xxSmall),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.tertiary.withValues(alpha: opacity),
+            color: Theme.of(
+              context,
+            ).colorScheme.tertiary.withValues(alpha: opacity),
             shape: BoxShape.circle,
           ),
         );

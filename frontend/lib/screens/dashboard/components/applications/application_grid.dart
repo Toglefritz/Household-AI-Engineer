@@ -73,7 +73,8 @@ class ApplicationGrid extends StatelessWidget {
     const double spacing = Insets.small; // Spacing between tiles
 
     // Calculate how many tiles can fit with minimum width and spacing
-    final int maxColumns = ((availableWidth + spacing) / (minTileWidth + spacing)).floor();
+    final int maxColumns =
+        ((availableWidth + spacing) / (minTileWidth + spacing)).floor();
 
     // Apply responsive constraints for better UX
     if (availableWidth < 600) {
@@ -91,12 +92,16 @@ class ApplicationGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     // If there are no applications, build a view communicating this to the user.
     if (applications.isEmpty) {
-      return ApplicationGridEmptyState(onCreateNewApplication: onCreateNewApplication);
+      return ApplicationGridEmptyState(
+        onCreateNewApplication: onCreateNewApplication,
+      );
     }
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        final int crossAxisCount = _calculateCrossAxisCount(constraints.maxWidth);
+        final int crossAxisCount = _calculateCrossAxisCount(
+          constraints.maxWidth,
+        );
 
         return GridView.builder(
           padding: const EdgeInsets.all(Insets.small),
@@ -109,13 +114,19 @@ class ApplicationGrid extends StatelessWidget {
           itemCount: applications.length,
           itemBuilder: (BuildContext context, int index) {
             final UserApplication application = applications[index];
-            final bool isSelected = selectedApplicationIds.contains(application.id);
+            final bool isSelected = selectedApplicationIds.contains(
+              application.id,
+            );
 
             return ApplicationTile(
               application: application,
               isSelected: isSelected,
-              onTap: onApplicationTap != null ? () => onApplicationTap!(application) : null,
-              onSecondaryTap: onApplicationSecondaryTap != null ? () => onApplicationSecondaryTap!(application) : null,
+              onTap: onApplicationTap != null
+                  ? () => onApplicationTap!(application)
+                  : null,
+              onSecondaryTap: onApplicationSecondaryTap != null
+                  ? () => onApplicationSecondaryTap!(application)
+                  : null,
             );
           },
         );

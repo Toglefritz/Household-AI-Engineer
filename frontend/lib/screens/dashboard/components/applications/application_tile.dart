@@ -69,7 +69,8 @@ class ApplicationTile extends StatefulWidget {
 }
 
 /// State for the [ApplicationTile] widget.
-class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProviderStateMixin {
+class _ApplicationTileState extends State<ApplicationTile>
+    with SingleTickerProviderStateMixin {
   /// Whether the mouse is currently hovering over this tile.
   ///
   /// Used to show hover effects and provide visual feedback
@@ -231,7 +232,9 @@ class _ApplicationTileState extends State<ApplicationTile> with SingleTickerProv
                       if (widget.application.isInDevelopment) ...[
                         Padding(
                           padding: const EdgeInsets.only(top: Insets.xSmall),
-                          child: ApplicationDevelopmentProgress(progress: widget.application.progress),
+                          child: ApplicationDevelopmentProgress(
+                            progress: widget.application.progress,
+                          ),
                         ),
                       ],
 

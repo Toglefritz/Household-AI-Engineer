@@ -34,7 +34,8 @@ class ConversationInputWidget extends StatefulWidget {
   final String? placeholder;
 
   @override
-  State<ConversationInputWidget> createState() => _ConversationInputWidgetState();
+  State<ConversationInputWidget> createState() =>
+      _ConversationInputWidgetState();
 }
 
 /// State for the [ConversationInputWidget].
@@ -109,14 +110,18 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.send,
               decoration: InputDecoration(
-                hintText: widget.placeholder ?? AppLocalizations.of(context)!.conversationInputPlaceholder,
+                hintText:
+                    widget.placeholder ??
+                    AppLocalizations.of(context)!.conversationInputPlaceholder,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: colorScheme.outline),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.5)),
+                  borderSide: BorderSide(
+                    color: colorScheme.outline.withValues(alpha: 0.5),
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -124,7 +129,9 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.3)),
+                  borderSide: BorderSide(
+                    color: colorScheme.outline.withValues(alpha: 0.3),
+                  ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: Insets.small,

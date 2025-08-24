@@ -55,7 +55,8 @@ class DashboardController extends State<DashboardRoute> {
   /// Service for managing user applications through the local file system.
   ///
   /// Handles loading, creating, and managing applications with real-time updates.
-  final UserApplicationService _userApplicationService = UserApplicationService();
+  final UserApplicationService _userApplicationService =
+      UserApplicationService();
 
   /// Service for launching and managing running applications.
   ///
@@ -93,7 +94,8 @@ class DashboardController extends State<DashboardRoute> {
   ///
   /// Used by the application grid to show selection states
   /// and enable multi-selection operations.
-  Set<String> get selectedApplicationIds => Set.unmodifiable(_selectedApplicationIds);
+  Set<String> get selectedApplicationIds =>
+      Set.unmodifiable(_selectedApplicationIds);
 
   @override
   void initState() {
@@ -112,20 +114,23 @@ class DashboardController extends State<DashboardRoute> {
     try {
       // Initialize dependencies for the launcher service
       final http.Client httpClient = http.Client();
-      final SharedPreferences preferences = await SharedPreferences.getInstance();
+      final SharedPreferences preferences =
+          await SharedPreferences.getInstance();
 
       // Create the application launcher service
-      _applicationLauncherService = ApplicationLauncherService(httpClient, preferences);
+      _applicationLauncherService = ApplicationLauncherService(
+        httpClient,
+        preferences,
+      );
 
       // Subscribe to launch events
-      _launchEventsSubscription = _applicationLauncherService!.launchEvents.listen(
-        (LaunchResult result) {
-          _handleLaunchEvent(result);
-        },
-        onError: (Object error) {
-          debugPrint('Launch event error: $error');
-        },
-      );
+      _launchEventsSubscription = _applicationLauncherService!.launchEvents
+          .listen(
+            _handleLaunchEvent,
+            onError: (Object error) {
+              debugPrint('Launch event error: $error');
+            },
+          );
 
       debugPrint('Application launcher service initialized');
     } catch (e) {
@@ -149,7 +154,9 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // For successful launches, show the application in a WebView
-      if (result.process != null && result.message != null && !result.message!.contains('foreground')) {
+      if (result.process != null &&
+          result.message != null &&
+          !result.message!.contains('foreground')) {
         _showApplicationWindow(result.process!);
       }
 
@@ -179,7 +186,6 @@ class DashboardController extends State<DashboardRoute> {
           SnackBar(
             content: Text(result.description),
             backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -230,23 +236,25 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // Set up stream subscription for real-time updates
-      _applicationSubscription = _userApplicationService.watchApplications().listen(
-        (List<UserApplication> applications) {
-          setState(() {
-            _applications = applications;
+      _applicationSubscription = _userApplicationService
+          .watchApplications()
+          .listen(
+            (List<UserApplication> applications) {
+              setState(() {
+                _applications = applications;
 
-            // Set sidebar state based on application availability
-            // Open sidebar if there are applications, keep closed if none
-            _isSidebarExpanded = applications.isNotEmpty;
-          });
-        },
-        onError: (Object error) {
-          debugPrint('Error loading applications: $error');
-          setState(() {
-            _connectionStatus = ConnectionStatus.error;
-          });
-        },
-      );
+                // Set sidebar state based on application availability
+                // Open sidebar if there are applications, keep closed if none
+                _isSidebarExpanded = applications.isNotEmpty;
+              });
+            },
+            onError: (Object error) {
+              debugPrint('Error loading applications: $error');
+              setState(() {
+                _connectionStatus = ConnectionStatus.error;
+              });
+            },
+          );
 
       setState(() {
         _connectionStatus = ConnectionStatus.connected;
@@ -289,7 +297,9 @@ class DashboardController extends State<DashboardRoute> {
   ///
   /// @param application The application that was tapped
   void onApplicationTap(UserApplication application) {
-    debugPrint('Application tapped: ${application.title} (${application.status.displayName})');
+    debugPrint(
+      'Application tapped: ${application.title} (${application.status.displayName})',
+    );
 
     if (application.canLaunch) {
       _launchApplication(application);
@@ -339,7 +349,8 @@ class DashboardController extends State<DashboardRoute> {
       });
 
       // Launch the application using the launcher service
-      final LaunchResult result = await _applicationLauncherService!.launchApplication(application);
+      final LaunchResult result = await _applicationLauncherService!
+          .launchApplication(application);
 
       if (result.success) {
         debugPrint('Successfully launched application: ${application.title}');
@@ -447,7 +458,9 @@ class DashboardController extends State<DashboardRoute> {
         _userApplicationService
             .refreshApplications()
             .then((List<UserApplication> apps) {
-              debugPrint('Manual refresh completed, found ${apps.length} applications');
+              debugPrint(
+                'Manual refresh completed, found ${apps.length} applications',
+              );
             })
             .catchError((Object error) {
               debugPrint('Manual refresh failed: $error');

@@ -45,11 +45,13 @@ class SidebarQuickActionsSection extends StatelessWidget {
                 child: showExpandedContent
                     ? _ExpandedCreateButton(
                         key: const ValueKey('expanded'),
-                        openNewApplicationConversation: openNewApplicationConversation,
+                        openNewApplicationConversation:
+                            openNewApplicationConversation,
                       )
                     : _CollapsedCreateButton(
                         key: const ValueKey('collapsed'),
-                        openNewApplicationConversation: openNewApplicationConversation,
+                        openNewApplicationConversation:
+                            openNewApplicationConversation,
                       ),
               ),
             ),

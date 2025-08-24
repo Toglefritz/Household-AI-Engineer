@@ -42,10 +42,12 @@ class ApplicationLauncherWindow extends StatefulWidget {
   final void Function(String applicationId)? onApplicationClosed;
 
   @override
-  State<ApplicationLauncherWindow> createState() => _ApplicationLauncherWindowState();
+  State<ApplicationLauncherWindow> createState() =>
+      _ApplicationLauncherWindowState();
 }
 
-class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> with WindowListener {
+class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow>
+    with WindowListener {
   /// Current window state for this application.
   WindowState? _currentWindowState;
 
@@ -77,11 +79,14 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> w
         _isInitialized = true;
       });
 
-      debugPrint('Application window initialized: ${widget.process.applicationTitle}');
+      debugPrint(
+        'Application window initialized: ${widget.process.applicationTitle}',
+      );
     } catch (e) {
       debugPrint('Failed to initialize application window: $e');
       setState(() {
-        _isInitialized = true; // Continue even if initialization partially failed
+        _isInitialized =
+            true; // Continue even if initialization partially failed
       });
     }
   }
@@ -124,7 +129,9 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> w
           await windowManager.minimize();
         } else {
           // Restore normal window position and size
-          await windowManager.setSize(Size(savedState.width, savedState.height));
+          await windowManager.setSize(
+            Size(savedState.width, savedState.height),
+          );
           await windowManager.setPosition(Offset(savedState.x, savedState.y));
         }
 
@@ -162,7 +169,9 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> w
         height: config.initialHeight.toDouble(),
       );
 
-      debugPrint('Set default window state: ${_currentWindowState?.description}');
+      debugPrint(
+        'Set default window state: ${_currentWindowState?.description}',
+      );
     } catch (e) {
       debugPrint('Failed to set default window state: $e');
     }
@@ -211,7 +220,9 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> w
   /// Called when the user closes the application window or when
   /// the application needs to be terminated.
   void _handleApplicationClose() {
-    debugPrint('Application window closing: ${widget.process.applicationTitle}');
+    debugPrint(
+      'Application window closing: ${widget.process.applicationTitle}',
+    );
     widget.onApplicationClosed?.call(widget.process.applicationId);
   }
 

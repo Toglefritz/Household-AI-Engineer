@@ -31,7 +31,8 @@ class ConversationService extends ChangeNotifier {
   final KiroService _kiroService = KiroService();
 
   /// Service for monitoring user application progress.
-  final UserApplicationService _userApplicationService = UserApplicationService();
+  final UserApplicationService _userApplicationService =
+      UserApplicationService();
 
   /// The current active conversation thread.
   ///
@@ -85,14 +86,18 @@ class ConversationService extends ChangeNotifier {
   bool get hasActiveConversation => _currentConversation != null;
 
   /// Whether the conversation can accept new messages.
-  bool get canAcceptInput => hasActiveConversation && _currentConversation!.canAcceptMessages && !_isProcessing;
+  bool get canAcceptInput =>
+      hasActiveConversation &&
+      _currentConversation!.canAcceptMessages &&
+      !_isProcessing;
 
   /// Whether a message can be sent (conversation can accept input).
   /// The actual text validation is handled by the input widget.
   bool get canSendMessage => canAcceptInput;
 
   /// Whether the conversation can be cancelled.
-  bool get canCancel => hasActiveConversation && _currentConversation!.canCancel;
+  bool get canCancel =>
+      hasActiveConversation && _currentConversation!.canCancel;
 
   /// Whether development is currently in progress.
   bool get isDevelopmentInProgress => _isDevelopmentInProgress;
@@ -101,7 +106,8 @@ class ConversationService extends ChangeNotifier {
   UserApplication? get currentApplication => _currentApplication;
 
   /// Current development progress percentage (0-100).
-  double get developmentProgress => _currentApplication?.progress?.percentage ?? 0.0;
+  double get developmentProgress =>
+      _currentApplication?.progress?.percentage ?? 0.0;
 
   /// Starts a new conversation for creating an application.
   ///
@@ -111,8 +117,11 @@ class ConversationService extends ChangeNotifier {
 
     // Capture the current set of applications before starting the conversation
     // so we can detect when a new one is created
-    final List<UserApplication> currentApplications = await _userApplicationService.getApplications();
-    _initialApplicationIds = currentApplications.map((UserApplication app) => app.id).toSet();
+    final List<UserApplication> currentApplications =
+        await _userApplicationService.getApplications();
+    _initialApplicationIds = currentApplications
+        .map((UserApplication app) => app.id)
+        .toSet();
 
     // Perform Kiro setup for a new application.
     await _kiroService.setupKiroForNewApplication();
@@ -123,7 +132,9 @@ class ConversationService extends ChangeNotifier {
     );
 
     // Add a default message to the conversation.
-    final ConversationMessage welcomeMessage = _createWelcomeMessage(conversationId: _currentConversation!.id);
+    final ConversationMessage welcomeMessage = _createWelcomeMessage(
+      conversationId: _currentConversation!.id,
+    );
     _currentConversation = _currentConversation!.addMessage(welcomeMessage);
 
     // Clear any previous application tracking since this is a new conversation
@@ -141,7 +152,9 @@ class ConversationService extends ChangeNotifier {
   /// Starts a new conversation for modifying an existing application.
   ///
   /// @param application The application to modify
-  Future<void> startModifyApplicationConversation(UserApplication application) async {
+  Future<void> startModifyApplicationConversation(
+    UserApplication application,
+  ) async {
     // TODO(Scott): Implementation
     /*_error = null;
 
@@ -223,7 +236,9 @@ class ConversationService extends ChangeNotifier {
         applicationName: applicationName,
       );
     } else {
-      return DefaultMessages.getNewApplicationWelcomeMessage(messageId: messageId);
+      return DefaultMessages.getNewApplicationWelcomeMessage(
+        messageId: messageId,
+      );
     }
   }
 
@@ -305,7 +320,9 @@ class ConversationService extends ChangeNotifier {
     _stopProgressMonitoring();
 
     // Clean up the current conversation.
-    _currentConversation = _currentConversation!.updateStatus(ConversationStatus.cancelled);
+    _currentConversation = _currentConversation!.updateStatus(
+      ConversationStatus.cancelled,
+    );
     _currentConversation = null;
     _error = null;
     _trackedApplicationId = null;
@@ -322,9 +339,11 @@ class ConversationService extends ChangeNotifier {
   /// Watches for changes in application manifests and adds development statements
   /// as system messages when they are updated.
   void _startProgressMonitoring() {
-    _applicationSubscription = _userApplicationService.watchApplications().listen(
-      _handleApplicationUpdates,
-    );
+    _applicationSubscription = _userApplicationService
+        .watchApplications()
+        .listen(
+          _handleApplicationUpdates,
+        );
   }
 
   /// Stops monitoring application progress.
@@ -379,8 +398,10 @@ class ConversationService extends ChangeNotifier {
     if (targetApplication != null) {
       _currentApplication = targetApplication;
 
-      final String? developmentStatement = targetApplication.progress?.developmentStatement;
-      final double progressPercentage = targetApplication.progress?.percentage ?? 0.0;
+      final String? developmentStatement =
+          targetApplication.progress?.developmentStatement;
+      final double progressPercentage =
+          targetApplication.progress?.percentage ?? 0.0;
 
       // Update development status based on progress
       _isDevelopmentInProgress = progressPercentage < 100.0;
@@ -398,7 +419,9 @@ class ConversationService extends ChangeNotifier {
         );
 
         // Add the message to the conversation
-        _currentConversation = _currentConversation!.addMessage(progressMessage);
+        _currentConversation = _currentConversation!.addMessage(
+          progressMessage,
+        );
         _lastDevelopmentStatement = developmentStatement;
 
         notifyListeners();

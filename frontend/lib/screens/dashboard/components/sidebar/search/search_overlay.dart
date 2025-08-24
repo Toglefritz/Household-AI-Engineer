@@ -90,7 +90,9 @@ class _SearchOverlayState extends State<_SearchOverlay> {
                 controller: _searchController,
                 focusNode: _searchFocusNode,
                 decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.searchApplicationsHint,
+                  hintText: AppLocalizations.of(
+                    context,
+                  )!.searchApplicationsHint,
                   prefixIcon: const Icon(Icons.search, size: 18),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear, size: 18),

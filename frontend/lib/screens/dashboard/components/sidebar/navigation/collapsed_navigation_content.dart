@@ -23,7 +23,9 @@ class _CollapsedNavigationContent extends StatelessWidget {
           Icon(
             item.icon,
             size: 20,
-            color: item.isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+            color: item.isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurface,
           ),
 
           // Badge dot for collapsed state

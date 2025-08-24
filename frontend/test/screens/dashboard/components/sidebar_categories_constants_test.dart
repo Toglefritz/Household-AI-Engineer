@@ -16,7 +16,10 @@ void main() {
       /// for household application organization.
       test('should provide non-empty default categories', () {
         expect(SidebarCategoriesConstants.defaultCategories, isNotEmpty);
-        expect(SidebarCategoriesConstants.defaultCategories.length, greaterThan(0));
+        expect(
+          SidebarCategoriesConstants.defaultCategories.length,
+          greaterThan(0),
+        );
       });
 
       /// Verifies that all default categories have valid data.
@@ -24,7 +27,8 @@ void main() {
       /// Should ensure that each category has proper icon, label,
       /// and count values without null or invalid data.
       test('should have valid data for all default categories', () {
-        for (final CategoryData category in SidebarCategoriesConstants.defaultCategories) {
+        for (final CategoryData category
+            in SidebarCategoriesConstants.defaultCategories) {
           expect(category.icon, isNotNull);
           expect(category.label, isNotNull);
           expect(category.label, isNotEmpty);
@@ -67,7 +71,8 @@ void main() {
       /// in the default categories list.
       test('should return category for valid label', () {
         const String testLabel = 'Home Management';
-        final CategoryData? category = SidebarCategoriesConstants.getCategoryByLabel(testLabel);
+        final CategoryData? category =
+            SidebarCategoriesConstants.getCategoryByLabel(testLabel);
 
         expect(category, isNotNull);
         expect(category!.label, equals(testLabel));
@@ -80,7 +85,8 @@ void main() {
       /// does not exist in the default categories.
       test('should return null for invalid label', () {
         const String invalidLabel = 'Nonexistent Category';
-        final CategoryData? category = SidebarCategoriesConstants.getCategoryByLabel(invalidLabel);
+        final CategoryData? category =
+            SidebarCategoriesConstants.getCategoryByLabel(invalidLabel);
 
         expect(category, isNull);
       });
@@ -90,7 +96,8 @@ void main() {
       /// Should gracefully handle edge cases like empty strings
       /// without throwing exceptions.
       test('should return null for empty label', () {
-        final CategoryData? category = SidebarCategoriesConstants.getCategoryByLabel('');
+        final CategoryData? category =
+            SidebarCategoriesConstants.getCategoryByLabel('');
 
         expect(category, isNull);
       });
@@ -100,7 +107,8 @@ void main() {
       /// Should distinguish between labels with different casing
       /// to ensure precise matching.
       test('should be case-sensitive for label matching', () {
-        final CategoryData? category = SidebarCategoriesConstants.getCategoryByLabel('home management');
+        final CategoryData? category =
+            SidebarCategoriesConstants.getCategoryByLabel('home management');
 
         expect(category, isNull); // Should not match 'Home Management'
       });
@@ -113,11 +121,13 @@ void main() {
       /// from the default categories.
       test('should return all category labels', () {
         final List<String> labels = SidebarCategoriesConstants.categoryLabels;
-        final int expectedCount = SidebarCategoriesConstants.defaultCategories.length;
+        final int expectedCount =
+            SidebarCategoriesConstants.defaultCategories.length;
 
         expect(labels.length, equals(expectedCount));
 
-        for (final CategoryData category in SidebarCategoriesConstants.defaultCategories) {
+        for (final CategoryData category
+            in SidebarCategoriesConstants.defaultCategories) {
           expect(labels, contains(category.label));
         }
       });
@@ -128,7 +138,8 @@ void main() {
       /// list for consistency.
       test('should return labels in same order as default categories', () {
         final List<String> labels = SidebarCategoriesConstants.categoryLabels;
-        final List<String> expectedLabels = SidebarCategoriesConstants.defaultCategories
+        final List<String> expectedLabels = SidebarCategoriesConstants
+            .defaultCategories
             .map((CategoryData category) => category.label)
             .toList();
 
@@ -143,10 +154,11 @@ void main() {
       /// values from all default categories.
       test('should sum all category counts', () {
         final int total = SidebarCategoriesConstants.totalApplicationCount;
-        final int expectedTotal = SidebarCategoriesConstants.defaultCategories.fold<int>(
-          0,
-          (int sum, CategoryData category) => sum + category.count,
-        );
+        final int expectedTotal = SidebarCategoriesConstants.defaultCategories
+            .fold<int>(
+              0,
+              (int sum, CategoryData category) => sum + category.count,
+            );
 
         expect(total, equals(expectedTotal));
         expect(total, greaterThan(0)); // Should have some applications
@@ -158,11 +170,15 @@ void main() {
       /// known category counts.
       test('should match manual calculation of total count', () {
         int manualTotal = 0;
-        for (final CategoryData category in SidebarCategoriesConstants.defaultCategories) {
+        for (final CategoryData category
+            in SidebarCategoriesConstants.defaultCategories) {
           manualTotal += category.count;
         }
 
-        expect(SidebarCategoriesConstants.totalApplicationCount, equals(manualTotal));
+        expect(
+          SidebarCategoriesConstants.totalApplicationCount,
+          equals(manualTotal),
+        );
       });
     });
 
@@ -175,10 +191,11 @@ void main() {
         const String testLabel = 'Finance';
         const int newCount = 10;
 
-        final List<CategoryData> updatedCategories = SidebarCategoriesConstants.updateCategoryCount(
-          testLabel,
-          newCount,
-        );
+        final List<CategoryData> updatedCategories =
+            SidebarCategoriesConstants.updateCategoryCount(
+              testLabel,
+              newCount,
+            );
 
         final CategoryData? updatedCategory = updatedCategories
             .where((CategoryData category) => category.label == testLabel)
@@ -186,7 +203,10 @@ void main() {
 
         expect(updatedCategory, isNotNull);
         expect(updatedCategory!.count, equals(newCount));
-        expect(updatedCategories.length, equals(SidebarCategoriesConstants.defaultCategories.length));
+        expect(
+          updatedCategories.length,
+          equals(SidebarCategoriesConstants.defaultCategories.length),
+        );
       });
 
       /// Verifies that updateCategoryCount preserves other categories.
@@ -197,16 +217,21 @@ void main() {
         const String testLabel = 'Finance';
         const int newCount = 10;
 
-        final List<CategoryData> updatedCategories = SidebarCategoriesConstants.updateCategoryCount(
-          testLabel,
-          newCount,
-        );
+        final List<CategoryData> updatedCategories =
+            SidebarCategoriesConstants.updateCategoryCount(
+              testLabel,
+              newCount,
+            );
 
         // Check that other categories are unchanged
-        for (final CategoryData originalCategory in SidebarCategoriesConstants.defaultCategories) {
+        for (final CategoryData originalCategory
+            in SidebarCategoriesConstants.defaultCategories) {
           if (originalCategory.label != testLabel) {
             final CategoryData? updatedCategory = updatedCategories
-                .where((CategoryData category) => category.label == originalCategory.label)
+                .where(
+                  (CategoryData category) =>
+                      category.label == originalCategory.label,
+                )
                 .firstOrNull;
 
             expect(updatedCategory, equals(originalCategory));
@@ -222,16 +247,23 @@ void main() {
         const String invalidLabel = 'Nonexistent Category';
         const int newCount = 10;
 
-        final List<CategoryData> updatedCategories = SidebarCategoriesConstants.updateCategoryCount(
-          invalidLabel,
-          newCount,
-        );
+        final List<CategoryData> updatedCategories =
+            SidebarCategoriesConstants.updateCategoryCount(
+              invalidLabel,
+              newCount,
+            );
 
-        expect(updatedCategories.length, equals(SidebarCategoriesConstants.defaultCategories.length));
+        expect(
+          updatedCategories.length,
+          equals(SidebarCategoriesConstants.defaultCategories.length),
+        );
 
         // All categories should be unchanged
         for (int i = 0; i < updatedCategories.length; i++) {
-          expect(updatedCategories[i], equals(SidebarCategoriesConstants.defaultCategories[i]));
+          expect(
+            updatedCategories[i],
+            equals(SidebarCategoriesConstants.defaultCategories[i]),
+          );
         }
       });
 
@@ -243,14 +275,16 @@ void main() {
         const String testLabel = 'Planning';
 
         // Test zero count
-        final List<CategoryData> zeroCategories = SidebarCategoriesConstants.updateCategoryCount(testLabel, 0);
+        final List<CategoryData> zeroCategories =
+            SidebarCategoriesConstants.updateCategoryCount(testLabel, 0);
         final CategoryData? zeroCategory = zeroCategories
             .where((CategoryData category) => category.label == testLabel)
             .firstOrNull;
         expect(zeroCategory!.count, equals(0));
 
         // Test negative count
-        final List<CategoryData> negativeCategories = SidebarCategoriesConstants.updateCategoryCount(testLabel, -1);
+        final List<CategoryData> negativeCategories =
+            SidebarCategoriesConstants.updateCategoryCount(testLabel, -1);
         final CategoryData? negativeCategory = negativeCategories
             .where((CategoryData category) => category.label == testLabel)
             .firstOrNull;

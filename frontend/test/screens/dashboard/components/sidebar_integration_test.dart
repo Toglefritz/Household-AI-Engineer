@@ -52,7 +52,9 @@ void main() {
       ///
       /// Should show all sections with full functionality including search field,
       /// navigation labels, category labels, and expanded action buttons.
-      testWidgets('should render complete sidebar in expanded state', (WidgetTester tester) async {
+      testWidgets('should render complete sidebar in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
 
         // Main sidebar container
@@ -71,14 +73,19 @@ void main() {
         expect(find.text('Create New App'), findsOneWidget); // Quick action
 
         // All category items should be present
-        expect(find.byType(SidebarCategoryItem), findsNWidgets(SidebarCategoriesConstants.defaultCategories.length));
+        expect(
+          find.byType(SidebarCategoryItem),
+          findsNWidgets(SidebarCategoriesConstants.defaultCategories.length),
+        );
       });
 
       /// Verifies that the complete sidebar renders correctly in collapsed state.
       ///
       /// Should show all sections with icon-only functionality including search icon,
       /// navigation icons, category icons, and collapsed action button.
-      testWidgets('should render complete sidebar in collapsed state', (WidgetTester tester) async {
+      testWidgets('should render complete sidebar in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: false));
 
         // Main sidebar container
@@ -93,12 +100,18 @@ void main() {
         // Collapsed content should be visible
         expect(find.byType(TextField), findsNothing); // No search field
         expect(find.byIcon(Icons.search), findsOneWidget); // Search icon
-        expect(find.text('All Applications'), findsNothing); // No navigation labels
+        expect(
+          find.text('All Applications'),
+          findsNothing,
+        ); // No navigation labels
         expect(find.text('Categories'), findsNothing); // No categories header
         expect(find.text('Create New App'), findsNothing); // No action text
 
         // All category items should still be present (as icons)
-        expect(find.byType(SidebarCategoryItem), findsNWidgets(SidebarCategoriesConstants.defaultCategories.length));
+        expect(
+          find.byType(SidebarCategoryItem),
+          findsNWidgets(SidebarCategoriesConstants.defaultCategories.length),
+        );
 
         // Should have tooltips for collapsed elements
         expect(find.byType(Tooltip), findsWidgets);
@@ -108,19 +121,25 @@ void main() {
       ///
       /// Should animate between 280px (expanded) and 76px (collapsed) widths
       /// with smooth transitions and proper timing.
-      testWidgets('should have correct width in both states', (WidgetTester tester) async {
+      testWidgets('should have correct width in both states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded width
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
-        final RenderBox expandedBox = tester.renderObject(find.byType(DashboardSidebar));
+        final RenderBox expandedBox = tester.renderObject(
+          find.byType(DashboardSidebar),
+        );
         expect(expandedBox.size.width, 280.0);
 
         // Test collapsed width
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
 
-        final RenderBox collapsedBox = tester.renderObject(find.byType(DashboardSidebar));
+        final RenderBox collapsedBox = tester.renderObject(
+          find.byType(DashboardSidebar),
+        );
         expect(collapsedBox.size.width, 76.0);
       });
 
@@ -128,7 +147,9 @@ void main() {
       ///
       /// Should allow user interaction with search, navigation, categories,
       /// and quick actions in both expanded and collapsed states.
-      testWidgets('should have working interactive elements in both states', (WidgetTester tester) async {
+      testWidgets('should have working interactive elements in both states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state interactions
         await tester.pumpWidget(createTestApp(isExpanded: true));
 
@@ -172,7 +193,9 @@ void main() {
       ///
       /// Should animate width changes and content transitions without
       /// layout shifts or visual artifacts.
-      testWidgets('should transition smoothly between expanded and collapsed', (WidgetTester tester) async {
+      testWidgets('should transition smoothly between expanded and collapsed', (
+        WidgetTester tester,
+      ) async {
         // Start with expanded state
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
@@ -209,7 +232,9 @@ void main() {
       ///
       /// Should handle multiple quick state changes without errors
       /// or animation conflicts.
-      testWidgets('should handle rapid state changes gracefully', (WidgetTester tester) async {
+      testWidgets('should handle rapid state changes gracefully', (
+        WidgetTester tester,
+      ) async {
         // Rapid state changes
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpWidget(createTestApp(isExpanded: false));
@@ -228,22 +253,36 @@ void main() {
       ///
       /// Should prevent layout shifts by maintaining consistent vertical
       /// positions for all elements during state changes.
-      testWidgets('should maintain consistent element positions', (WidgetTester tester) async {
+      testWidgets('should maintain consistent element positions', (
+        WidgetTester tester,
+      ) async {
         // Get element positions in expanded state
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
-        final Offset expandedSearchPos = tester.getTopLeft(find.byType(SidebarSearchSection));
-        final Offset expandedNavPos = tester.getTopLeft(find.byType(SidebarNavigationSection));
-        final Offset expandedCategoriesPos = tester.getTopLeft(find.byType(SidebarCategoriesSection));
+        final Offset expandedSearchPos = tester.getTopLeft(
+          find.byType(SidebarSearchSection),
+        );
+        final Offset expandedNavPos = tester.getTopLeft(
+          find.byType(SidebarNavigationSection),
+        );
+        final Offset expandedCategoriesPos = tester.getTopLeft(
+          find.byType(SidebarCategoriesSection),
+        );
 
         // Get element positions in collapsed state
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
 
-        final Offset collapsedSearchPos = tester.getTopLeft(find.byType(SidebarSearchSection));
-        final Offset collapsedNavPos = tester.getTopLeft(find.byType(SidebarNavigationSection));
-        final Offset collapsedCategoriesPos = tester.getTopLeft(find.byType(SidebarCategoriesSection));
+        final Offset collapsedSearchPos = tester.getTopLeft(
+          find.byType(SidebarSearchSection),
+        );
+        final Offset collapsedNavPos = tester.getTopLeft(
+          find.byType(SidebarNavigationSection),
+        );
+        final Offset collapsedCategoriesPos = tester.getTopLeft(
+          find.byType(SidebarCategoriesSection),
+        );
 
         // Vertical positions should be identical (Y coordinates)
         expect(expandedSearchPos.dy, equals(collapsedSearchPos.dy));
@@ -257,7 +296,9 @@ void main() {
       ///
       /// Should ensure all interactive elements have proper semantic labels
       /// and accessibility support across both states.
-      testWidgets('should provide comprehensive accessibility support', (WidgetTester tester) async {
+      testWidgets('should provide comprehensive accessibility support', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state accessibility
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
@@ -274,7 +315,9 @@ void main() {
         expect(find.byType(Tooltip), findsWidgets);
 
         // All tooltips should have meaningful messages
-        final List<Tooltip> tooltips = tester.widgetList<Tooltip>(find.byType(Tooltip)).toList();
+        final List<Tooltip> tooltips = tester
+            .widgetList<Tooltip>(find.byType(Tooltip))
+            .toList();
         for (final Tooltip tooltip in tooltips) {
           expect(tooltip.message, isNotNull);
           expect(tooltip.message, isNotEmpty);
@@ -285,7 +328,9 @@ void main() {
       ///
       /// Should support full keyboard navigation through all sections
       /// and interactive elements in both states.
-      testWidgets('should support complete keyboard navigation', (WidgetTester tester) async {
+      testWidgets('should support complete keyboard navigation', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -313,7 +358,9 @@ void main() {
       ///
       /// Should ensure all state transitions complete smoothly within
       /// the 250ms animation duration plus reasonable buffer time.
-      testWidgets('should complete animations within expected timeframe', (WidgetTester tester) async {
+      testWidgets('should complete animations within expected timeframe', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -333,7 +380,9 @@ void main() {
       ///
       /// Should ensure smooth visual transitions without flickering,
       /// jumping, or other visual artifacts.
-      testWidgets('should have no visual artifacts during transitions', (WidgetTester tester) async {
+      testWidgets('should have no visual artifacts during transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -354,7 +403,9 @@ void main() {
       ///
       /// Should maintain functionality and layout consistency across
       /// various screen dimensions and orientations.
-      testWidgets('should work correctly across different screen sizes', (WidgetTester tester) async {
+      testWidgets('should work correctly across different screen sizes', (
+        WidgetTester tester,
+      ) async {
         // Test with different screen sizes
         final List<Size> screenSizes = [
           const Size(800, 600), // Small desktop
@@ -395,7 +446,9 @@ void main() {
       ///
       /// Should provide fallback behavior when localized strings
       /// are not available.
-      testWidgets('should handle missing localization gracefully', (WidgetTester tester) async {
+      testWidgets('should handle missing localization gracefully', (
+        WidgetTester tester,
+      ) async {
         // Test with minimal localization setup
         await tester.pumpWidget(
           MaterialApp(
@@ -419,7 +472,9 @@ void main() {
       ///
       /// Should adapt to different themes and color schemes without
       /// breaking layout or functionality.
-      testWidgets('should handle theme changes correctly', (WidgetTester tester) async {
+      testWidgets('should handle theme changes correctly', (
+        WidgetTester tester,
+      ) async {
         // Test with light theme
         await tester.pumpWidget(
           MaterialApp(

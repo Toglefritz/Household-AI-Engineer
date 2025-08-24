@@ -26,7 +26,8 @@ class StatusBarSystemStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     // Calculate available applications (ready to launch or already running)
     final int availableApps = applications.where((UserApplication app) {
-      return app.status == ApplicationStatus.ready || app.status == ApplicationStatus.running;
+      return app.status == ApplicationStatus.ready ||
+          app.status == ApplicationStatus.running;
     }).length;
 
     // Calculate developing applications (actively being worked on)
@@ -35,7 +36,9 @@ class StatusBarSystemStatus extends StatelessWidget {
     }).length;
 
     return Text(
-      AppLocalizations.of(context)!.systemStatusAvailableDeveloping(availableApps, developingApps),
+      AppLocalizations.of(
+        context,
+      )!.systemStatusAvailableDeveloping(availableApps, developingApps),
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: Theme.of(context).colorScheme.tertiary,
       ),

@@ -102,7 +102,8 @@ class ApplicationLaunchConfig {
       initialWidth: initialWidth ?? this.initialWidth,
       initialHeight: initialHeight ?? this.initialHeight,
       resizable: resizable ?? this.resizable,
-      showNavigationControls: showNavigationControls ?? this.showNavigationControls,
+      showNavigationControls:
+          showNavigationControls ?? this.showNavigationControls,
       enableJavaScript: enableJavaScript ?? this.enableJavaScript,
       enableLocalStorage: enableLocalStorage ?? this.enableLocalStorage,
     );

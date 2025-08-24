@@ -42,7 +42,9 @@ void main() {
       ///
       /// Should use a scrollable ListView to accommodate all sections
       /// and provide proper scrolling behavior when needed.
-      testWidgets('should render with ListView structure', (WidgetTester tester) async {
+      testWidgets('should render with ListView structure', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         expect(find.byType(SidebarNavigationContent), findsOneWidget);
@@ -53,7 +55,9 @@ void main() {
       ///
       /// Should always include search, navigation, categories, and quick actions
       /// sections regardless of expansion state to prevent layout shifts.
-      testWidgets('should include all major sections in both states', (WidgetTester tester) async {
+      testWidgets('should include all major sections in both states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
@@ -75,10 +79,14 @@ void main() {
       ///
       /// Should apply appropriate vertical padding to the ListView
       /// for proper visual spacing and content positioning.
-      testWidgets('should have proper ListView padding', (WidgetTester tester) async {
+      testWidgets('should have proper ListView padding', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
-        final ListView listView = tester.widget<ListView>(find.byType(ListView));
+        final ListView listView = tester.widget<ListView>(
+          find.byType(ListView),
+        );
         expect(listView.padding, isNotNull);
       });
     });
@@ -88,27 +96,33 @@ void main() {
       ///
       /// Should pass showExpandedContent=true to all child sections
       /// when the navigation content is in expanded state.
-      testWidgets('should pass expanded state to all sections', (WidgetTester tester) async {
+      testWidgets('should pass expanded state to all sections', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
-        final SidebarSearchSection searchSection = tester.widget<SidebarSearchSection>(
-          find.byType(SidebarSearchSection),
-        );
+        final SidebarSearchSection searchSection = tester
+            .widget<SidebarSearchSection>(
+              find.byType(SidebarSearchSection),
+            );
         expect(searchSection.showExpandedContent, isTrue);
 
-        final SidebarNavigationSection navigationSection = tester.widget<SidebarNavigationSection>(
-          find.byType(SidebarNavigationSection),
-        );
+        final SidebarNavigationSection navigationSection = tester
+            .widget<SidebarNavigationSection>(
+              find.byType(SidebarNavigationSection),
+            );
         expect(navigationSection.showExpandedContent, isTrue);
 
-        final SidebarCategoriesSection categoriesSection = tester.widget<SidebarCategoriesSection>(
-          find.byType(SidebarCategoriesSection),
-        );
+        final SidebarCategoriesSection categoriesSection = tester
+            .widget<SidebarCategoriesSection>(
+              find.byType(SidebarCategoriesSection),
+            );
         expect(categoriesSection.showExpandedContent, isTrue);
 
-        final SidebarQuickActionsSection quickActionsSection = tester.widget<SidebarQuickActionsSection>(
-          find.byType(SidebarQuickActionsSection),
-        );
+        final SidebarQuickActionsSection quickActionsSection = tester
+            .widget<SidebarQuickActionsSection>(
+              find.byType(SidebarQuickActionsSection),
+            );
         expect(quickActionsSection.showExpandedContent, isTrue);
       });
 
@@ -116,7 +130,9 @@ void main() {
       ///
       /// Should display search field, navigation labels, category labels,
       /// and expanded quick action buttons.
-      testWidgets('should show full functionality in expanded state', (WidgetTester tester) async {
+      testWidgets('should show full functionality in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         // Search field should be visible
@@ -139,27 +155,33 @@ void main() {
       ///
       /// Should pass showExpandedContent=false to all child sections
       /// when the navigation content is in collapsed state.
-      testWidgets('should pass collapsed state to all sections', (WidgetTester tester) async {
+      testWidgets('should pass collapsed state to all sections', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
-        final SidebarSearchSection searchSection = tester.widget<SidebarSearchSection>(
-          find.byType(SidebarSearchSection),
-        );
+        final SidebarSearchSection searchSection = tester
+            .widget<SidebarSearchSection>(
+              find.byType(SidebarSearchSection),
+            );
         expect(searchSection.showExpandedContent, isFalse);
 
-        final SidebarNavigationSection navigationSection = tester.widget<SidebarNavigationSection>(
-          find.byType(SidebarNavigationSection),
-        );
+        final SidebarNavigationSection navigationSection = tester
+            .widget<SidebarNavigationSection>(
+              find.byType(SidebarNavigationSection),
+            );
         expect(navigationSection.showExpandedContent, isFalse);
 
-        final SidebarCategoriesSection categoriesSection = tester.widget<SidebarCategoriesSection>(
-          find.byType(SidebarCategoriesSection),
-        );
+        final SidebarCategoriesSection categoriesSection = tester
+            .widget<SidebarCategoriesSection>(
+              find.byType(SidebarCategoriesSection),
+            );
         expect(categoriesSection.showExpandedContent, isFalse);
 
-        final SidebarQuickActionsSection quickActionsSection = tester.widget<SidebarQuickActionsSection>(
-          find.byType(SidebarQuickActionsSection),
-        );
+        final SidebarQuickActionsSection quickActionsSection = tester
+            .widget<SidebarQuickActionsSection>(
+              find.byType(SidebarQuickActionsSection),
+            );
         expect(quickActionsSection.showExpandedContent, isFalse);
       });
 
@@ -167,7 +189,9 @@ void main() {
       ///
       /// Should display search icon, navigation icons, category icons,
       /// and collapsed quick action button.
-      testWidgets('should show icon-only functionality in collapsed state', (WidgetTester tester) async {
+      testWidgets('should show icon-only functionality in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Search field should not be visible, but search icon should be
@@ -189,7 +213,9 @@ void main() {
       ///
       /// Should provide tooltips for interactive elements when
       /// text labels are not visible.
-      testWidgets('should provide tooltips in collapsed state', (WidgetTester tester) async {
+      testWidgets('should provide tooltips in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Should have tooltips for various interactive elements
@@ -202,7 +228,9 @@ void main() {
       ///
       /// Should transition between expanded and collapsed states without
       /// errors or visual artifacts.
-      testWidgets('should handle state changes gracefully', (WidgetTester tester) async {
+      testWidgets('should handle state changes gracefully', (
+        WidgetTester tester,
+      ) async {
         // Start with expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
         expect(find.byType(TextField), findsOneWidget);
@@ -223,39 +251,60 @@ void main() {
       ///
       /// Should maintain the same number of major sections regardless
       /// of expansion state to prevent layout shifts.
-      testWidgets('should maintain consistent section count across states', (WidgetTester tester) async {
+      testWidgets('should maintain consistent section count across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         int expandedSectionCount = 0;
-        expandedSectionCount += tester.widgetList<SidebarSearchSection>(find.byType(SidebarSearchSection)).length;
         expandedSectionCount += tester
-            .widgetList<SidebarNavigationSection>(find.byType(SidebarNavigationSection))
+            .widgetList<SidebarSearchSection>(find.byType(SidebarSearchSection))
             .length;
         expandedSectionCount += tester
-            .widgetList<SidebarCategoriesSection>(find.byType(SidebarCategoriesSection))
+            .widgetList<SidebarNavigationSection>(
+              find.byType(SidebarNavigationSection),
+            )
             .length;
         expandedSectionCount += tester
-            .widgetList<SidebarQuickActionsSection>(find.byType(SidebarQuickActionsSection))
+            .widgetList<SidebarCategoriesSection>(
+              find.byType(SidebarCategoriesSection),
+            )
+            .length;
+        expandedSectionCount += tester
+            .widgetList<SidebarQuickActionsSection>(
+              find.byType(SidebarQuickActionsSection),
+            )
             .length;
 
         // Test collapsed state
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         int collapsedSectionCount = 0;
-        collapsedSectionCount += tester.widgetList<SidebarSearchSection>(find.byType(SidebarSearchSection)).length;
         collapsedSectionCount += tester
-            .widgetList<SidebarNavigationSection>(find.byType(SidebarNavigationSection))
+            .widgetList<SidebarSearchSection>(find.byType(SidebarSearchSection))
             .length;
         collapsedSectionCount += tester
-            .widgetList<SidebarCategoriesSection>(find.byType(SidebarCategoriesSection))
+            .widgetList<SidebarNavigationSection>(
+              find.byType(SidebarNavigationSection),
+            )
             .length;
         collapsedSectionCount += tester
-            .widgetList<SidebarQuickActionsSection>(find.byType(SidebarQuickActionsSection))
+            .widgetList<SidebarCategoriesSection>(
+              find.byType(SidebarCategoriesSection),
+            )
+            .length;
+        collapsedSectionCount += tester
+            .widgetList<SidebarQuickActionsSection>(
+              find.byType(SidebarQuickActionsSection),
+            )
             .length;
 
         expect(expandedSectionCount, equals(collapsedSectionCount));
-        expect(expandedSectionCount, equals(4)); // Search, Navigation, Categories, Quick Actions
+        expect(
+          expandedSectionCount,
+          equals(4),
+        ); // Search, Navigation, Categories, Quick Actions
       });
     });
 
@@ -264,10 +313,14 @@ void main() {
       ///
       /// Should allow users to scroll through all sections when the
       /// content height exceeds the available screen space.
-      testWidgets('should be scrollable when content exceeds viewport', (WidgetTester tester) async {
+      testWidgets('should be scrollable when content exceeds viewport', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
-        final ListView listView = tester.widget<ListView>(find.byType(ListView));
+        final ListView listView = tester.widget<ListView>(
+          find.byType(ListView),
+        );
         expect(listView.physics, isNot(const NeverScrollableScrollPhysics()));
       });
 
@@ -275,7 +328,9 @@ void main() {
       ///
       /// Should ensure that users can reach all sections even when
       /// the sidebar content is taller than the viewport.
-      testWidgets('should make all sections accessible through scrolling', (WidgetTester tester) async {
+      testWidgets('should make all sections accessible through scrolling', (
+        WidgetTester tester,
+      ) async {
         // Create a constrained height to force scrolling
         await tester.pumpWidget(
           MaterialApp(
@@ -311,7 +366,9 @@ void main() {
       ///
       /// Should provide proper semantic structure and labels for
       /// assistive technology users.
-      testWidgets('should be accessible to screen readers', (WidgetTester tester) async {
+      testWidgets('should be accessible to screen readers', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         // Should have semantic structure for screen readers
@@ -331,11 +388,15 @@ void main() {
       ///
       /// Should include tooltips for collapsed state elements to
       /// provide context for screen reader users.
-      testWidgets('should provide accessibility through tooltips', (WidgetTester tester) async {
+      testWidgets('should provide accessibility through tooltips', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Should have tooltips for accessibility in collapsed state
-        final List<Tooltip> tooltips = tester.widgetList<Tooltip>(find.byType(Tooltip)).toList();
+        final List<Tooltip> tooltips = tester
+            .widgetList<Tooltip>(find.byType(Tooltip))
+            .toList();
         expect(tooltips.length, greaterThan(0));
 
         // Tooltips should have meaningful messages

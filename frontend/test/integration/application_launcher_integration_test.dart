@@ -31,7 +31,10 @@ void main() {
     setUp(() {
       mockHttpClient = MockClient();
       mockPreferences = MockSharedPreferences();
-      launcherService = ApplicationLauncherService(mockHttpClient, mockPreferences);
+      launcherService = ApplicationLauncherService(
+        mockHttpClient,
+        mockPreferences,
+      );
 
       // Create test applications
       testApplications = [
@@ -80,14 +83,18 @@ void main() {
       test('should launch multiple applications successfully', () async {
         // Arrange
         final List<LaunchResult> launchEvents = [];
-        final StreamSubscription<LaunchResult> subscription = launcherService.launchEvents.listen(
-          (LaunchResult result) => launchEvents.add(result),
-        );
+        final StreamSubscription<LaunchResult> subscription = launcherService
+            .launchEvents
+            .listen(
+              (LaunchResult result) => launchEvents.add(result),
+            );
 
         // Act - Launch multiple applications
         final List<LaunchResult> results = [];
         for (final UserApplication app in testApplications.take(2)) {
-          final LaunchResult result = await launcherService.launchApplication(app);
+          final LaunchResult result = await launcherService.launchApplication(
+            app,
+          );
           results.add(result);
         }
 
@@ -107,7 +114,8 @@ void main() {
         for (final UserApplication app in testApplications.take(2)) {
           expect(launcherService.isApplicationRunning(app.id), true);
 
-          final ApplicationProcess? process = launcherService.getApplicationProcess(app.id);
+          final ApplicationProcess? process = launcherService
+              .getApplicationProcess(app.id);
           expect(process, isNotNull);
           expect(process!.applicationId, app.id);
           expect(process.applicationTitle, app.title);
@@ -117,49 +125,70 @@ void main() {
         await subscription.cancel();
       });
 
-      test('should handle mixed launch scenarios (success and failure)', () async {
-        // Arrange - Set up one application to fail URL validation
-        when(
-          mockHttpClient.get(
-            argThat(predicate<Uri>((uri) => uri.toString().contains('chore-tracker'))),
-            headers: anyNamed('headers'),
-          ),
-        ).thenAnswer((_) async => http.Response('Not Found', 404));
+      test(
+        'should handle mixed launch scenarios (success and failure)',
+        () async {
+          // Arrange - Set up one application to fail URL validation
+          when(
+            mockHttpClient.get(
+              argThat(
+                predicate<Uri>(
+                  (uri) => uri.toString().contains('chore-tracker'),
+                ),
+              ),
+              headers: anyNamed('headers'),
+            ),
+          ).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        when(
-          mockHttpClient.get(
-            argThat(predicate<Uri>((uri) => uri.toString().contains('budget-planner'))),
-            headers: anyNamed('headers'),
-          ),
-        ).thenAnswer((_) async => http.Response('OK', 200));
+          when(
+            mockHttpClient.get(
+              argThat(
+                predicate<Uri>(
+                  (uri) => uri.toString().contains('budget-planner'),
+                ),
+              ),
+              headers: anyNamed('headers'),
+            ),
+          ).thenAnswer((_) async => http.Response('OK', 200));
 
-        final List<LaunchResult> launchEvents = [];
-        final StreamSubscription<LaunchResult> subscription = launcherService.launchEvents.listen(
-          (LaunchResult result) => launchEvents.add(result),
-        );
+          final List<LaunchResult> launchEvents = [];
+          final StreamSubscription<LaunchResult> subscription = launcherService
+              .launchEvents
+              .listen(
+                (LaunchResult result) => launchEvents.add(result),
+              );
 
-        // Act
-        final LaunchResult choreResult = await launcherService.launchApplication(testApplications[0]);
-        final LaunchResult budgetResult = await launcherService.launchApplication(testApplications[1]);
+          // Act
+          final LaunchResult choreResult = await launcherService
+              .launchApplication(testApplications[0]);
+          final LaunchResult budgetResult = await launcherService
+              .launchApplication(testApplications[1]);
 
-        await Future.delayed(const Duration(milliseconds: 50));
+          await Future.delayed(const Duration(milliseconds: 50));
 
-        // Assert
-        expect(choreResult.success, false);
-        expect(choreResult.errorCode, 'URL_NOT_ACCESSIBLE');
-        expect(budgetResult.success, true);
+          // Assert
+          expect(choreResult.success, false);
+          expect(choreResult.errorCode, 'URL_NOT_ACCESSIBLE');
+          expect(budgetResult.success, true);
 
-        expect(launcherService.isApplicationRunning(testApplications[0].id), false);
-        expect(launcherService.isApplicationRunning(testApplications[1].id), true);
-        expect(launcherService.runningProcesses.length, 1);
+          expect(
+            launcherService.isApplicationRunning(testApplications[0].id),
+            false,
+          );
+          expect(
+            launcherService.isApplicationRunning(testApplications[1].id),
+            true,
+          );
+          expect(launcherService.runningProcesses.length, 1);
 
-        // Verify events
-        expect(launchEvents.length, 2);
-        expect(launchEvents[0].success, false);
-        expect(launchEvents[1].success, true);
+          // Verify events
+          expect(launchEvents.length, 2);
+          expect(launchEvents[0].success, false);
+          expect(launchEvents[1].success, true);
 
-        await subscription.cancel();
-      });
+          await subscription.cancel();
+        },
+      );
     });
 
     group('Process Management and Monitoring', () {
@@ -168,10 +197,12 @@ void main() {
         final UserApplication app = testApplications[0];
 
         // Act - Launch application
-        final LaunchResult launchResult = await launcherService.launchApplication(app);
+        final LaunchResult launchResult = await launcherService
+            .launchApplication(app);
         expect(launchResult.success, true);
 
-        final ApplicationProcess? process = launcherService.getApplicationProcess(app.id);
+        final ApplicationProcess? process = launcherService
+            .getApplicationProcess(app.id);
         expect(process, isNotNull);
         expect(process!.status, ProcessStatus.running);
 
@@ -196,19 +227,24 @@ void main() {
         final UserApplication app = testApplications[0];
 
         // Launch application initially
-        final LaunchResult initialResult = await launcherService.launchApplication(app);
+        final LaunchResult initialResult = await launcherService
+            .launchApplication(app);
         final DateTime initialLaunchTime = initialResult.process!.launchedAt;
 
         // Wait to ensure different timestamps
         await Future.delayed(const Duration(milliseconds: 10));
 
         // Act - Restart application
-        final LaunchResult restartResult = await launcherService.restartApplication(app);
+        final LaunchResult restartResult = await launcherService
+            .restartApplication(app);
 
         // Assert
         expect(restartResult.success, true);
         expect(launcherService.isApplicationRunning(app.id), true);
-        expect(restartResult.process!.launchedAt.isAfter(initialLaunchTime), true);
+        expect(
+          restartResult.process!.launchedAt.isAfter(initialLaunchTime),
+          true,
+        );
 
         // Should still have only one running process for this app
         expect(launcherService.runningProcesses.length, 1);
@@ -219,7 +255,8 @@ void main() {
         final UserApplication app = testApplications[0];
 
         // Launch application first time
-        final LaunchResult firstResult = await launcherService.launchApplication(app);
+        final LaunchResult firstResult = await launcherService
+            .launchApplication(app);
         expect(firstResult.success, true);
 
         final ApplicationProcess originalProcess = firstResult.process!;
@@ -229,7 +266,8 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 10));
 
         // Act - Launch same application again
-        final LaunchResult secondResult = await launcherService.launchApplication(app);
+        final LaunchResult secondResult = await launcherService
+            .launchApplication(app);
 
         // Assert
         expect(secondResult.success, true);
@@ -237,7 +275,8 @@ void main() {
         expect(launcherService.runningProcesses.length, 1);
 
         // Verify the same process was reused but access time updated
-        final ApplicationProcess currentProcess = launcherService.getApplicationProcess(app.id)!;
+        final ApplicationProcess currentProcess = launcherService
+            .getApplicationProcess(app.id)!;
         expect(currentProcess.applicationId, originalProcess.applicationId);
         expect(currentProcess.lastAccessed.isAfter(originalAccessTime), true);
       });
@@ -249,7 +288,8 @@ void main() {
         final UserApplication app = testApplications[0];
         await launcherService.launchApplication(app);
 
-        final ApplicationProcess process = launcherService.getApplicationProcess(app.id)!;
+        final ApplicationProcess process = launcherService
+            .getApplicationProcess(app.id)!;
 
         // Simulate time passing to trigger health check
         process.updateLastAccessed();
@@ -275,7 +315,8 @@ void main() {
         final UserApplication app = testApplications[0];
         await launcherService.launchApplication(app);
 
-        final ApplicationProcess process = launcherService.getApplicationProcess(app.id)!;
+        final ApplicationProcess process = launcherService
+            .getApplicationProcess(app.id)!;
 
         // Set up health check failure
         when(
@@ -286,13 +327,15 @@ void main() {
         ).thenThrow(Exception('Connection timeout'));
 
         final List<LaunchResult> healthEvents = [];
-        final StreamSubscription<LaunchResult> subscription = launcherService.launchEvents.listen(
-          (LaunchResult result) {
-            if (result.errorCode == 'HEALTH_CHECK_FAILED') {
-              healthEvents.add(result);
-            }
-          },
-        );
+        final StreamSubscription<LaunchResult> subscription = launcherService
+            .launchEvents
+            .listen(
+              (LaunchResult result) {
+                if (result.errorCode == 'HEALTH_CHECK_FAILED') {
+                  healthEvents.add(result);
+                }
+              },
+            );
 
         // Simulate time passing to trigger health check
         process.updateLastAccessed();
@@ -336,7 +379,9 @@ void main() {
         );
 
         // Act - Launch application (should restore window state)
-        final LaunchResult result = await launcherService.launchApplication(app);
+        final LaunchResult result = await launcherService.launchApplication(
+          app,
+        );
 
         // Assert
         expect(result.success, true);
@@ -380,14 +425,21 @@ void main() {
         final UserApplication app = testApplications[0];
 
         // Set up invalid window state JSON
-        when(mockPreferences.getString('window_state_${app.id}')).thenReturn('invalid json');
+        when(
+          mockPreferences.getString('window_state_${app.id}'),
+        ).thenReturn('invalid json');
 
         // Act - Should not throw exception
-        final LaunchResult result = await launcherService.launchApplication(app);
+        final LaunchResult result = await launcherService.launchApplication(
+          app,
+        );
 
         // Assert - Should use default window state
         expect(result.success, true);
-        expect(result.process!.windowState, isNull); // No state restored due to invalid JSON
+        expect(
+          result.process!.windowState,
+          isNull,
+        ); // No state restored due to invalid JSON
       });
     });
 
@@ -396,7 +448,9 @@ void main() {
         // Arrange
         final List<Future<LaunchResult>> launchFutures = testApplications
             .take(2)
-            .map((UserApplication app) => launcherService.launchApplication(app))
+            .map(
+              (UserApplication app) => launcherService.launchApplication(app),
+            )
             .toList();
 
         // Act - Launch applications concurrently
@@ -412,40 +466,46 @@ void main() {
           final UserApplication app = testApplications[i];
           expect(launcherService.isApplicationRunning(app.id), true);
 
-          final ApplicationProcess? process = launcherService.getApplicationProcess(app.id);
+          final ApplicationProcess? process = launcherService
+              .getApplicationProcess(app.id);
           expect(process, isNotNull);
           expect(process!.applicationId, app.id);
         }
       });
 
-      test('should handle concurrent health checks without interference', () async {
-        // Arrange - Launch multiple applications
-        for (final UserApplication app in testApplications.take(2)) {
-          await launcherService.launchApplication(app);
-        }
+      test(
+        'should handle concurrent health checks without interference',
+        () async {
+          // Arrange - Launch multiple applications
+          for (final UserApplication app in testApplications.take(2)) {
+            await launcherService.launchApplication(app);
+          }
 
-        // Simulate time passing for all processes
-        for (final ApplicationProcess process in launcherService.runningProcesses) {
-          process.updateLastAccessed();
-        }
-        await Future.delayed(const Duration(milliseconds: 10));
+          // Simulate time passing for all processes
+          for (final ApplicationProcess process
+              in launcherService.runningProcesses) {
+            process.updateLastAccessed();
+          }
+          await Future.delayed(const Duration(milliseconds: 10));
 
-        // Act - Perform health checks (should handle all processes)
-        await launcherService.performHealthChecks();
+          // Act - Perform health checks (should handle all processes)
+          await launcherService.performHealthChecks();
 
-        // Assert - All processes should remain healthy
-        for (final ApplicationProcess process in launcherService.runningProcesses) {
-          expect(process.isHealthy, true);
-        }
+          // Assert - All processes should remain healthy
+          for (final ApplicationProcess process
+              in launcherService.runningProcesses) {
+            expect(process.isHealthy, true);
+          }
 
-        // Verify HTTP calls were made for each application
-        verify(
-          mockHttpClient.get(
-            any,
-            headers: anyNamed('headers'),
-          ),
-        ).called(greaterThan(2)); // Initial launches + health checks
-      });
+          // Verify HTTP calls were made for each application
+          verify(
+            mockHttpClient.get(
+              any,
+              headers: anyNamed('headers'),
+            ),
+          ).called(greaterThan(2)); // Initial launches + health checks
+        },
+      );
     });
 
     group('Error Recovery and Resilience', () {
@@ -462,7 +522,8 @@ void main() {
         ).thenAnswer((_) async => throw Exception('Network error'));
 
         // Act - First launch attempt should fail
-        final LaunchResult firstResult = await launcherService.launchApplication(app);
+        final LaunchResult firstResult = await launcherService
+            .launchApplication(app);
         expect(firstResult.success, false);
         expect(launcherService.isApplicationRunning(app.id), false);
 
@@ -475,7 +536,8 @@ void main() {
         ).thenAnswer((_) async => http.Response('OK', 200));
 
         // Act - Second launch attempt should succeed
-        final LaunchResult secondResult = await launcherService.launchApplication(app);
+        final LaunchResult secondResult = await launcherService
+            .launchApplication(app);
 
         // Assert
         expect(secondResult.success, true);
@@ -497,7 +559,9 @@ void main() {
         expect(launcherService.runningProcesses.isEmpty, true);
 
         // Verify cleanup was performed
-        verify(mockPreferences.setString(any, any)).called(greaterThanOrEqualTo(2));
+        verify(
+          mockPreferences.setString(any, any),
+        ).called(greaterThanOrEqualTo(2));
       });
     });
   });

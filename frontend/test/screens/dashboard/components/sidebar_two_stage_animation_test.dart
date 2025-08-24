@@ -36,7 +36,9 @@ void main() {
       ///
       /// This is the key test that ensures overflow prevention by confirming
       /// that content changes to collapsed state before the width shrinks.
-      testWidgets('should transition content before width when collapsing', (WidgetTester tester) async {
+      testWidgets('should transition content before width when collapsing', (
+        WidgetTester tester,
+      ) async {
         bool isExpanded = true;
 
         await tester.pumpWidget(
@@ -51,7 +53,9 @@ void main() {
         expect(find.byType(TextField), findsOneWidget);
         expect(find.text('Create New App'), findsOneWidget);
 
-        final double initialWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double initialWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(initialWidth, equals(280.0));
 
         // Trigger collapse
@@ -61,8 +65,13 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
 
         // Content should start transitioning but width should still be wide
-        final double earlyWidth = tester.getSize(find.byType(DashboardSidebar)).width;
-        expect(earlyWidth, greaterThan(200.0)); // Still wide during content transition
+        final double earlyWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
+        expect(
+          earlyWidth,
+          greaterThan(200.0),
+        ); // Still wide during content transition
 
         // Pump more to complete content transition
         await tester.pump(const Duration(milliseconds: 100));
@@ -76,7 +85,9 @@ void main() {
         await tester.pumpAndSettle();
 
         // Final state should be fully collapsed
-        final double finalWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double finalWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(finalWidth, equals(76.0));
       });
 
@@ -84,7 +95,9 @@ void main() {
       ///
       /// When expanding, width should expand first to provide space,
       /// then content should transition to prevent cramped appearance.
-      testWidgets('should transition width before content when expanding', (WidgetTester tester) async {
+      testWidgets('should transition width before content when expanding', (
+        WidgetTester tester,
+      ) async {
         bool isExpanded = false;
 
         await tester.pumpWidget(
@@ -99,7 +112,9 @@ void main() {
         expect(find.byType(TextField), findsNothing);
         expect(find.byIcon(Icons.search), findsOneWidget);
 
-        final double initialWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double initialWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(initialWidth, equals(76.0));
 
         // Trigger expansion
@@ -109,7 +124,9 @@ void main() {
         await tester.pump(const Duration(milliseconds: 75));
 
         // Width should start expanding but content should still be collapsed
-        final double earlyWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double earlyWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(earlyWidth, greaterThan(76.0));
         expect(find.byType(TextField), findsNothing); // Content still collapsed
         expect(find.byIcon(Icons.search), findsOneWidget);
@@ -118,7 +135,9 @@ void main() {
         await tester.pump(const Duration(milliseconds: 150));
 
         // Width should be expanded, content might be transitioning
-        final double midWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double midWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(midWidth, greaterThan(200.0));
 
         // Complete the animation
@@ -128,7 +147,9 @@ void main() {
         expect(find.byType(TextField), findsOneWidget);
         expect(find.text('Create New App'), findsOneWidget);
 
-        final double finalWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double finalWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(finalWidth, equals(280.0));
       });
 
@@ -136,7 +157,9 @@ void main() {
       ///
       /// Should ensure that content transition completes before width transition
       /// begins when collapsing.
-      testWidgets('should have appropriate timing to prevent overflow', (WidgetTester tester) async {
+      testWidgets('should have appropriate timing to prevent overflow', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -153,7 +176,9 @@ void main() {
         expect(find.text('Create New App'), findsNothing);
 
         // But width might still be transitioning
-        final double midWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double midWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(midWidth, greaterThan(76.0));
 
         // Complete animation
@@ -164,7 +189,9 @@ void main() {
         expect(stopwatch.elapsedMilliseconds, lessThan(400));
 
         // Final width should be collapsed
-        final double finalWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double finalWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(finalWidth, equals(76.0));
       });
     });
@@ -174,7 +201,9 @@ void main() {
       ///
       /// This test ensures that the two-stage animation successfully prevents
       /// the overflow issues that occurred with the previous implementation.
-      testWidgets('should not cause overflow errors during collapse', (WidgetTester tester) async {
+      testWidgets('should not cause overflow errors during collapse', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -200,7 +229,9 @@ void main() {
       ///
       /// Should ensure that button text doesn't wrap awkwardly during
       /// the width transition by transitioning content first.
-      testWidgets('should prevent text wrapping during animation', (WidgetTester tester) async {
+      testWidgets('should prevent text wrapping during animation', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -228,7 +259,9 @@ void main() {
       ///
       /// Should handle multiple quick state changes without overflow
       /// or animation conflicts.
-      testWidgets('should handle rapid state changes without overflow', (WidgetTester tester) async {
+      testWidgets('should handle rapid state changes without overflow', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -254,7 +287,9 @@ void main() {
       ///
       /// Should ensure that despite the staging, the overall animation
       /// feels natural and smooth to users.
-      testWidgets('should provide smooth overall animation experience', (WidgetTester tester) async {
+      testWidgets('should provide smooth overall animation experience', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -266,7 +301,9 @@ void main() {
         // Sample width during animation
         for (int i = 0; i < 15; i++) {
           await tester.pump(const Duration(milliseconds: 20));
-          final double width = tester.getSize(find.byType(DashboardSidebar)).width;
+          final double width = tester
+              .getSize(find.byType(DashboardSidebar))
+              .width;
           widthSamples.add(width);
         }
 
@@ -283,7 +320,9 @@ void main() {
       ///
       /// Should ensure that individual content elements fade smoothly
       /// during their transition phase.
-      testWidgets('should have smooth content transitions', (WidgetTester tester) async {
+      testWidgets('should have smooth content transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -291,7 +330,9 @@ void main() {
         await tester.pumpWidget(createTestApp(isExpanded: false));
 
         // Content should transition smoothly
-        await tester.pump(const Duration(milliseconds: 50)); // Mid content transition
+        await tester.pump(
+          const Duration(milliseconds: 50),
+        ); // Mid content transition
 
         // Should still be in a valid state during transition
         expect(find.byType(DashboardSidebar), findsOneWidget);
@@ -310,7 +351,9 @@ void main() {
       ///
       /// Should ensure that the two-stage animation maintains consistent
       /// internal state throughout the transition process.
-      testWidgets('should maintain consistent internal state', (WidgetTester tester) async {
+      testWidgets('should maintain consistent internal state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -337,7 +380,9 @@ void main() {
       ///
       /// Should ensure that the multiple animation controllers don't
       /// interfere with each other or cause memory leaks.
-      testWidgets('should properly manage animation controllers', (WidgetTester tester) async {
+      testWidgets('should properly manage animation controllers', (
+        WidgetTester tester,
+      ) async {
         // Create and destroy multiple sidebar instances
         for (int i = 0; i < 3; i++) {
           await tester.pumpWidget(createTestApp(isExpanded: true));

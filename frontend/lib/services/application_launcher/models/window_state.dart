@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 /// Represents the state of an application window.
 ///
 /// This class captures window position, size, and other state information
 /// that can be preserved and restored when applications are relaunched.
 /// Used for providing a consistent user experience across application sessions.
+@immutable
 class WindowState {
   /// Creates a new window state.
   ///
@@ -19,10 +22,10 @@ class WindowState {
     required this.y,
     required this.width,
     required this.height,
+    required this.lastUpdated,
     this.isMaximized = false,
     this.isMinimized = false,
     this.isFullscreen = false,
-    required this.lastUpdated,
   });
 
   /// Horizontal position of the window in pixels from the left edge of the screen.
@@ -141,7 +144,9 @@ class WindowState {
       isMaximized: json['isMaximized'] as bool? ?? false,
       isMinimized: json['isMinimized'] as bool? ?? false,
       isFullscreen: json['isFullscreen'] as bool? ?? false,
-      lastUpdated: json['lastUpdated'] != null ? DateTime.parse(json['lastUpdated'] as String) : DateTime.now(),
+      lastUpdated: json['lastUpdated'] != null
+          ? DateTime.parse(json['lastUpdated'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -208,7 +213,7 @@ class WindowState {
 
   @override
   String toString() {
-    return 'WindowState(${description}, updated: ${lastUpdated.toIso8601String()})';
+    return 'WindowState($description, updated: ${lastUpdated.toIso8601String()})';
   }
 
   @override

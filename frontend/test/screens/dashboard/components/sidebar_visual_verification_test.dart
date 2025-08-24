@@ -42,58 +42,87 @@ void main() {
       ///
       /// This is the core test that validates the main requirement: preventing
       /// elements from "jumping" up the page when the sidebar state changes.
-      testWidgets('should prevent vertical layout shifts during state transitions', (WidgetTester tester) async {
-        // Capture element positions in expanded state
-        await tester.pumpWidget(createTestApp(isExpanded: true));
-        await tester.pumpAndSettle();
+      testWidgets(
+        'should prevent vertical layout shifts during state transitions',
+        (WidgetTester tester) async {
+          // Capture element positions in expanded state
+          await tester.pumpWidget(createTestApp(isExpanded: true));
+          await tester.pumpAndSettle();
 
-        final Map<Type, Offset> expandedPositions = {
-          SidebarSearchSection: tester.getTopLeft(find.byType(SidebarSearchSection)),
-          SidebarNavigationSection: tester.getTopLeft(find.byType(SidebarNavigationSection)),
-          SidebarCategoriesSection: tester.getTopLeft(find.byType(SidebarCategoriesSection)),
-          SidebarQuickActionsSection: tester.getTopLeft(find.byType(SidebarQuickActionsSection)),
-        };
+          final Map<Type, Offset> expandedPositions = {
+            SidebarSearchSection: tester.getTopLeft(
+              find.byType(SidebarSearchSection),
+            ),
+            SidebarNavigationSection: tester.getTopLeft(
+              find.byType(SidebarNavigationSection),
+            ),
+            SidebarCategoriesSection: tester.getTopLeft(
+              find.byType(SidebarCategoriesSection),
+            ),
+            SidebarQuickActionsSection: tester.getTopLeft(
+              find.byType(SidebarQuickActionsSection),
+            ),
+          };
 
-        // Capture element positions in collapsed state
-        await tester.pumpWidget(createTestApp(isExpanded: false));
-        await tester.pumpAndSettle();
+          // Capture element positions in collapsed state
+          await tester.pumpWidget(createTestApp(isExpanded: false));
+          await tester.pumpAndSettle();
 
-        final Map<Type, Offset> collapsedPositions = {
-          SidebarSearchSection: tester.getTopLeft(find.byType(SidebarSearchSection)),
-          SidebarNavigationSection: tester.getTopLeft(find.byType(SidebarNavigationSection)),
-          SidebarCategoriesSection: tester.getTopLeft(find.byType(SidebarCategoriesSection)),
-          SidebarQuickActionsSection: tester.getTopLeft(find.byType(SidebarQuickActionsSection)),
-        };
+          final Map<Type, Offset> collapsedPositions = {
+            SidebarSearchSection: tester.getTopLeft(
+              find.byType(SidebarSearchSection),
+            ),
+            SidebarNavigationSection: tester.getTopLeft(
+              find.byType(SidebarNavigationSection),
+            ),
+            SidebarCategoriesSection: tester.getTopLeft(
+              find.byType(SidebarCategoriesSection),
+            ),
+            SidebarQuickActionsSection: tester.getTopLeft(
+              find.byType(SidebarQuickActionsSection),
+            ),
+          };
 
-        // Verify that Y positions (vertical) are identical
-        for (final Type componentType in expandedPositions.keys) {
-          final double expandedY = expandedPositions[componentType]!.dy;
-          final double collapsedY = collapsedPositions[componentType]!.dy;
+          // Verify that Y positions (vertical) are identical
+          for (final Type componentType in expandedPositions.keys) {
+            final double expandedY = expandedPositions[componentType]!.dy;
+            final double collapsedY = collapsedPositions[componentType]!.dy;
 
-          expect(
-            expandedY,
-            equals(collapsedY),
-            reason:
-                '$componentType should not shift vertically between states. '
-                'Expanded Y: $expandedY, Collapsed Y: $collapsedY',
-          );
-        }
-      });
+            expect(
+              expandedY,
+              equals(collapsedY),
+              reason:
+                  '$componentType should not shift vertically between states. '
+                  'Expanded Y: $expandedY, Collapsed Y: $collapsedY',
+            );
+          }
+        },
+      );
 
       /// Verifies that section heights remain consistent across states.
       ///
       /// Should ensure that major sections maintain their allocated vertical
       /// space to prevent layout shifts caused by height changes.
-      testWidgets('should maintain consistent section heights', (WidgetTester tester) async {
+      testWidgets('should maintain consistent section heights', (
+        WidgetTester tester,
+      ) async {
         // Measure section heights in expanded state
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
         final Map<Type, double> expandedHeights = {
-          SidebarSearchSection: tester.getSize(find.byType(SidebarSearchSection)).height,
-          SidebarNavigationSection: tester.getSize(find.byType(SidebarNavigationSection)).height,
-          SidebarCategoriesSection: tester.getSize(find.byType(SidebarCategoriesSection)).height,
-          SidebarQuickActionsSection: tester.getSize(find.byType(SidebarQuickActionsSection)).height,
+          SidebarSearchSection: tester
+              .getSize(find.byType(SidebarSearchSection))
+              .height,
+          SidebarNavigationSection: tester
+              .getSize(find.byType(SidebarNavigationSection))
+              .height,
+          SidebarCategoriesSection: tester
+              .getSize(find.byType(SidebarCategoriesSection))
+              .height,
+          SidebarQuickActionsSection: tester
+              .getSize(find.byType(SidebarQuickActionsSection))
+              .height,
         };
 
         // Measure section heights in collapsed state
@@ -101,17 +130,26 @@ void main() {
         await tester.pumpAndSettle();
 
         final Map<Type, double> collapsedHeights = {
-          SidebarSearchSection: tester.getSize(find.byType(SidebarSearchSection)).height,
-          SidebarNavigationSection: tester.getSize(find.byType(SidebarNavigationSection)).height,
-          SidebarCategoriesSection: tester.getSize(find.byType(SidebarCategoriesSection)).height,
-          SidebarQuickActionsSection: tester.getSize(find.byType(SidebarQuickActionsSection)).height,
+          SidebarSearchSection: tester
+              .getSize(find.byType(SidebarSearchSection))
+              .height,
+          SidebarNavigationSection: tester
+              .getSize(find.byType(SidebarNavigationSection))
+              .height,
+          SidebarCategoriesSection: tester
+              .getSize(find.byType(SidebarCategoriesSection))
+              .height,
+          SidebarQuickActionsSection: tester
+              .getSize(find.byType(SidebarQuickActionsSection))
+              .height,
         };
 
         // Verify that heights are consistent (allowing small variations for text vs spacing)
         for (final Type componentType in expandedHeights.keys) {
           final double expandedHeight = expandedHeights[componentType]!;
           final double collapsedHeight = collapsedHeights[componentType]!;
-          final double heightDifference = (expandedHeight - collapsedHeight).abs();
+          final double heightDifference = (expandedHeight - collapsedHeight)
+              .abs();
 
           expect(
             heightDifference,
@@ -129,19 +167,25 @@ void main() {
       ///
       /// Should ensure the sidebar animates between the correct widths
       /// (280px expanded, 76px collapsed) without visual artifacts.
-      testWidgets('should have correct width transitions', (WidgetTester tester) async {
+      testWidgets('should have correct width transitions', (
+        WidgetTester tester,
+      ) async {
         // Test expanded width
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
-        final double expandedWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double expandedWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(expandedWidth, equals(280.0));
 
         // Test collapsed width
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
 
-        final double collapsedWidth = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double collapsedWidth = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
         expect(collapsedWidth, equals(76.0));
 
         // Test animation frames during transition
@@ -149,13 +193,19 @@ void main() {
 
         // Check intermediate widths during animation
         await tester.pump(const Duration(milliseconds: 50));
-        final double width50ms = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double width50ms = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
 
         await tester.pump(const Duration(milliseconds: 100));
-        final double width150ms = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double width150ms = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
 
         await tester.pump(const Duration(milliseconds: 100));
-        final double width250ms = tester.getSize(find.byType(DashboardSidebar)).width;
+        final double width250ms = tester
+            .getSize(find.byType(DashboardSidebar))
+            .width;
 
         // Width should be increasing during expansion
         expect(width50ms, greaterThan(collapsedWidth));
@@ -167,31 +217,47 @@ void main() {
       ///
       /// Should ensure that content within sections maintains proper
       /// alignment and doesn't shift unexpectedly during transitions.
-      testWidgets('should maintain consistent content alignment', (WidgetTester tester) async {
+      testWidgets('should maintain consistent content alignment', (
+        WidgetTester tester,
+      ) async {
         // Test expanded content alignment
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
         // Search field should be left-aligned within its container
         final Offset searchFieldPos = tester.getTopLeft(find.byType(TextField));
-        final Offset searchSectionPos = tester.getTopLeft(find.byType(SidebarSearchSection));
-        final double searchFieldLeftMargin = searchFieldPos.dx - searchSectionPos.dx;
+        final Offset searchSectionPos = tester.getTopLeft(
+          find.byType(SidebarSearchSection),
+        );
+        final double searchFieldLeftMargin =
+            searchFieldPos.dx - searchSectionPos.dx;
 
         // Test collapsed content alignment
         await tester.pumpWidget(createTestApp(isExpanded: false));
         await tester.pumpAndSettle();
 
         // Search icon should be centered within its container
-        final Offset searchIconPos = tester.getCenter(find.byIcon(Icons.search));
-        final Offset collapsedSearchSectionPos = tester.getTopLeft(find.byType(SidebarSearchSection));
-        final Size collapsedSearchSectionSize = tester.getSize(find.byType(SidebarSearchSection));
-        final double expectedCenterX = collapsedSearchSectionPos.dx + (collapsedSearchSectionSize.width / 2);
+        final Offset searchIconPos = tester.getCenter(
+          find.byIcon(Icons.search),
+        );
+        final Offset collapsedSearchSectionPos = tester.getTopLeft(
+          find.byType(SidebarSearchSection),
+        );
+        final Size collapsedSearchSectionSize = tester.getSize(
+          find.byType(SidebarSearchSection),
+        );
+        final double expectedCenterX =
+            collapsedSearchSectionPos.dx +
+            (collapsedSearchSectionSize.width / 2);
 
         // Icon should be approximately centered (allowing for small variations)
         expect((searchIconPos.dx - expectedCenterX).abs(), lessThan(5.0));
 
         // Verify consistent margins for expanded content
-        expect(searchFieldLeftMargin, greaterThan(0)); // Should have some left margin
+        expect(
+          searchFieldLeftMargin,
+          greaterThan(0),
+        ); // Should have some left margin
         expect(searchFieldLeftMargin, lessThan(20)); // But not excessive
       });
 
@@ -199,7 +265,9 @@ void main() {
       ///
       /// Should ensure that the relative visual importance and organization
       /// of elements remains consistent between expanded and collapsed states.
-      testWidgets('should maintain visual hierarchy across states', (WidgetTester tester) async {
+      testWidgets('should maintain visual hierarchy across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state hierarchy
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
@@ -251,14 +319,18 @@ void main() {
       ///
       /// Should ensure that state transitions are smooth and don't produce
       /// flickering, jumping, or other visual artifacts.
-      testWidgets('should have smooth animations without artifacts', (WidgetTester tester) async {
+      testWidgets('should have smooth animations without artifacts', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
         // Trigger rapid state changes to test for artifacts
         for (int i = 0; i < 10; i++) {
           await tester.pumpWidget(createTestApp(isExpanded: i.isEven));
-          await tester.pump(const Duration(milliseconds: 25)); // Quarter of animation
+          await tester.pump(
+            const Duration(milliseconds: 25),
+          ); // Quarter of animation
         }
 
         await tester.pumpAndSettle();
@@ -278,7 +350,9 @@ void main() {
       ///
       /// Should ensure that all animated elements use the same 250ms
       /// duration for consistent visual timing.
-      testWidgets('should have consistent animation timing', (WidgetTester tester) async {
+      testWidgets('should have consistent animation timing', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -297,14 +371,19 @@ void main() {
         // Animation should complete within expected timeframe
         // 250ms animation + reasonable buffer for processing
         expect(stopwatch.elapsedMilliseconds, lessThan(400));
-        expect(stopwatch.elapsedMilliseconds, greaterThan(200)); // Should take some time
+        expect(
+          stopwatch.elapsedMilliseconds,
+          greaterThan(200),
+        ); // Should take some time
       });
 
       /// Verifies that content transitions are synchronized.
       ///
       /// Should ensure that all content changes (text to icons, etc.)
       /// happen in sync with the width animation for cohesive transitions.
-      testWidgets('should have synchronized content transitions', (WidgetTester tester) async {
+      testWidgets('should have synchronized content transitions', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
 
@@ -342,23 +421,35 @@ void main() {
       ///
       /// Should ensure that the sidebar looks and behaves consistently
       /// across devices with different screen densities.
-      testWidgets('should maintain layout across different pixel densities', (WidgetTester tester) async {
+      testWidgets('should maintain layout across different pixel densities', (
+        WidgetTester tester,
+      ) async {
         final List<double> pixelRatios = [1.0, 1.5, 2.0, 3.0];
 
         Map<Type, Offset>? baselinePositions;
 
         for (final double pixelRatio in pixelRatios) {
-          await tester.binding.setSurfaceSize(Size(800 * pixelRatio, 600 * pixelRatio));
+          await tester.binding.setSurfaceSize(
+            Size(800 * pixelRatio, 600 * pixelRatio),
+          );
           tester.view.devicePixelRatio = pixelRatio;
 
           await tester.pumpWidget(createTestApp(isExpanded: true));
           await tester.pumpAndSettle();
 
           final Map<Type, Offset> positions = {
-            SidebarSearchSection: tester.getTopLeft(find.byType(SidebarSearchSection)),
-            SidebarNavigationSection: tester.getTopLeft(find.byType(SidebarNavigationSection)),
-            SidebarCategoriesSection: tester.getTopLeft(find.byType(SidebarCategoriesSection)),
-            SidebarQuickActionsSection: tester.getTopLeft(find.byType(SidebarQuickActionsSection)),
+            SidebarSearchSection: tester.getTopLeft(
+              find.byType(SidebarSearchSection),
+            ),
+            SidebarNavigationSection: tester.getTopLeft(
+              find.byType(SidebarNavigationSection),
+            ),
+            SidebarCategoriesSection: tester.getTopLeft(
+              find.byType(SidebarCategoriesSection),
+            ),
+            SidebarQuickActionsSection: tester.getTopLeft(
+              find.byType(SidebarQuickActionsSection),
+            ),
           };
 
           if (baselinePositions == null) {
@@ -373,7 +464,8 @@ void main() {
               expect(
                 (currentPos.dy - baselinePos.dy).abs(),
                 lessThan(2.0),
-                reason: '$componentType position should be consistent across pixel densities',
+                reason:
+                    '$componentType position should be consistent across pixel densities',
               );
             }
           }
@@ -388,7 +480,9 @@ void main() {
       ///
       /// Should ensure that animation performance and behavior is consistent
       /// across different platform implementations.
-      testWidgets('should have consistent animations across platforms', (WidgetTester tester) async {
+      testWidgets('should have consistent animations across platforms', (
+        WidgetTester tester,
+      ) async {
         // Test animation behavior
         await tester.pumpWidget(createTestApp(isExpanded: true));
         await tester.pumpAndSettle();
@@ -410,10 +504,16 @@ void main() {
 
         // Should have reasonable frame times (not too slow)
         final double averageFrameTime =
-            frameTimes.map((Duration d) => d.inMicroseconds).reduce((int a, int b) => a + b) / frameTimes.length;
+            frameTimes
+                .map((Duration d) => d.inMicroseconds)
+                .reduce((int a, int b) => a + b) /
+            frameTimes.length;
 
         expect(averageFrameTime, lessThan(20000)); // Less than 20ms per frame
-        expect(frameTimes.length, greaterThan(5)); // Should have multiple frames
+        expect(
+          frameTimes.length,
+          greaterThan(5),
+        ); // Should have multiple frames
       });
     });
   });

@@ -100,7 +100,9 @@ extension ApplicationStatusExtension on ApplicationStatus {
   /// Terminal states are ready, running, and failed where no further automatic progression will occur without user
   /// intervention.
   bool get isTerminal {
-    return this == ApplicationStatus.ready || this == ApplicationStatus.running || this == ApplicationStatus.failed;
+    return this == ApplicationStatus.ready ||
+        this == ApplicationStatus.running ||
+        this == ApplicationStatus.failed;
   }
 
   /// Returns true if the application can be launched by the user.
@@ -116,6 +118,8 @@ extension ApplicationStatusExtension on ApplicationStatus {
   /// Applications can be modified when they are in stable states (ready, running, or failed) but not during active
   /// development.
   bool get canModify {
-    return this == ApplicationStatus.ready || this == ApplicationStatus.running || this == ApplicationStatus.failed;
+    return this == ApplicationStatus.ready ||
+        this == ApplicationStatus.running ||
+        this == ApplicationStatus.failed;
   }
 }

@@ -34,7 +34,9 @@ void main() {
       );
     });
 
-    testWidgets('should display application title in app bar', (WidgetTester tester) async {
+    testWidgets('should display application title in app bar', (
+      WidgetTester tester,
+    ) async {
       // Arrange & Act
       await tester.pumpWidget(
         createTestApp(
@@ -47,7 +49,9 @@ void main() {
       expect(find.byType(AppBar), findsOneWidget);
     });
 
-    testWidgets('should show navigation controls when enabled', (WidgetTester tester) async {
+    testWidgets('should show navigation controls when enabled', (
+      WidgetTester tester,
+    ) async {
       // Arrange & Act
       await tester.pumpWidget(
         createTestApp(
@@ -61,11 +65,14 @@ void main() {
       expect(find.byIcon(Icons.refresh), findsOneWidget);
     });
 
-    testWidgets('should hide navigation controls when disabled', (WidgetTester tester) async {
+    testWidgets('should hide navigation controls when disabled', (
+      WidgetTester tester,
+    ) async {
       // Arrange
-      final ApplicationLaunchConfig configWithoutNav = testProcess.launchConfig.copyWith(
-        showNavigationControls: false,
-      );
+      final ApplicationLaunchConfig configWithoutNav = testProcess.launchConfig
+          .copyWith(
+            showNavigationControls: false,
+          );
       final ApplicationProcess processWithoutNav = ApplicationProcess(
         applicationId: testProcess.applicationId,
         applicationTitle: testProcess.applicationTitle,
@@ -98,7 +105,9 @@ void main() {
       expect(find.byIcon(Icons.close), findsOneWidget);
     });
 
-    testWidgets('should call onClose when close button is tapped', (WidgetTester tester) async {
+    testWidgets('should call onClose when close button is tapped', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       bool closeCalled = false;
 
@@ -119,7 +128,9 @@ void main() {
       expect(closeCalled, true);
     });
 
-    testWidgets('should show loading indicator initially', (WidgetTester tester) async {
+    testWidgets('should show loading indicator initially', (
+      WidgetTester tester,
+    ) async {
       // Arrange & Act
       await tester.pumpWidget(
         createTestApp(
@@ -144,7 +155,9 @@ void main() {
       expect(find.byType(WebViewWidget), findsOneWidget);
     });
 
-    testWidgets('should call onWindowStateChanged when provided', (WidgetTester tester) async {
+    testWidgets('should call onWindowStateChanged when provided', (
+      WidgetTester tester,
+    ) async {
       // Arrange
       WindowState? capturedState;
 
@@ -158,7 +171,9 @@ void main() {
       );
 
       // Act - Simulate window state change
-      final ApplicationWebView webView = tester.widget(find.byType(ApplicationWebView));
+      final ApplicationWebView webView = tester.widget(
+        find.byType(ApplicationWebView),
+      );
       final WindowState newState = WindowState(
         x: 100,
         y: 200,
@@ -175,7 +190,9 @@ void main() {
     });
 
     group('navigation controls', () {
-      testWidgets('should have proper tooltips for navigation buttons', (WidgetTester tester) async {
+      testWidgets('should have proper tooltips for navigation buttons', (
+        WidgetTester tester,
+      ) async {
         // Arrange & Act
         await tester.pumpWidget(
           createTestApp(
@@ -195,13 +212,27 @@ void main() {
         expect(closeButton, findsOneWidget);
 
         // Verify buttons are wrapped in IconButton widgets
-        expect(find.ancestor(of: backButton, matching: find.byType(IconButton)), findsOneWidget);
-        expect(find.ancestor(of: forwardButton, matching: find.byType(IconButton)), findsOneWidget);
-        expect(find.ancestor(of: refreshButton, matching: find.byType(IconButton)), findsOneWidget);
-        expect(find.ancestor(of: closeButton, matching: find.byType(IconButton)), findsOneWidget);
+        expect(
+          find.ancestor(of: backButton, matching: find.byType(IconButton)),
+          findsOneWidget,
+        );
+        expect(
+          find.ancestor(of: forwardButton, matching: find.byType(IconButton)),
+          findsOneWidget,
+        );
+        expect(
+          find.ancestor(of: refreshButton, matching: find.byType(IconButton)),
+          findsOneWidget,
+        );
+        expect(
+          find.ancestor(of: closeButton, matching: find.byType(IconButton)),
+          findsOneWidget,
+        );
       });
 
-      testWidgets('should handle navigation button taps', (WidgetTester tester) async {
+      testWidgets('should handle navigation button taps', (
+        WidgetTester tester,
+      ) async {
         // Arrange
         await tester.pumpWidget(
           createTestApp(
@@ -220,7 +251,9 @@ void main() {
     });
 
     group('configuration handling', () {
-      testWidgets('should respect launch configuration settings', (WidgetTester tester) async {
+      testWidgets('should respect launch configuration settings', (
+        WidgetTester tester,
+      ) async {
         // Arrange
         final ApplicationLaunchConfig customConfig = ApplicationLaunchConfig(
           applicationType: ApplicationType.web,
@@ -254,7 +287,9 @@ void main() {
     });
 
     group('error handling', () {
-      testWidgets('should handle WebView creation without errors', (WidgetTester tester) async {
+      testWidgets('should handle WebView creation without errors', (
+        WidgetTester tester,
+      ) async {
         // Arrange & Act
         await tester.pumpWidget(
           createTestApp(
@@ -269,7 +304,9 @@ void main() {
     });
 
     group('window state integration', () {
-      testWidgets('should handle window state updates', (WidgetTester tester) async {
+      testWidgets('should handle window state updates', (
+        WidgetTester tester,
+      ) async {
         // Arrange
         final List<WindowState> stateUpdates = [];
 
@@ -277,13 +314,16 @@ void main() {
           createTestApp(
             child: ApplicationWebView(
               process: testProcess,
-              onWindowStateChanged: (WindowState state) => stateUpdates.add(state),
+              onWindowStateChanged: (WindowState state) =>
+                  stateUpdates.add(state),
             ),
           ),
         );
 
         // Act - Simulate multiple window state changes
-        final ApplicationWebView webView = tester.widget(find.byType(ApplicationWebView));
+        final ApplicationWebView webView = tester.widget(
+          find.byType(ApplicationWebView),
+        );
 
         final WindowState state1 = WindowState(
           x: 100,

@@ -30,7 +30,8 @@ class KiroService {
   bool _isConnected = false;
 
   /// Stream controller for broadcasting Kiro status updates.
-  final StreamController<KiroStatus> _statusController = StreamController<KiroStatus>.broadcast();
+  final StreamController<KiroStatus> _statusController =
+      StreamController<KiroStatus>.broadcast();
 
   /// Whether the service is currently connected to the Kiro Bridge.
   bool get isConnected => _isConnected;
@@ -90,7 +91,8 @@ class KiroService {
   /// and a [StateError] if the Kiro Bridge does not become available in time.
   Future<void> setupKiroForNewApplication() async {
     // Step 1: Create a new folder for the application.
-    final String newAppPath = await _applicationService.createNewApplicationDirectory();
+    final String newAppPath = await _applicationService
+        .createNewApplicationDirectory();
     final Directory newAppDir = Directory(newAppPath);
 
     // Step 2: Create the .kiro directory structure and copy template files.
@@ -120,17 +122,24 @@ class KiroService {
     // Create the .kiro/specs/user-application-template/ directory structure
     final Directory kiroDir = Directory('${destination.path}/.kiro');
     final Directory specsDir = Directory('${kiroDir.path}/specs');
-    final Directory templateDir = Directory('${specsDir.path}/user-application-template');
+    final Directory templateDir = Directory(
+      '${specsDir.path}/user-application-template',
+    );
 
     // Ensure the directory structure exists
     await templateDir.create(recursive: true);
 
     // Define the three template files to copy
-    final List<String> templateFiles = ['design.md', 'requirements.md', 'tasks.md'];
+    final List<String> templateFiles = [
+      'design.md',
+      'requirements.md',
+      'tasks.md',
+    ];
 
     // Copy each template file from assets to the new directory
     for (final String fileName in templateFiles) {
-      final String assetPath = 'assets/templates/kiro/specs/user-application-template/$fileName';
+      final String assetPath =
+          'assets/templates/kiro/specs/user-application-template/$fileName';
 
       try {
         // Load the file content from assets
@@ -140,7 +149,9 @@ class KiroService {
         final File destinationFile = File('${templateDir.path}/$fileName');
         await destinationFile.writeAsString(content, flush: true);
       } catch (e) {
-        debugPrint('Failed to copy template file $fileName from assets with exception, $e');
+        debugPrint(
+          'Failed to copy template file $fileName from assets with exception, $e',
+        );
 
         throw FileSystemException(
           'Failed to copy template file $fileName from assets with exception, $e',
@@ -158,14 +169,19 @@ class KiroService {
   ///
   /// Throws a [FileSystemException] if the asset cannot be loaded or written.
   Future<void> _copyManifestSchema(Directory destination) async {
-    const String manifestSchemaAssetPath = 'assets/templates/manifest/manifest_schema.json';
+    const String manifestSchemaAssetPath =
+        'assets/templates/manifest/manifest_schema.json';
 
     try {
       // Load the schema content
-      final String schemaContent = await rootBundle.loadString(manifestSchemaAssetPath);
+      final String schemaContent = await rootBundle.loadString(
+        manifestSchemaAssetPath,
+      );
 
       // Write the schema file for Kiro reference
-      final File exampleFileSchema = File('${destination.path}/manifest_schema.json');
+      final File exampleFileSchema = File(
+        '${destination.path}/manifest_schema.json',
+      );
       await exampleFileSchema.writeAsString(schemaContent, flush: true);
     } catch (e) {
       throw FileSystemException(
@@ -182,14 +198,19 @@ class KiroService {
   ///
   /// Throws a [FileSystemException] if the asset cannot be loaded or written.
   Future<void> _copyManifestTemplate(Directory destination) async {
-    const String exampleManifestAssetPath = 'assets/templates/manifest/manifest_example.json';
+    const String exampleManifestAssetPath =
+        'assets/templates/manifest/manifest_example.json';
 
     try {
       // Load the template content and schema
-      final String templateContent = await rootBundle.loadString(exampleManifestAssetPath);
+      final String templateContent = await rootBundle.loadString(
+        exampleManifestAssetPath,
+      );
 
       // Write the example file for Kiro reference
-      final File exampleFile = File('${destination.path}/manifest_example.json');
+      final File exampleFile = File(
+        '${destination.path}/manifest_example.json',
+      );
       await exampleFile.writeAsString(templateContent, flush: true);
     } catch (e) {
       throw FileSystemException(
@@ -214,7 +235,9 @@ class KiroService {
       );
 
       if (result.exitCode != 0) {
-        throw Exception('Opening Kiro IDE in project directory failed with exit code, ${result.exitCode}');
+        throw Exception(
+          'Opening Kiro IDE in project directory failed with exit code, ${result.exitCode}',
+        );
       }
     } else {
       throw UnsupportedError('Unsupported platform for opening Kiro IDE');
@@ -267,7 +290,8 @@ class KiroService {
     Duration? pollInterval,
   }) async {
     final Duration actualTimeout = timeout ?? AppConfig.kiroBridgeTimeout;
-    final Duration actualPollInterval = pollInterval ?? AppConfig.kiroBridgePollInterval;
+    final Duration actualPollInterval =
+        pollInterval ?? AppConfig.kiroBridgePollInterval;
     final Uri statusUri = Uri.parse('$_baseUrl/api/kiro/status');
     final DateTime deadline = DateTime.now().add(actualTimeout);
     final HttpClient client = HttpClient();
@@ -333,7 +357,9 @@ class KiroService {
     final String body = await response.transform(utf8.decoder).join();
 
     if (response.statusCode != 200) {
-      debugPrint('Sending message to Kiro IDE failed with status code, ${response.statusCode}');
+      debugPrint(
+        'Sending message to Kiro IDE failed with status code, ${response.statusCode}',
+      );
 
       throw HttpException('HTTP ${response.statusCode}: $body', uri: uri);
     }

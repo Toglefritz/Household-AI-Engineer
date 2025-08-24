@@ -45,26 +45,38 @@ class SidebarCategoriesSection extends StatelessWidget {
   /// at least one application. Uses the ApplicationCategory enum for
   /// type-safe category handling with consistent icons and labels.
   List<CategoryData> _calculateDynamicCategories() {
-    debugPrint('Calculating dynamic categories for ${applications.length} applications');
+    debugPrint(
+      'Calculating dynamic categories for ${applications.length} applications',
+    );
 
     // Count applications by category enum
-    final Map<ApplicationCategory, int> categoryCounts = <ApplicationCategory, int>{};
+    final Map<ApplicationCategory, int> categoryCounts =
+        <ApplicationCategory, int>{};
 
     for (final UserApplication app in applications) {
-      debugPrint('App: ${app.title}, hasCategory: ${app.hasCategory}, category: ${app.category?.displayName}');
+      debugPrint(
+        'App: ${app.title}, hasCategory: ${app.hasCategory}, category: ${app.category?.displayName}',
+      );
 
       // Assign category - use app's category if it has one, otherwise "Other"
-      final ApplicationCategory category = app.hasCategory ? app.category! : ApplicationCategory.other;
+      final ApplicationCategory category = app.hasCategory
+          ? app.category!
+          : ApplicationCategory.other;
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
-      debugPrint('Added to category "${category.displayName}", count now: ${categoryCounts[category]}');
+      debugPrint(
+        'Added to category "${category.displayName}", count now: ${categoryCounts[category]}',
+      );
     }
 
-    debugPrint('Category counts: ${categoryCounts.map((k, v) => MapEntry(k.displayName, v))}');
+    debugPrint(
+      'Category counts: ${categoryCounts.map((k, v) => MapEntry(k.displayName, v))}',
+    );
 
     // Create category data for categories that have applications
     final List<CategoryData> dynamicCategories = <CategoryData>[];
 
-    for (final MapEntry<ApplicationCategory, int> entry in categoryCounts.entries) {
+    for (final MapEntry<ApplicationCategory, int> entry
+        in categoryCounts.entries) {
       final ApplicationCategory categoryEnum = entry.key;
       final int count = entry.value;
 
@@ -114,10 +126,11 @@ class SidebarCategoriesSection extends StatelessWidget {
                           header: true,
                           child: Text(
                             AppLocalizations.of(context)!.categoriesTitle,
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.tertiary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ),
                       )

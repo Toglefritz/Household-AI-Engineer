@@ -73,7 +73,7 @@ class StatusBarConnectionIndicator extends StatelessWidget {
     switch (connectionStatus) {
       case ConnectionStatus.connected:
         return ConnectionStatusInfo(
-          color:  Colors.green,
+          color: Colors.green,
           icon: Icons.check_circle,
           label: AppLocalizations.of(context)!.statusConnected,
         );

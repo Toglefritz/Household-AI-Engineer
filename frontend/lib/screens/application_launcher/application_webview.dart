@@ -56,11 +56,9 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
   /// Current page title from the web application.
   String? _pageTitle;
 
-  /// Current URL being displayed in the WebView.
-  String? _currentUrl;
-
   /// Whether navigation controls should be shown.
-  bool get _showNavigationControls => widget.process.launchConfig.showNavigationControls;
+  bool get _showNavigationControls =>
+      widget.process.launchConfig.showNavigationControls;
 
   /// Launch configuration for this application.
   ApplicationLaunchConfig get _config => widget.process.launchConfig;
@@ -77,19 +75,21 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
   /// initial application URL based on the launch configuration.
   void _initializeWebView() {
     _webViewController = WebViewController()
-      ..setJavaScriptMode(_config.enableJavaScript ? JavaScriptMode.unrestricted : JavaScriptMode.disabled)
+      ..setJavaScriptMode(
+        _config.enableJavaScript
+            ? JavaScriptMode.unrestricted
+            : JavaScriptMode.disabled,
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {
             setState(() {
               _isLoading = true;
-              _currentUrl = url;
             });
           },
           onPageFinished: (String url) {
             setState(() {
               _isLoading = false;
-              _currentUrl = url;
             });
             _updatePageTitle();
           },
@@ -226,8 +226,10 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
         children: [
           WebViewWidget(controller: _webViewController),
           if (_isLoading)
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
+            ColoredBox(
+              color: Theme.of(
+                context,
+              ).scaffoldBackgroundColor.withValues(alpha: 0.8),
               child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

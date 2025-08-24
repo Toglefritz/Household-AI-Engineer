@@ -53,7 +53,8 @@ class DashboardView extends StatelessWidget {
                   isExpanded: state.isSidebarExpanded,
                   onToggle: state.toggleSidebar,
                   applications: state.applications,
-                  openNewApplicationConversation: state.openNewApplicationConversation,
+                  openNewApplicationConversation:
+                      state.openNewApplicationConversation,
                 ),
 
                 // Main content area
@@ -70,17 +71,23 @@ class DashboardView extends StatelessWidget {
                               opacity: 0.6,
                               child: Text(
                                 '${AppLocalizations.of(context)!.greeting},',
-                                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.displayLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                             ),
 
                             Padding(
-                              padding: const EdgeInsets.only(top: Insets.small, bottom: Insets.large),
+                              padding: const EdgeInsets.only(
+                                top: Insets.small,
+                                bottom: Insets.large,
+                              ),
                               child: Text(
                                 AppLocalizations.of(context)!.welcomeMessage,
-                                style: Theme.of(context).textTheme.displayMedium,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium,
                               ),
                             ),
 
@@ -88,10 +95,13 @@ class DashboardView extends StatelessWidget {
                             Expanded(
                               child: ApplicationGrid(
                                 applications: state.applications,
-                                selectedApplicationIds: state.selectedApplicationIds,
+                                selectedApplicationIds:
+                                    state.selectedApplicationIds,
                                 onApplicationTap: state.onApplicationTap,
-                                onApplicationSecondaryTap: state.onApplicationSecondaryTap,
-                                onCreateNewApplication: state.openNewApplicationConversation,
+                                onApplicationSecondaryTap:
+                                    state.onApplicationSecondaryTap,
+                                onCreateNewApplication:
+                                    state.openNewApplicationConversation,
                               ),
                             ),
                           ],

@@ -66,9 +66,14 @@ class ConversationThread {
     return ConversationThread(
       id: json['id'] as String,
       messages: (json['messages'] as List<dynamic>)
-          .map((dynamic message) => ConversationMessage.fromJson(message as Map<String, dynamic>))
+          .map(
+            (dynamic message) =>
+                ConversationMessage.fromJson(message as Map<String, dynamic>),
+          )
           .toList(),
-      context: ConversationContext.fromJson(json['context'] as Map<String, dynamic>),
+      context: ConversationContext.fromJson(
+        json['context'] as Map<String, dynamic>,
+      ),
       status: ConversationStatus.values.firstWhere(
         (ConversationStatus status) => status.name == json['status'],
       ),
@@ -83,7 +88,9 @@ class ConversationThread {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'messages': messages.map((ConversationMessage message) => message.toJson()).toList(),
+      'messages': messages
+          .map((ConversationMessage message) => message.toJson())
+          .toList(),
       'context': context.toJson(),
       'status': status.name,
       'createdAt': createdAt.toIso8601String(),
@@ -123,8 +130,8 @@ class ConversationThread {
   /// @param message The message to add
   /// @returns New ConversationThread with the added message
   ConversationThread addMessage(ConversationMessage message) {
-    final List<ConversationMessage> newMessages = List<ConversationMessage>.from(messages)
-    ..add(message);
+    final List<ConversationMessage> newMessages =
+        List<ConversationMessage>.from(messages)..add(message);
 
     return copyWith(
       messages: newMessages,

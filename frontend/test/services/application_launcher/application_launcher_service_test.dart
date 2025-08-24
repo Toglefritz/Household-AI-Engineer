@@ -50,34 +50,43 @@ void main() {
     });
 
     group('launchApplication', () {
-      test('should launch application successfully with valid configuration', () async {
-        // Arrange
-        when(
-          mockHttpClient.get(
-            any,
-            headers: anyNamed('headers'),
-          ),
-        ).thenAnswer((_) async => http.Response('OK', 200));
+      test(
+        'should launch application successfully with valid configuration',
+        () async {
+          // Arrange
+          when(
+            mockHttpClient.get(
+              any,
+              headers: anyNamed('headers'),
+            ),
+          ).thenAnswer((_) async => http.Response('OK', 200));
 
-        // Act
-        final LaunchResult result = await service.launchApplication(testApplication);
+          // Act
+          final LaunchResult result = await service.launchApplication(
+            testApplication,
+          );
 
-        // Assert
-        expect(result.success, true);
-        expect(result.application, testApplication);
-        expect(result.process, isNotNull);
-        expect(result.process!.applicationId, testApplication.id);
-        expect(result.process!.applicationTitle, testApplication.title);
-        expect(service.isApplicationRunning(testApplication.id), true);
+          // Assert
+          expect(result.success, true);
+          expect(result.application, testApplication);
+          expect(result.process, isNotNull);
+          expect(result.process!.applicationId, testApplication.id);
+          expect(result.process!.applicationTitle, testApplication.title);
+          expect(service.isApplicationRunning(testApplication.id), true);
 
-        // Verify HTTP client was called for URL validation
-        verify(
-          mockHttpClient.get(
-            argThat(predicate<Uri>((uri) => uri.toString().contains(testApplication.id))),
-            headers: anyNamed('headers'),
-          ),
-        ).called(1);
-      });
+          // Verify HTTP client was called for URL validation
+          verify(
+            mockHttpClient.get(
+              argThat(
+                predicate<Uri>(
+                  (uri) => uri.toString().contains(testApplication.id),
+                ),
+              ),
+              headers: anyNamed('headers'),
+            ),
+          ).called(1);
+        },
+      );
 
       test('should fail to launch application with invalid status', () async {
         // Arrange
@@ -95,26 +104,31 @@ void main() {
         expect(service.isApplicationRunning(invalidApp.id), false);
       });
 
-      test('should bring existing application to foreground if already running', () async {
-        // Arrange
-        when(
-          mockHttpClient.get(
-            any,
-            headers: anyNamed('headers'),
-          ),
-        ).thenAnswer((_) async => http.Response('OK', 200));
+      test(
+        'should bring existing application to foreground if already running',
+        () async {
+          // Arrange
+          when(
+            mockHttpClient.get(
+              any,
+              headers: anyNamed('headers'),
+            ),
+          ).thenAnswer((_) async => http.Response('OK', 200));
 
-        // Launch application first time
-        await service.launchApplication(testApplication);
+          // Launch application first time
+          await service.launchApplication(testApplication);
 
-        // Act - Launch same application again
-        final LaunchResult result = await service.launchApplication(testApplication);
+          // Act - Launch same application again
+          final LaunchResult result = await service.launchApplication(
+            testApplication,
+          );
 
-        // Assert
-        expect(result.success, true);
-        expect(result.message, contains('brought to foreground'));
-        expect(service.runningProcesses.length, 1);
-      });
+          // Assert
+          expect(result.success, true);
+          expect(result.message, contains('brought to foreground'));
+          expect(service.runningProcesses.length, 1);
+        },
+      );
 
       test('should fail when URL validation fails', () async {
         // Arrange
@@ -126,7 +140,9 @@ void main() {
         ).thenAnswer((_) async => http.Response('Not Found', 404));
 
         // Act
-        final LaunchResult result = await service.launchApplication(testApplication);
+        final LaunchResult result = await service.launchApplication(
+          testApplication,
+        );
 
         // Assert
         expect(result.success, false);
@@ -145,7 +161,9 @@ void main() {
           lastUpdated: DateTime.now(),
         );
 
-        when(mockPreferences.getString('window_state_${testApplication.id}')).thenReturn(
+        when(
+          mockPreferences.getString('window_state_${testApplication.id}'),
+        ).thenReturn(
           '{"x":100,"y":200,"width":800,"height":600,"isMaximized":false,"isMinimized":false,"isFullscreen":false,"lastUpdated":"${savedState.lastUpdated.toIso8601String()}"}',
         );
 
@@ -157,7 +175,9 @@ void main() {
         ).thenAnswer((_) async => http.Response('OK', 200));
 
         // Act
-        final LaunchResult result = await service.launchApplication(testApplication);
+        final LaunchResult result = await service.launchApplication(
+          testApplication,
+        );
 
         // Assert
         expect(result.success, true);
@@ -199,13 +219,16 @@ void main() {
         ).called(1);
       });
 
-      test('should handle stopping non-running application gracefully', () async {
-        // Act
-        await service.stopApplication('non-existent-app');
+      test(
+        'should handle stopping non-running application gracefully',
+        () async {
+          // Act
+          await service.stopApplication('non-existent-app');
 
-        // Assert - Should not throw exception
-        expect(service.isApplicationRunning('non-existent-app'), false);
-      });
+          // Assert - Should not throw exception
+          expect(service.isApplicationRunning('non-existent-app'), false);
+        },
+      );
     });
 
     group('restartApplication', () {
@@ -219,19 +242,26 @@ void main() {
         ).thenAnswer((_) async => http.Response('OK', 200));
 
         // Launch application first
-        final LaunchResult initialResult = await service.launchApplication(testApplication);
+        final LaunchResult initialResult = await service.launchApplication(
+          testApplication,
+        );
         final DateTime initialLaunchTime = initialResult.process!.launchedAt;
 
         // Wait a moment to ensure different launch times
         await Future.delayed(const Duration(milliseconds: 10));
 
         // Act
-        final LaunchResult restartResult = await service.restartApplication(testApplication);
+        final LaunchResult restartResult = await service.restartApplication(
+          testApplication,
+        );
 
         // Assert
         expect(restartResult.success, true);
         expect(service.isApplicationRunning(testApplication.id), true);
-        expect(restartResult.process!.launchedAt.isAfter(initialLaunchTime), true);
+        expect(
+          restartResult.process!.launchedAt.isAfter(initialLaunchTime),
+          true,
+        );
       });
     });
 
@@ -247,7 +277,9 @@ void main() {
 
         // Launch application
         await service.launchApplication(testApplication);
-        final ApplicationProcess process = service.getApplicationProcess(testApplication.id)!;
+        final ApplicationProcess process = service.getApplicationProcess(
+          testApplication.id,
+        )!;
 
         // Simulate time passing to trigger health check
         process.updateLastAccessed();
@@ -277,7 +309,9 @@ void main() {
 
         // Launch application
         await service.launchApplication(testApplication);
-        final ApplicationProcess process = service.getApplicationProcess(testApplication.id)!;
+        final ApplicationProcess process = service.getApplicationProcess(
+          testApplication.id,
+        )!;
 
         // Set up health check failure
         when(
@@ -293,13 +327,15 @@ void main() {
 
         // Listen for health check failure events
         LaunchResult? healthCheckResult;
-        final StreamSubscription<LaunchResult> subscription = service.launchEvents.listen(
-          (LaunchResult result) {
-            if (result.errorCode == 'HEALTH_CHECK_FAILED') {
-              healthCheckResult = result;
-            }
-          },
-        );
+        final StreamSubscription<LaunchResult> subscription = service
+            .launchEvents
+            .listen(
+              (LaunchResult result) {
+                if (result.errorCode == 'HEALTH_CHECK_FAILED') {
+                  healthCheckResult = result;
+                }
+              },
+            );
 
         // Act
         await service.performHealthChecks();
@@ -329,9 +365,11 @@ void main() {
         ).thenAnswer((_) async => http.Response('OK', 200));
 
         final List<LaunchResult> events = [];
-        final StreamSubscription<LaunchResult> subscription = service.launchEvents.listen(
-          (LaunchResult result) => events.add(result),
-        );
+        final StreamSubscription<LaunchResult> subscription = service
+            .launchEvents
+            .listen(
+              (LaunchResult result) => events.add(result),
+            );
 
         // Act
         await service.launchApplication(testApplication);
@@ -358,9 +396,11 @@ void main() {
         ).thenAnswer((_) async => http.Response('Not Found', 404));
 
         final List<LaunchResult> events = [];
-        final StreamSubscription<LaunchResult> subscription = service.launchEvents.listen(
-          (LaunchResult result) => events.add(result),
-        );
+        final StreamSubscription<LaunchResult> subscription = service
+            .launchEvents
+            .listen(
+              (LaunchResult result) => events.add(result),
+            );
 
         // Act
         await service.launchApplication(testApplication);
@@ -388,7 +428,9 @@ void main() {
         ).thenAnswer((_) async => http.Response('OK', 200));
 
         // Launch application
-        final LaunchResult result = await service.launchApplication(testApplication);
+        final LaunchResult result = await service.launchApplication(
+          testApplication,
+        );
         final ApplicationProcess process = result.process!;
 
         // Update window state
@@ -439,8 +481,12 @@ void main() {
         expect(service.isApplicationRunning(app1.id), true);
         expect(service.isApplicationRunning(app2.id), true);
 
-        final ApplicationProcess? process1 = service.getApplicationProcess(app1.id);
-        final ApplicationProcess? process2 = service.getApplicationProcess(app2.id);
+        final ApplicationProcess? process1 = service.getApplicationProcess(
+          app1.id,
+        );
+        final ApplicationProcess? process2 = service.getApplicationProcess(
+          app2.id,
+        );
 
         expect(process1, isNotNull);
         expect(process2, isNotNull);

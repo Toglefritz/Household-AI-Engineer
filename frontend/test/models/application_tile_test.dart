@@ -26,7 +26,10 @@ void main() {
     test('should create tile with all required fields', () {
       expect(testTile.id, equals('app_123'));
       expect(testTile.title, equals('Chore Tracker'));
-      expect(testTile.description, equals('A family chore management application'));
+      expect(
+        testTile.description,
+        equals('A family chore management application'),
+      );
       expect(testTile.status, equals(ApplicationStatus.developing));
       expect(testTile.createdAt, equals(DateTime(2025, 1, 10, 14)));
       expect(testTile.updatedAt, equals(DateTime(2025, 1, 10, 14, 30)));
@@ -38,27 +41,37 @@ void main() {
     test('should detect development status correctly', () {
       expect(testTile.isInDevelopment, isTrue);
 
-      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
+      final UserApplication readyTile = testTile.copyWith(
+        status: ApplicationStatus.ready,
+      );
       expect(readyTile.isInDevelopment, isFalse);
     });
 
     test('should detect launch capability correctly', () {
       expect(testTile.canLaunch, isFalse);
 
-      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
+      final UserApplication readyTile = testTile.copyWith(
+        status: ApplicationStatus.ready,
+      );
       expect(readyTile.canLaunch, isTrue);
 
-      final UserApplication runningTile = testTile.copyWith(status: ApplicationStatus.running);
+      final UserApplication runningTile = testTile.copyWith(
+        status: ApplicationStatus.running,
+      );
       expect(runningTile.canLaunch, isTrue);
     });
 
     test('should detect modification capability correctly', () {
       expect(testTile.canModify, isFalse);
 
-      final UserApplication readyTile = testTile.copyWith(status: ApplicationStatus.ready);
+      final UserApplication readyTile = testTile.copyWith(
+        status: ApplicationStatus.ready,
+      );
       expect(readyTile.canModify, isTrue);
 
-      final UserApplication failedTile = testTile.copyWith(status: ApplicationStatus.failed);
+      final UserApplication failedTile = testTile.copyWith(
+        status: ApplicationStatus.failed,
+      );
       expect(failedTile.canModify, isTrue);
     });
 
@@ -111,32 +124,51 @@ void main() {
     test('should format creation time description correctly', () {
       final DateTime now = DateTime.now();
 
-      final UserApplication dayOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(days: 2)));
+      final UserApplication dayOldTile = testTile.copyWith(
+        createdAt: now.subtract(const Duration(days: 2)),
+      );
       expect(dayOldTile.createdTimeDescription, equals('2 days ago'));
 
-      final UserApplication hourOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(hours: 3)));
+      final UserApplication hourOldTile = testTile.copyWith(
+        createdAt: now.subtract(const Duration(hours: 3)),
+      );
       expect(hourOldTile.createdTimeDescription, equals('3 hours ago'));
 
-      final UserApplication minuteOldTile = testTile.copyWith(createdAt: now.subtract(const Duration(minutes: 45)));
+      final UserApplication minuteOldTile = testTile.copyWith(
+        createdAt: now.subtract(const Duration(minutes: 45)),
+      );
       expect(minuteOldTile.createdTimeDescription, equals('45 minutes ago'));
 
-      final UserApplication recentTile = testTile.copyWith(createdAt: now.subtract(const Duration(seconds: 30)));
+      final UserApplication recentTile = testTile.copyWith(
+        createdAt: now.subtract(const Duration(seconds: 30)),
+      );
       expect(recentTile.createdTimeDescription, equals('Just now'));
     });
 
     test('should format updated time description correctly', () {
       final DateTime now = DateTime.now();
 
-      final UserApplication dayOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(days: 1)));
+      final UserApplication dayOldTile = testTile.copyWith(
+        updatedAt: now.subtract(const Duration(days: 1)),
+      );
       expect(dayOldTile.updatedTimeDescription, equals('Updated 1 day ago'));
 
-      final UserApplication hourOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(hours: 2)));
+      final UserApplication hourOldTile = testTile.copyWith(
+        updatedAt: now.subtract(const Duration(hours: 2)),
+      );
       expect(hourOldTile.updatedTimeDescription, equals('Updated 2 hours ago'));
 
-      final UserApplication minuteOldTile = testTile.copyWith(updatedAt: now.subtract(const Duration(minutes: 15)));
-      expect(minuteOldTile.updatedTimeDescription, equals('Updated 15 minutes ago'));
+      final UserApplication minuteOldTile = testTile.copyWith(
+        updatedAt: now.subtract(const Duration(minutes: 15)),
+      );
+      expect(
+        minuteOldTile.updatedTimeDescription,
+        equals('Updated 15 minutes ago'),
+      );
 
-      final UserApplication recentTile = testTile.copyWith(updatedAt: now.subtract(const Duration(seconds: 10)));
+      final UserApplication recentTile = testTile.copyWith(
+        updatedAt: now.subtract(const Duration(seconds: 10)),
+      );
       expect(recentTile.updatedTimeDescription, equals('Just updated'));
     });
 
@@ -168,7 +200,10 @@ void main() {
 
       expect(json['id'], equals('app_123'));
       expect(json['title'], equals('Chore Tracker'));
-      expect(json['description'], equals('A family chore management application'));
+      expect(
+        json['description'],
+        equals('A family chore management application'),
+      );
       expect(json['status'], equals('developing'));
       expect(json['createdAt'], equals('2025-01-10T14:00:00.000'));
       expect(json['updatedAt'], equals('2025-01-10T14:30:00.000'));

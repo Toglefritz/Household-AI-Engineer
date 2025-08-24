@@ -64,7 +64,9 @@ class _ConversationModalState extends State<ConversationModal> {
     super.initState();
 
     // Initialize the controllers
-    _controller = ConversationService(initialConversation: widget.initialConversation);
+    _controller = ConversationService(
+      initialConversation: widget.initialConversation,
+    );
     _scrollController = ScrollController();
 
     // Initialize the conversation
@@ -79,7 +81,9 @@ class _ConversationModalState extends State<ConversationModal> {
     // Start appropriate conversation type
     if (widget.initialConversation == null) {
       if (widget.applicationToModify != null) {
-        await _controller.startModifyApplicationConversation(widget.applicationToModify!);
+        await _controller.startModifyApplicationConversation(
+          widget.applicationToModify!,
+        );
       } else {
         await _controller.startNewApplicationConversation();
       }
@@ -173,7 +177,10 @@ class _ConversationModalState extends State<ConversationModal> {
                       if (_controller.isDevelopmentInProgress) ...[
                         ConversationLoadingIndicator(
                           progress: _controller.developmentProgress,
-                          currentPhase: _controller.currentApplication?.progress?.currentPhase,
+                          currentPhase: _controller
+                              .currentApplication
+                              ?.progress
+                              ?.currentPhase,
                         ),
                       ],
                     ],
@@ -190,8 +197,12 @@ class _ConversationModalState extends State<ConversationModal> {
                   onSendMessage: _handleSendMessage,
                   enabled: _controller.canAcceptInput,
                   placeholder: _controller.isProcessing
-                      ? AppLocalizations.of(context)!.conversationInputPlaceholderWaiting
-                      : AppLocalizations.of(context)!.conversationInputPlaceholder,
+                      ? AppLocalizations.of(
+                          context,
+                        )!.conversationInputPlaceholderWaiting
+                      : AppLocalizations.of(
+                          context,
+                        )!.conversationInputPlaceholder,
                 );
               },
             ),

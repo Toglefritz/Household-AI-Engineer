@@ -59,10 +59,14 @@ class DevelopmentProgress {
     try {
       return DevelopmentProgress(
         percentage:
-            (json['percentage'] as num?)?.toDouble() ?? (throw ArgumentError('Missing required field: percentage')),
-        currentPhase: json['currentPhase'] as String? ?? (throw ArgumentError('Missing required field: currentPhase')),
+            (json['percentage'] as num?)?.toDouble() ??
+            (throw ArgumentError('Missing required field: percentage')),
+        currentPhase:
+            json['currentPhase'] as String? ??
+            (throw ArgumentError('Missing required field: currentPhase')),
         lastUpdated: DateTime.parse(
-          json['lastUpdated'] as String? ?? (throw ArgumentError('Missing required field: lastUpdated')),
+          json['lastUpdated'] as String? ??
+              (throw ArgumentError('Missing required field: lastUpdated')),
         ),
         developmentStatement: json['developmentStatement'] as String?,
         estimatedCompletion: json['estimatedCompletion'] != null
@@ -70,7 +74,9 @@ class DevelopmentProgress {
             : null,
       );
     } catch (e) {
-      throw FormatException('Failed to parse DevelopmentProgress from JSON: $e');
+      throw FormatException(
+        'Failed to parse DevelopmentProgress from JSON: $e',
+      );
     }
   }
 

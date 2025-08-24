@@ -33,10 +33,13 @@ class ConversationMessagesList extends StatelessWidget {
           );
         }
 
-        final List<ConversationMessage> messages = List<ConversationMessage>.from(conversation.messages);
+        final List<ConversationMessage> messages =
+            List<ConversationMessage>.from(conversation.messages);
 
         // Debug: Log message count
-        debugPrint('ConversationMessagesList: Displaying ${messages.length} messages');
+        debugPrint(
+          'ConversationMessagesList: Displaying ${messages.length} messages',
+        );
 
         // Add typing indicator if processing
         if (controller.isProcessing) {

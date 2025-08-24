@@ -29,7 +29,10 @@ class ConversationLoadingIndicator extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: Insets.small, vertical: Insets.xxSmall),
+      margin: const EdgeInsets.symmetric(
+        horizontal: Insets.small,
+        vertical: Insets.xxSmall,
+      ),
       padding: const EdgeInsets.all(Insets.small),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerLow,

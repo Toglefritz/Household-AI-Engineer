@@ -21,7 +21,9 @@ class _ExpandedNavigationContent extends StatelessWidget {
         Icon(
           item.icon,
           size: 20,
-          color: item.isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface,
+          color: item.isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.onSurface,
         ),
         Expanded(
           child: Padding(
@@ -32,7 +34,9 @@ class _ExpandedNavigationContent extends StatelessWidget {
                 color: item.isSelected
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).colorScheme.onSurface,
-                fontWeight: item.isSelected ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: item.isSelected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
               ),
             ),
           ),

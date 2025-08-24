@@ -29,7 +29,9 @@ void main() {
     });
 
     group('rendering', () {
-      testWidgets('displays application title and description', (WidgetTester tester) async {
+      testWidgets('displays application title and description', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(application: sampleApplication),
@@ -37,10 +39,15 @@ void main() {
         );
 
         expect(find.text('Test Application'), findsOneWidget);
-        expect(find.text('A test application for widget testing'), findsOneWidget);
+        expect(
+          find.text('A test application for widget testing'),
+          findsOneWidget,
+        );
       });
 
-      testWidgets('displays status indicator for ready application', (WidgetTester tester) async {
+      testWidgets('displays status indicator for ready application', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(application: sampleApplication),
@@ -51,7 +58,9 @@ void main() {
         expect(find.byIcon(Icons.check_circle), findsOneWidget);
       });
 
-      testWidgets('displays running status indicator', (WidgetTester tester) async {
+      testWidgets('displays running status indicator', (
+        WidgetTester tester,
+      ) async {
         final UserApplication runningApp = sampleApplication.copyWith(
           status: ApplicationStatus.running,
         );
@@ -65,7 +74,9 @@ void main() {
         expect(find.text('Running'), findsOneWidget);
       });
 
-      testWidgets('displays failed status indicator', (WidgetTester tester) async {
+      testWidgets('displays failed status indicator', (
+        WidgetTester tester,
+      ) async {
         final UserApplication failedApp = sampleApplication.copyWith(
           status: ApplicationStatus.failed,
         );
@@ -80,7 +91,9 @@ void main() {
         expect(find.byIcon(Icons.error), findsOneWidget);
       });
 
-      testWidgets('displays progress indicator for developing application', (WidgetTester tester) async {
+      testWidgets('displays progress indicator for developing application', (
+        WidgetTester tester,
+      ) async {
         final UserApplication developingApp = sampleApplication.copyWith(
           status: ApplicationStatus.developing,
           progress: DevelopmentProgress(
@@ -101,7 +114,9 @@ void main() {
         expect(find.byType(LinearProgressIndicator), findsOneWidget);
       });
 
-      testWidgets('displays updated time description', (WidgetTester tester) async {
+      testWidgets('displays updated time description', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(application: sampleApplication),
@@ -113,7 +128,9 @@ void main() {
     });
 
     group('interactions', () {
-      testWidgets('calls onTap callback when tapped', (WidgetTester tester) async {
+      testWidgets('calls onTap callback when tapped', (
+        WidgetTester tester,
+      ) async {
         bool tapCalled = false;
 
         await tester.pumpWidget(
@@ -129,7 +146,9 @@ void main() {
         expect(tapCalled, isTrue);
       });
 
-      testWidgets('calls onSecondaryTap callback when right-clicked', (WidgetTester tester) async {
+      testWidgets('calls onSecondaryTap callback when right-clicked', (
+        WidgetTester tester,
+      ) async {
         bool secondaryTapCalled = false;
 
         await tester.pumpWidget(
@@ -141,11 +160,16 @@ void main() {
           ),
         );
 
-        await tester.tap(find.byType(ApplicationTile), buttons: kSecondaryMouseButton);
+        await tester.tap(
+          find.byType(ApplicationTile),
+          buttons: kSecondaryMouseButton,
+        );
         expect(secondaryTapCalled, isTrue);
       });
 
-      testWidgets('does not call callbacks when they are null', (WidgetTester tester) async {
+      testWidgets('does not call callbacks when they are null', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(application: sampleApplication),
@@ -154,12 +178,17 @@ void main() {
 
         // Should not throw when tapping without callbacks
         await tester.tap(find.byType(ApplicationTile));
-        await tester.tap(find.byType(ApplicationTile), buttons: kSecondaryMouseButton);
+        await tester.tap(
+          find.byType(ApplicationTile),
+          buttons: kSecondaryMouseButton,
+        );
       });
     });
 
     group('visual states', () {
-      testWidgets('shows selection styling when selected', (WidgetTester tester) async {
+      testWidgets('shows selection styling when selected', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(
@@ -182,7 +211,9 @@ void main() {
         expect(decoration.border?.top.width, equals(2));
       });
 
-      testWidgets('shows default styling when not selected', (WidgetTester tester) async {
+      testWidgets('shows default styling when not selected', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(
           createTestApp(
             child: ApplicationTile(
@@ -206,7 +237,9 @@ void main() {
     });
 
     group('different application statuses', () {
-      testWidgets('renders requested status correctly', (WidgetTester tester) async {
+      testWidgets('renders requested status correctly', (
+        WidgetTester tester,
+      ) async {
         final UserApplication requestedApp = sampleApplication.copyWith(
           status: ApplicationStatus.requested,
         );
@@ -221,7 +254,9 @@ void main() {
         expect(find.byIcon(Icons.schedule), findsOneWidget);
       });
 
-      testWidgets('renders testing status correctly', (WidgetTester tester) async {
+      testWidgets('renders testing status correctly', (
+        WidgetTester tester,
+      ) async {
         final UserApplication testingApp = sampleApplication.copyWith(
           status: ApplicationStatus.testing,
           progress: DevelopmentProgress(
@@ -242,7 +277,9 @@ void main() {
         expect(find.text('90% • Running Integration Tests'), findsOneWidget);
       });
 
-      testWidgets('renders updating status correctly', (WidgetTester tester) async {
+      testWidgets('renders updating status correctly', (
+        WidgetTester tester,
+      ) async {
         final UserApplication updatingApp = sampleApplication.copyWith(
           status: ApplicationStatus.updating,
           progress: DevelopmentProgress(

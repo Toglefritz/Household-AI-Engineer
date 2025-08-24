@@ -95,21 +95,35 @@ class UserApplication {
   factory UserApplication.fromJson(Map<String, dynamic> json) {
     try {
       return UserApplication(
-        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
-        title: json['title'] as String? ?? (throw ArgumentError('Missing required field: title')),
-        description: json['description'] as String? ?? (throw ArgumentError('Missing required field: description')),
+        id:
+            json['id'] as String? ??
+            (throw ArgumentError('Missing required field: id')),
+        title:
+            json['title'] as String? ??
+            (throw ArgumentError('Missing required field: title')),
+        description:
+            json['description'] as String? ??
+            (throw ArgumentError('Missing required field: description')),
         status: _parseStatus(json['status'] as String?),
         createdAt: DateTime.parse(
-          json['createdAt'] as String? ?? (throw ArgumentError('Missing required field: createdAt')),
+          json['createdAt'] as String? ??
+              (throw ArgumentError('Missing required field: createdAt')),
         ),
         updatedAt: DateTime.parse(
-          json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
+          json['updatedAt'] as String? ??
+              (throw ArgumentError('Missing required field: updatedAt')),
         ),
         iconUrl: json['iconUrl'] as String?,
         category: _parseCategory(json['category'] as String?),
-        tags: (json['tags'] as List<dynamic>?)?.map((tag) => tag as String).toList() ?? [],
+        tags:
+            (json['tags'] as List<dynamic>?)
+                ?.map((tag) => tag as String)
+                .toList() ??
+            [],
         progress: json['progress'] != null
-            ? DevelopmentProgress.fromJson(json['progress'] as Map<String, dynamic>)
+            ? DevelopmentProgress.fromJson(
+                json['progress'] as Map<String, dynamic>,
+              )
             : null,
       );
     } catch (e) {

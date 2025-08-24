@@ -40,7 +40,9 @@ class ConversationContext {
   factory ConversationContext.fromJson(Map<String, dynamic> json) {
     return ConversationContext(
       purpose: json['purpose'] as String,
-      metadata: Map<String, dynamic>.from(json['metadata'] as Map<String, dynamic>? ?? {}),
+      metadata: Map<String, dynamic>.from(
+        json['metadata'] as Map<String, dynamic>? ?? {},
+      ),
       applicationId: json['applicationId'] as String?,
     );
   }
@@ -82,7 +84,8 @@ class ConversationContext {
   /// Returns true if this conversation is about modifying an existing application.
   ///
   /// Convenience method for checking conversation purpose.
-  bool get isModifyingApplication => purpose == 'modify_application' && applicationId != null;
+  bool get isModifyingApplication =>
+      purpose == 'modify_application' && applicationId != null;
 
   /// Gets a metadata value by key with optional type casting.
   ///
@@ -99,7 +102,9 @@ class ConversationContext {
   /// @param value The value to set
   /// @returns New ConversationContext with updated metadata
   ConversationContext setMetadata(String key, dynamic value) {
-    final Map<String, dynamic> newMetadata = Map<String, dynamic>.from(metadata);
+    final Map<String, dynamic> newMetadata = Map<String, dynamic>.from(
+      metadata,
+    );
     newMetadata[key] = value;
     return copyWith(metadata: newMetadata);
   }
@@ -110,7 +115,7 @@ class ConversationContext {
   /// @returns New ConversationContext with updated metadata
   ConversationContext removeMetadata(String key) {
     final Map<String, dynamic> newMetadata = Map<String, dynamic>.from(metadata)
-    ..remove(key);
+      ..remove(key);
     return copyWith(metadata: newMetadata);
   }
 }

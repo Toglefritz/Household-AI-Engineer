@@ -36,7 +36,9 @@ void main() {
       ///
       /// Should show the icon, label, and count in a horizontal layout
       /// with proper styling and interactive behavior.
-      testWidgets('should render expanded category item', (WidgetTester tester) async {
+      testWidgets('should render expanded category item', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         expect(find.byType(SidebarCategoryItem), findsOneWidget);
@@ -52,7 +54,9 @@ void main() {
       ///
       /// Should maintain the standard category item height for consistent
       /// spacing and layout.
-      testWidgets('should have correct height in expanded state', (WidgetTester tester) async {
+      testWidgets('should have correct height in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         final SizedBox container = tester.widget<SizedBox>(
@@ -69,7 +73,9 @@ void main() {
       ///
       /// Should respond to tap gestures and provide visual feedback
       /// through the InkWell ripple effect.
-      testWidgets('should be interactive in expanded state', (WidgetTester tester) async {
+      testWidgets('should be interactive in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         final InkWell inkWell = tester.widget<InkWell>(find.byType(InkWell));
@@ -84,7 +90,9 @@ void main() {
       ///
       /// Should arrange icon, label, and count in a horizontal row
       /// with appropriate spacing and alignment.
-      testWidgets('should have proper layout in expanded state', (WidgetTester tester) async {
+      testWidgets('should have proper layout in expanded state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
         // Should have a Row layout
@@ -92,7 +100,10 @@ void main() {
 
         // Icon should be on the left
         final Row row = tester.widget<Row>(find.byType(Row));
-        expect(row.children.length, greaterThanOrEqualTo(3)); // Icon, spacing, text, count
+        expect(
+          row.children.length,
+          greaterThanOrEqualTo(3),
+        ); // Icon, spacing, text, count
       });
     });
 
@@ -101,7 +112,9 @@ void main() {
       ///
       /// Should show only the icon with a tooltip containing the category
       /// information, maintaining the same height as expanded state.
-      testWidgets('should render collapsed category item', (WidgetTester tester) async {
+      testWidgets('should render collapsed category item', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         expect(find.byType(SidebarCategoryItem), findsOneWidget);
@@ -117,7 +130,9 @@ void main() {
       ///
       /// Should maintain the same height as the expanded state to prevent
       /// layout shifts during state transitions.
-      testWidgets('should have correct height in collapsed state', (WidgetTester tester) async {
+      testWidgets('should have correct height in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         final SizedBox container = tester.widget<SizedBox>(
@@ -134,7 +149,9 @@ void main() {
       ///
       /// Should provide category information through tooltip when
       /// the user hovers or long-presses the icon.
-      testWidgets('should show tooltip with category information', (WidgetTester tester) async {
+      testWidgets('should show tooltip with category information', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         final Tooltip tooltip = tester.widget<Tooltip>(find.byType(Tooltip));
@@ -145,7 +162,9 @@ void main() {
       ///
       /// Should respond to tap gestures even in collapsed state
       /// for category filtering functionality.
-      testWidgets('should be interactive in collapsed state', (WidgetTester tester) async {
+      testWidgets('should be interactive in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         final InkWell inkWell = tester.widget<InkWell>(find.byType(InkWell));
@@ -160,7 +179,9 @@ void main() {
       ///
       /// Should center the icon within the available space for
       /// visual consistency and alignment.
-      testWidgets('should center icon in collapsed state', (WidgetTester tester) async {
+      testWidgets('should center icon in collapsed state', (
+        WidgetTester tester,
+      ) async {
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
 
         // Should have a Center widget
@@ -177,7 +198,9 @@ void main() {
       ///
       /// Should prevent layout shifts by ensuring consistent dimensions
       /// regardless of the expansion state.
-      testWidgets('should maintain consistent height across states', (WidgetTester tester) async {
+      testWidgets('should maintain consistent height across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state height
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
 
@@ -207,7 +230,9 @@ void main() {
       ///
       /// Should transition between expanded and collapsed states without
       /// errors or visual artifacts.
-      testWidgets('should handle state changes gracefully', (WidgetTester tester) async {
+      testWidgets('should handle state changes gracefully', (
+        WidgetTester tester,
+      ) async {
         // Start with expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
         expect(find.text(testLabel), findsOneWidget);
@@ -231,15 +256,21 @@ void main() {
       ///
       /// Should provide tap functionality in both expanded and collapsed
       /// states for consistent user experience.
-      testWidgets('should maintain interactivity across states', (WidgetTester tester) async {
+      testWidgets('should maintain interactivity across states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state interactivity
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
-        final InkWell expandedInkWell = tester.widget<InkWell>(find.byType(InkWell));
+        final InkWell expandedInkWell = tester.widget<InkWell>(
+          find.byType(InkWell),
+        );
         expect(expandedInkWell.onTap, isNotNull);
 
         // Test collapsed state interactivity
         await tester.pumpWidget(createTestWidget(showExpandedContent: false));
-        final InkWell collapsedInkWell = tester.widget<InkWell>(find.byType(InkWell));
+        final InkWell collapsedInkWell = tester.widget<InkWell>(
+          find.byType(InkWell),
+        );
         expect(collapsedInkWell.onTap, isNotNull);
       });
 
@@ -247,7 +278,9 @@ void main() {
       ///
       /// Should always show the category icon regardless of expansion
       /// state for visual consistency and recognition.
-      testWidgets('should show icon in both states', (WidgetTester tester) async {
+      testWidgets('should show icon in both states', (
+        WidgetTester tester,
+      ) async {
         // Test expanded state
         await tester.pumpWidget(createTestWidget(showExpandedContent: true));
         expect(find.byIcon(testIcon), findsOneWidget);

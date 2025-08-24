@@ -31,7 +31,10 @@ void main() async {
   });
 
   // Read ALWAYS_ON_TOP flag from environment variable
-  const String alwaysOnTopEnv = String.fromEnvironment('ALWAYS_ON_TOP', defaultValue: 'true');
+  const String alwaysOnTopEnv = String.fromEnvironment(
+    'ALWAYS_ON_TOP',
+    defaultValue: 'true',
+  );
   final bool alwaysOnTop = alwaysOnTopEnv.toLowerCase() == 'true';
 
   // Keep window always on top if the flag is true so the Kiro IDE can run in the background.

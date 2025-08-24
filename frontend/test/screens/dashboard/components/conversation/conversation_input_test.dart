@@ -10,7 +10,9 @@ import '../../../../test_helpers.dart';
 /// text input, and message sending.
 void main() {
   group('ConversationInputWidget', () {
-    testWidgets('displays input field with placeholder', (WidgetTester tester) async {
+    testWidgets('displays input field with placeholder', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: ConversationInputWidget(
@@ -23,7 +25,9 @@ void main() {
       expect(find.text('Type your message...'), findsOneWidget);
     });
 
-    testWidgets('can receive focus and accept text input', (WidgetTester tester) async {
+    testWidgets('can receive focus and accept text input', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: ConversationInputWidget(
@@ -51,7 +55,9 @@ void main() {
       expect(find.byIcon(Icons.send), findsAtLeastNWidgets(1));
     });
 
-    testWidgets('sends message when send button is tapped', (WidgetTester tester) async {
+    testWidgets('sends message when send button is tapped', (
+      WidgetTester tester,
+    ) async {
       String? sentMessage;
 
       await tester.pumpWidget(
@@ -76,11 +82,15 @@ void main() {
       expect(sentMessage, equals('Test message'));
 
       // Verify text field was cleared
-      final TextField textFieldWidget = tester.widget<TextField>(find.byType(TextField));
+      final TextField textFieldWidget = tester.widget<TextField>(
+        find.byType(TextField),
+      );
       expect(textFieldWidget.controller?.text, isEmpty);
     });
 
-    testWidgets('sends message when submitted via keyboard', (WidgetTester tester) async {
+    testWidgets('sends message when submitted via keyboard', (
+      WidgetTester tester,
+    ) async {
       String? sentMessage;
 
       await tester.pumpWidget(
@@ -102,7 +112,9 @@ void main() {
       expect(sentMessage, equals('Keyboard test'));
     });
 
-    testWidgets('disables input when enabled is false', (WidgetTester tester) async {
+    testWidgets('disables input when enabled is false', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: ConversationInputWidget(
@@ -115,14 +127,18 @@ void main() {
       await tester.pump(); // Ensure widget is fully built
 
       // Verify text field is disabled
-      final TextField textField = tester.widget<TextField>(find.byType(TextField));
+      final TextField textField = tester.widget<TextField>(
+        find.byType(TextField),
+      );
       expect(textField.enabled, isFalse);
 
       // Verify no send button is visible
       expect(find.byIcon(Icons.send), findsNothing);
     });
 
-    testWidgets('uses custom placeholder when provided', (WidgetTester tester) async {
+    testWidgets('uses custom placeholder when provided', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         createTestApp(
           child: ConversationInputWidget(

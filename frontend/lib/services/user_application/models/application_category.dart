@@ -198,7 +198,10 @@ enum ApplicationCategory {
   /// @returns The corresponding ApplicationCategory enum value
   /// @throws ArgumentError if the value doesn't match any category
   static ApplicationCategory fromString(String value) {
-    final String normalizedValue = value.toLowerCase().replaceAll(' ', '').replaceAll('&', '');
+    final String normalizedValue = value
+        .toLowerCase()
+        .replaceAll(' ', '')
+        .replaceAll('&', '');
 
     switch (normalizedValue) {
       case 'homemanagement':
@@ -247,7 +250,9 @@ enum ApplicationCategory {
   /// Useful for validation, dropdown lists, or other scenarios where
   /// all category names are needed.
   static List<String> get allDisplayNames {
-    return ApplicationCategory.values.map((category) => category.displayName).toList();
+    return ApplicationCategory.values
+        .map((category) => category.displayName)
+        .toList();
   }
 
   /// Returns all available category enum names as a list.
