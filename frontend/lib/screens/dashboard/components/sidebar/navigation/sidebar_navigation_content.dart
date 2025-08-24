@@ -40,35 +40,44 @@ class SidebarNavigationContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: Insets.small),
+    return Column(
       children: [
-        // Search section
-        Padding(
-          padding: const EdgeInsets.only(bottom: Insets.medium),
-          child: SidebarSearchSection(
-            showExpandedContent: showExpandedContent,
+        // Scrollable content area containing search, navigation, and categories
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: Insets.small),
+            child: Column(
+              children: [
+                // Search section
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Insets.medium),
+                  child: SidebarSearchSection(
+                    showExpandedContent: showExpandedContent,
+                  ),
+                ),
+
+                // Navigation items
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Insets.medium),
+                  child: SidebarNavigationSection(
+                    showExpandedContent: showExpandedContent,
+                  ),
+                ),
+
+                // Categories section
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Insets.medium),
+                  child: SidebarCategoriesSection(
+                    showExpandedContent: showExpandedContent,
+                    applications: applications,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
 
-        // Navigation items
-        Padding(
-          padding: const EdgeInsets.only(bottom: Insets.medium),
-          child: SidebarNavigationSection(
-            showExpandedContent: showExpandedContent,
-          ),
-        ),
-
-        // Categories section
-        Padding(
-          padding: const EdgeInsets.only(bottom: Insets.medium),
-          child: SidebarCategoriesSection(
-            showExpandedContent: showExpandedContent,
-            applications: applications,
-          ),
-        ),
-
-        // Quick actions
+        // Quick actions pinned to bottom with padding
         Padding(
           padding: const EdgeInsets.only(bottom: Insets.medium),
           child: SidebarQuickActionsSection(
