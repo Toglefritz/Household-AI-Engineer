@@ -592,7 +592,7 @@
   "@setupKiroRequired": {
     "description": "Title shown when Kiro IDE is not installed"
   },
-  "setupKiroRequiredDescription": "To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.",
+  "setupKiroRequiredDescription": "To use the Household AI Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.",
   "@setupKiroRequiredDescription": {
     "description": "Description explaining why Kiro IDE is required"
   },
@@ -608,7 +608,7 @@
   "@setupChecking": {
     "description": "Text shown on button while checking for Kiro"
   },
-  "setupWelcome": "Welcome to Household Software Engineer!",
+  "setupWelcome": "Welcome to Household AI Engineer!",
   "@setupWelcome": {
     "description": "Welcome message in the tutorial phase"
   },
@@ -662,7 +662,7 @@
   "@setupGetStarted": {
     "description": "Button text to complete setup and enter the main app"
   },
-  "splashTitle": "Household Software Engineer",
+  "splashTitle": "Household AI Engineer",
   "@splashTitle": {
     "description": "Application title shown on splash screen"
   },
