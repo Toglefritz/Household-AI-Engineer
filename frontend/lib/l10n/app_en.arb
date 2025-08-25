@@ -579,5 +579,111 @@
         "description": "Number of applications"
       }
     }
+  },
+  "setupCheckingKiro": "Checking for Kiro IDE...",
+  "@setupCheckingKiro": {
+    "description": "Message shown while checking if Kiro IDE is installed"
+  },
+  "setupCheckingKiroDescription": "Please wait while we verify your Kiro installation.",
+  "@setupCheckingKiroDescription": {
+    "description": "Description shown during Kiro installation check"
+  },
+  "setupKiroRequired": "Kiro IDE Required",
+  "@setupKiroRequired": {
+    "description": "Title shown when Kiro IDE is not installed"
+  },
+  "setupKiroRequiredDescription": "To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.",
+  "@setupKiroRequiredDescription": {
+    "description": "Description explaining why Kiro IDE is required"
+  },
+  "setupDownloadKiro": "Download Kiro IDE",
+  "@setupDownloadKiro": {
+    "description": "Button text to download Kiro IDE"
+  },
+  "setupContinue": "Continue",
+  "@setupContinue": {
+    "description": "Button text to continue after installing Kiro"
+  },
+  "setupChecking": "Checking...",
+  "@setupChecking": {
+    "description": "Text shown on button while checking for Kiro"
+  },
+  "setupWelcome": "Welcome to Household Software Engineer!",
+  "@setupWelcome": {
+    "description": "Welcome message in the tutorial phase"
+  },
+  "setupKiroDetected": "Kiro IDE {version} detected",
+  "@setupKiroDetected": {
+    "description": "Message confirming Kiro IDE version is detected",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "description": "The detected Kiro IDE version"
+      }
+    }
+  },
+  "setupTutorialDescription": "Let's get you started with creating and managing your household applications.",
+  "@setupTutorialDescription": {
+    "description": "Description for the tutorial phase"
+  },
+  "setupTutorialTitle": "Quick Start Guide",
+  "@setupTutorialTitle": {
+    "description": "Title for the tutorial section"
+  },
+  "setupTutorialStep1Title": "Create Applications",
+  "@setupTutorialStep1Title": {
+    "description": "Title for tutorial step 1"
+  },
+  "setupTutorialStep1Description": "Describe what you need in natural language and let AI build it for you.",
+  "@setupTutorialStep1Description": {
+    "description": "Description for tutorial step 1"
+  },
+  "setupTutorialStep2Title": "Monitor Development",
+  "@setupTutorialStep2Title": {
+    "description": "Title for tutorial step 2"
+  },
+  "setupTutorialStep2Description": "Watch real-time progress as your applications are developed and tested.",
+  "@setupTutorialStep2Description": {
+    "description": "Description for tutorial step 2"
+  },
+  "setupTutorialStep3Title": "Launch and Use",
+  "@setupTutorialStep3Title": {
+    "description": "Title for tutorial step 3"
+  },
+  "setupTutorialStep3Description": "Once ready, launch your applications directly from the dashboard.",
+  "@setupTutorialStep3Description": {
+    "description": "Description for tutorial step 3"
+  },
+  "setupSkipTutorial": "Skip Tutorial",
+  "@setupSkipTutorial": {
+    "description": "Button text to skip the tutorial"
+  },
+  "setupGetStarted": "Get Started",
+  "@setupGetStarted": {
+    "description": "Button text to complete setup and enter the main app"
+  },
+  "splashTitle": "Household Software Engineer",
+  "@splashTitle": {
+    "description": "Application title shown on splash screen"
+  },
+  "splashSubtitle": "AI-Powered Home Application Development",
+  "@splashSubtitle": {
+    "description": "Application subtitle shown on splash screen"
+  },
+  "splashInitializing": "Initializing application...",
+  "@splashInitializing": {
+    "description": "Message shown while app is initializing"
+  },
+  "splashInitializationFailed": "Initialization Failed",
+  "@splashInitializationFailed": {
+    "description": "Title shown when app initialization fails"
+  },
+  "splashRetry": "Retry",
+  "@splashRetry": {
+    "description": "Button text to retry initialization"
+  },
+  "splashForceSetup": "Go to Setup",
+  "@splashForceSetup": {
+    "description": "Button text to bypass initialization and go to setup"
   }
 }

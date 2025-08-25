@@ -1,9 +1,3 @@
-/// Main search and filter interface component.
-///
-/// This component combines the search bar, filter panel, and sort controls
-/// into a comprehensive search and filtering interface. Manages the search
-/// controller and coordinates between all search-related components.
-
 import 'package:flutter/material.dart';
 
 import '../../../../services/user_application/models/user_application.dart';
@@ -81,10 +75,10 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
     _searchController = search.ApplicationSearchController();
 
     // Listen to search controller changes
-    _searchController.addListener(_onSearchResultsChanged);
+    _searchController..addListener(_onSearchResultsChanged)
 
     // Initialize with current applications
-    _searchController.updateApplications(widget.applications);
+    ..updateApplications(widget.applications);
   }
 
   @override
@@ -99,8 +93,8 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchResultsChanged);
-    _searchController.dispose();
+    _searchController..removeListener(_onSearchResultsChanged)
+    ..dispose();
     super.dispose();
   }
 
@@ -214,7 +208,7 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
         return Container(
           padding: const EdgeInsets.all(Insets.small),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(

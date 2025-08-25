@@ -402,4 +402,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String applicationCount(int count) {
     return '$count applications';
   }
+
+  @override
+  String get setupCheckingKiro => 'Checking for Kiro IDE...';
+
+  @override
+  String get setupCheckingKiroDescription =>
+      'Please wait while we verify your Kiro installation.';
+
+  @override
+  String get setupKiroRequired => 'Kiro IDE Required';
+
+  @override
+  String get setupKiroRequiredDescription =>
+      'To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.';
+
+  @override
+  String get setupDownloadKiro => 'Download Kiro IDE';
+
+  @override
+  String get setupContinue => 'Continue';
+
+  @override
+  String get setupChecking => 'Checking...';
+
+  @override
+  String get setupWelcome => 'Welcome to Household Software Engineer!';
+
+  @override
+  String setupKiroDetected(String version) {
+    return 'Kiro IDE $version detected';
+  }
+
+  @override
+  String get setupTutorialDescription =>
+      'Let\'s get you started with creating and managing your household applications.';
+
+  @override
+  String get setupTutorialTitle => 'Quick Start Guide';
+
+  @override
+  String get setupTutorialStep1Title => 'Create Applications';
+
+  @override
+  String get setupTutorialStep1Description =>
+      'Describe what you need in natural language and let AI build it for you.';
+
+  @override
+  String get setupTutorialStep2Title => 'Monitor Development';
+
+  @override
+  String get setupTutorialStep2Description =>
+      'Watch real-time progress as your applications are developed and tested.';
+
+  @override
+  String get setupTutorialStep3Title => 'Launch and Use';
+
+  @override
+  String get setupTutorialStep3Description =>
+      'Once ready, launch your applications directly from the dashboard.';
+
+  @override
+  String get setupSkipTutorial => 'Skip Tutorial';
+
+  @override
+  String get setupGetStarted => 'Get Started';
+
+  @override
+  String get splashTitle => 'Household Software Engineer';
+
+  @override
+  String get splashSubtitle => 'AI-Powered Home Application Development';
+
+  @override
+  String get splashInitializing => 'Initializing application...';
+
+  @override
+  String get splashInitializationFailed => 'Initialization Failed';
+
+  @override
+  String get splashRetry => 'Retry';
+
+  @override
+  String get splashForceSetup => 'Go to Setup';
 }

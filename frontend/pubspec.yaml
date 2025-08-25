@@ -26,6 +26,8 @@ dependencies:
   webview_flutter: ^4.4.2
   # HTTP client for health checking
   http: ^1.1.0
+  # URL launcher for opening external links
+  url_launcher: ^6.2.1
 
 dev_dependencies:
   flutter_test:

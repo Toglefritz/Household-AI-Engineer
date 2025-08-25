@@ -801,6 +801,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} applications'**
   String applicationCount(int count);
+
+  /// Message shown while checking if Kiro IDE is installed
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for Kiro IDE...'**
+  String get setupCheckingKiro;
+
+  /// Description shown during Kiro installation check
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while we verify your Kiro installation.'**
+  String get setupCheckingKiroDescription;
+
+  /// Title shown when Kiro IDE is not installed
+  ///
+  /// In en, this message translates to:
+  /// **'Kiro IDE Required'**
+  String get setupKiroRequired;
+
+  /// Description explaining why Kiro IDE is required
+  ///
+  /// In en, this message translates to:
+  /// **'To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.'**
+  String get setupKiroRequiredDescription;
+
+  /// Button text to download Kiro IDE
+  ///
+  /// In en, this message translates to:
+  /// **'Download Kiro IDE'**
+  String get setupDownloadKiro;
+
+  /// Button text to continue after installing Kiro
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get setupContinue;
+
+  /// Text shown on button while checking for Kiro
+  ///
+  /// In en, this message translates to:
+  /// **'Checking...'**
+  String get setupChecking;
+
+  /// Welcome message in the tutorial phase
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Household Software Engineer!'**
+  String get setupWelcome;
+
+  /// Message confirming Kiro IDE version is detected
+  ///
+  /// In en, this message translates to:
+  /// **'Kiro IDE {version} detected'**
+  String setupKiroDetected(String version);
+
+  /// Description for the tutorial phase
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s get you started with creating and managing your household applications.'**
+  String get setupTutorialDescription;
+
+  /// Title for the tutorial section
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Start Guide'**
+  String get setupTutorialTitle;
+
+  /// Title for tutorial step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Create Applications'**
+  String get setupTutorialStep1Title;
+
+  /// Description for tutorial step 1
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what you need in natural language and let AI build it for you.'**
+  String get setupTutorialStep1Description;
+
+  /// Title for tutorial step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor Development'**
+  String get setupTutorialStep2Title;
+
+  /// Description for tutorial step 2
+  ///
+  /// In en, this message translates to:
+  /// **'Watch real-time progress as your applications are developed and tested.'**
+  String get setupTutorialStep2Description;
+
+  /// Title for tutorial step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Launch and Use'**
+  String get setupTutorialStep3Title;
+
+  /// Description for tutorial step 3
+  ///
+  /// In en, this message translates to:
+  /// **'Once ready, launch your applications directly from the dashboard.'**
+  String get setupTutorialStep3Description;
+
+  /// Button text to skip the tutorial
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Tutorial'**
+  String get setupSkipTutorial;
+
+  /// Button text to complete setup and enter the main app
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get setupGetStarted;
+
+  /// Application title shown on splash screen
+  ///
+  /// In en, this message translates to:
+  /// **'Household Software Engineer'**
+  String get splashTitle;
+
+  /// Application subtitle shown on splash screen
+  ///
+  /// In en, this message translates to:
+  /// **'AI-Powered Home Application Development'**
+  String get splashSubtitle;
+
+  /// Message shown while app is initializing
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing application...'**
+  String get splashInitializing;
+
+  /// Title shown when app initialization fails
+  ///
+  /// In en, this message translates to:
+  /// **'Initialization Failed'**
+  String get splashInitializationFailed;
+
+  /// Button text to retry initialization
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get splashRetry;
+
+  /// Button text to bypass initialization and go to setup
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Setup'**
+  String get splashForceSetup;
 }
 
 class _AppLocalizationsDelegate

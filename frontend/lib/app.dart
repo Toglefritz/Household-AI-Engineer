@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'l10n/app_localizations.dart';
-import 'screens/dashboard/dashboard_route.dart';
+import 'screens/splash/splash_route.dart';
 import 'theme/app_theme.dart';
 
 /// Root application widget that configures the MaterialApp.
@@ -26,7 +26,7 @@ class HouseholdAIEngineerApp extends StatelessWidget {
       theme: AppTheme.lightThemeData,
       darkTheme: AppTheme.darkThemeData,
 
-      home: const DashboardRoute(),
+      home: const SplashRoute(),
     );
   }
 }
