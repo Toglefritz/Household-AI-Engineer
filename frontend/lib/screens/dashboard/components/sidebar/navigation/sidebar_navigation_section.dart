@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../services/search/models/search_filter.dart';
@@ -6,7 +5,6 @@ import '../../../../../services/user_application/models/application_status.dart'
 import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
 import '../../../models/sidebar/navigation_item_data.dart';
-import '../../../models/sidebar/sidebar_spacing.dart';
 import '../../search/search_controller.dart' as search;
 import 'sidebar_navigation.dart';
 
@@ -132,7 +130,7 @@ class SidebarNavigationSection extends StatelessWidget {
   void _handleRecentTap() {
     searchController
       ..clearAllFilters()
-      ..updateRecentFilter(true)
+      ..updateRecentFilter(showRecentOnly: true)
       ..updateSortOption(SortOption.updatedDateDesc);
   }
 
@@ -140,8 +138,8 @@ class SidebarNavigationSection extends StatelessWidget {
   ///
   /// Filters applications to show only those marked as favorites by the user.
   void _handleFavoritesTap() {
-    searchController.clearAllFilters();
-    searchController.updateFavoritesFilter(true);
+    searchController..clearAllFilters()
+    ..updateFavoritesFilter(showFavoritesOnly: true);
   }
 
   /// Handles the "In Development" navigation item tap.

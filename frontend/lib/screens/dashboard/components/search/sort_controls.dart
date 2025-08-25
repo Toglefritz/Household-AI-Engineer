@@ -4,6 +4,7 @@
 /// including multiple sort criteria and visual indicators for the
 /// current sort state. Integrates with the search controller for
 /// real-time sort updates and state management.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -101,7 +102,7 @@ class SortControls extends StatelessWidget {
                   vertical: Insets.xSmall,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(

@@ -80,14 +80,14 @@ class BulkSelectionToolbar extends StatelessWidget {
   ///
   /// Applications can be deleted if they are not running or in development.
   bool get _canDeleteSelected {
-    return selectedApplications.any((app) => _canDelete(app));
+    return selectedApplications.any(_canDelete);
   }
 
   /// List of selected applications that can be deleted.
   ///
   /// Filters the selection to only include applications that are safe to delete.
   List<UserApplication> get _deletableApplications {
-    return selectedApplications.where((app) => _canDelete(app)).toList();
+    return selectedApplications.where(_canDelete).toList();
   }
 
   @override
@@ -255,7 +255,7 @@ class BulkSelectionToolbar extends StatelessWidget {
       },
     );
 
-    if (confirmed == true && onBulkDelete != null) {
+    if (confirmed ?? false) {
       onBulkDelete!(deletableApps);
     }
   }

@@ -153,7 +153,7 @@ class SetupView extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: Insets.large),
           child: FilledButton.icon(
-            onPressed: () => _launchKiroWebsite(),
+            onPressed: _launchKiroWebsite,
             icon: const Icon(Icons.open_in_new),
             label: Text(l10n.setupDownloadKiro),
           ),

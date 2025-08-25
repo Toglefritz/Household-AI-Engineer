@@ -2,7 +2,7 @@ part of 'sidebar_quick_actions.dart';
 
 /// Collapsed create button when sidebar is collapsed.
 ///
-/// Shows only the icon in a compact button format.
+/// Shows only the icon in a compact button format with enhanced animations.
 class _CollapsedCreateButton extends StatelessWidget {
   /// Creates a collapsed create button.
   const _CollapsedCreateButton({
@@ -16,7 +16,7 @@ class _CollapsedCreateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ElevatedButton(
+      child: AnimatedButton(
         onPressed: openNewApplicationConversation,
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,

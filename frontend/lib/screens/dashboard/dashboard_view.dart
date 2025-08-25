@@ -65,47 +65,60 @@ class DashboardView extends StatelessWidget {
                     child: SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.all(Insets.medium),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Opacity(
-                              opacity: 0.6,
-                              child: Text(
-                                '${AppLocalizations.of(context)!.greeting},',
-                                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Column(
+                            key: ValueKey('dashboard-${state.filteredApplications.length}'),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AnimatedOpacity(
+                                duration: const Duration(milliseconds: 500),
+                                opacity: 0.6,
+                                child: Text(
+                                  '${AppLocalizations.of(context)!.greeting},',
+                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: Insets.small,
-                                bottom: Insets.large,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: Insets.small,
+                                  bottom: Insets.large,
+                                ),
+                                child: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 600),
+                                  opacity: 1.0,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.welcomeMessage,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.displayMedium,
+                                  ),
+                                ),
                               ),
-                              child: Text(
-                                AppLocalizations.of(context)!.welcomeMessage,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.displayMedium,
-                              ),
-                            ),
 
-                            // Application grid
-                            Expanded(
-                              child: ApplicationGrid(
-                                applications: state.filteredApplications,
-                                selectedApplicationIds: state.selectedApplicationIds,
-                                onApplicationTap: state.onApplicationTap,
-                                onApplicationSecondaryTap: state.onApplicationSecondaryTap,
-                                onCreateNewApplication: state.openNewApplicationConversation,
-                                onSelectionChanged: state.onApplicationSelectionChanged,
-                                onSelectAll: state.onSelectAllApplications,
-                                onSelectNone: state.onSelectNoApplications,
-                                onBulkDelete: state.onBulkDeleteApplications,
+                              // Application grid with fade transition
+                              Expanded(
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 400),
+                                  child: ApplicationGrid(
+                                    key: ValueKey('grid-${state.filteredApplications.length}'),
+                                    applications: state.filteredApplications,
+                                    selectedApplicationIds: state.selectedApplicationIds,
+                                    onApplicationTap: state.onApplicationTap,
+                                    onApplicationSecondaryTap: state.onApplicationSecondaryTap,
+                                    onCreateNewApplication: state.openNewApplicationConversation,
+                                    onSelectionChanged: state.onApplicationSelectionChanged,
+                                    onSelectAll: state.onSelectAllApplications,
+                                    onSelectNone: state.onSelectNoApplications,
+                                    onBulkDelete: state.onBulkDeleteApplications,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

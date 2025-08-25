@@ -4,6 +4,7 @@
 /// for user applications including fuzzy text matching, category filtering,
 /// status filtering, date range filtering, and multiple sorting options.
 /// Optimized for real-time search with efficient algorithms and caching.
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
@@ -353,7 +354,6 @@ class ApplicationSearchService {
           if (dateComparison != 0) return dateComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.createdDateAsc:
         results.sort((a, b) {
@@ -361,7 +361,6 @@ class ApplicationSearchService {
           if (dateComparison != 0) return dateComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.updatedDateDesc:
         results.sort((a, b) {
@@ -369,7 +368,6 @@ class ApplicationSearchService {
           if (dateComparison != 0) return dateComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.updatedDateAsc:
         results.sort((a, b) {
@@ -377,7 +375,6 @@ class ApplicationSearchService {
           if (dateComparison != 0) return dateComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.titleAsc:
         results.sort((a, b) {
@@ -385,7 +382,6 @@ class ApplicationSearchService {
           if (titleComparison != 0) return titleComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.titleDesc:
         results.sort((a, b) {
@@ -393,7 +389,6 @@ class ApplicationSearchService {
           if (titleComparison != 0) return titleComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
 
       case SortOption.statusPriority:
         results.sort((a, b) {
@@ -403,7 +398,6 @@ class ApplicationSearchService {
           if (statusComparison != 0) return statusComparison;
           return b.score.compareTo(a.score); // Tie-breaker: relevance
         });
-        break;
     }
   }
 

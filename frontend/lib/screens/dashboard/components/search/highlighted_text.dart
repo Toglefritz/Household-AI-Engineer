@@ -3,6 +3,7 @@
 /// This component renders text with highlighted search matches,
 /// providing visual feedback for search results and improving
 /// the user experience by showing exactly what matched their query.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -101,8 +102,8 @@ class HighlightedText extends StatelessWidget {
     final List<TextSpan> spans = [];
 
     // Sort matches by start position to process in order
-    final List<TextMatch> sortedMatches = List.from(matches);
-    sortedMatches.sort((a, b) => a.start.compareTo(b.start));
+    final List<TextMatch> sortedMatches = List.from(matches)
+    ..sort((a, b) => a.start.compareTo(b.start));
 
     // Get default highlight style if not provided
     final TextStyle effectiveHighlightStyle = highlightStyle ?? _getDefaultHighlightStyle(context);

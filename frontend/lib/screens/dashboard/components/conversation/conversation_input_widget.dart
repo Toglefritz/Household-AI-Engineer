@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/animated_components.dart';
 import '../../../../theme/insets.dart';
 
 /// Widget for inputting and sending conversation messages.
@@ -34,20 +35,28 @@ class ConversationInputWidget extends StatefulWidget {
   final String? placeholder;
 
   @override
-  State<ConversationInputWidget> createState() =>
-      _ConversationInputWidgetState();
+  State<ConversationInputWidget> createState() => _ConversationInputWidgetState();
 }
 
 /// State for the [ConversationInputWidget].
-class _ConversationInputWidgetState extends State<ConversationInputWidget> {
+class _ConversationInputWidgetState extends State<ConversationInputWidget> with SingleTickerProviderStateMixin {
   /// Text editing controller for the input field.
   late final TextEditingController _textController;
 
   /// Focus node for the input field.
   late final FocusNode _focusNode;
 
+  /// Animation controller for send button appearance.
+  late final AnimationController _sendButtonController;
+
+  /// Animation for send button scale and opacity.
+  late final Animation<double> _sendButtonAnimation;
+
   /// Current text input value.
   String _currentText = '';
+
+  /// Whether the send button is currently in loading state.
+  bool _isSending = false;
 
   @override
   void initState() {
@@ -55,25 +64,64 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
     _textController = TextEditingController();
     _focusNode = FocusNode();
 
+    // Initialize send button animation
+    _sendButtonController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _sendButtonAnimation =
+        Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: _sendButtonController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
     _textController.addListener(_onTextChanged);
   }
 
   /// Handles text changes in the input field.
   void _onTextChanged() {
+    final String newText = _textController.text;
+    final bool hadText = _currentText.trim().isNotEmpty;
+    final bool hasText = newText.trim().isNotEmpty;
+
     setState(() {
-      _currentText = _textController.text;
+      _currentText = newText;
     });
+
+    // Animate send button appearance/disappearance
+    if (hasText && !hadText) {
+      _sendButtonController.forward();
+    } else if (!hasText && hadText) {
+      _sendButtonController.reverse();
+    }
   }
 
   /// Handles sending the current message.
-  void _handleSendMessage() {
+  Future<void> _handleSendMessage() async {
     final String message = _currentText.trim();
-    if (message.isNotEmpty && widget.enabled) {
+    if (message.isNotEmpty && widget.enabled && !_isSending) {
+      setState(() {
+        _isSending = true;
+      });
+
+      // Brief delay to show sending state
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
       widget.onSendMessage(message);
       _textController.clear();
+
       setState(() {
         _currentText = '';
+        _isSending = false;
       });
+
+      await _sendButtonController.reverse();
     }
   }
 
@@ -110,9 +158,7 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
               textCapitalization: TextCapitalization.sentences,
               textInputAction: TextInputAction.send,
               decoration: InputDecoration(
-                hintText:
-                    widget.placeholder ??
-                    AppLocalizations.of(context)!.conversationInputPlaceholder,
+                hintText: widget.placeholder ?? AppLocalizations.of(context)!.conversationInputPlaceholder,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: colorScheme.outline),
@@ -142,17 +188,32 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
             ),
           ),
 
-          // Send button (alternative to suffix icon for better accessibility)
-          if (canSend) ...[
-            const SizedBox(width: Insets.xSmall),
-            FloatingActionButton.small(
-              onPressed: _handleSendMessage,
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-              tooltip: AppLocalizations.of(context)!.tooltipSendMessage,
-              child: const Icon(Icons.send, size: 18),
-            ),
-          ],
+          // Animated send button
+          const SizedBox(width: Insets.xSmall),
+          AnimatedBuilder(
+            animation: _sendButtonAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _sendButtonAnimation.value,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: _sendButtonAnimation.value,
+                  child: AnimatedButton(
+                    onPressed: canSend ? _handleSendMessage : null,
+                    isLoading: _isSending,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                      padding: const EdgeInsets.all(8),
+                      minimumSize: const Size(40, 40),
+                      shape: const CircleBorder(),
+                    ),
+                    child: const Icon(Icons.send, size: 18),
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -164,6 +225,7 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> {
       ..removeListener(_onTextChanged)
       ..dispose();
     _focusNode.dispose();
+    _sendButtonController.dispose();
     super.dispose();
   }
 }

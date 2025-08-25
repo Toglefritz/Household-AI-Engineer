@@ -177,7 +177,7 @@ class SetupController extends State<SetupRoute> {
     }
 
     if (mounted) {
-      Navigator.of(context).pushReplacement(
+      await Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (BuildContext context) => const DashboardRoute(),
         ),

@@ -286,10 +286,10 @@ class ApplicationContextMenu extends StatelessWidget {
 
     // Add divider before destructive actions
     if (onDelete != null && _canDelete(application)) {
-      items.add(const PopupMenuDivider());
+      items..add(const PopupMenuDivider())
 
       // Delete action - for applications that can be deleted
-      items.add(
+      ..add(
         PopupMenuItem<void>(
           onTap: () => onDelete(application),
           child: _buildMenuItem(

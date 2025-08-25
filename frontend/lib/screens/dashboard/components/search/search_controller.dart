@@ -4,6 +4,7 @@
 /// application grid, including text search, filter criteria, sort options,
 /// and result state. Provides real-time search with debouncing and
 /// comprehensive state management for the search UI.
+library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -119,9 +120,7 @@ class ApplicationSearchController extends ChangeNotifier {
     notifyListeners();
 
     // Start debounce timer for actual search
-    _searchDebounceTimer = Timer(_searchDebounceDelay, () {
-      _performSearch();
-    });
+    _searchDebounceTimer = Timer(_searchDebounceDelay, _performSearch);
   }
 
   /// Updates the selected categories filter.
@@ -204,8 +203,8 @@ class ApplicationSearchController extends ChangeNotifier {
   /// Immediately performs search with the new favorites criteria.
   ///
   /// @param showFavoritesOnly Whether to show only favorite applications
-  void updateFavoritesFilter(bool showFavoritesOnly) {
-    _currentFilter = _currentFilter.copyWithFavoritesOnly(showFavoritesOnly);
+  void updateFavoritesFilter({required bool showFavoritesOnly}) {
+    _currentFilter = _currentFilter.copyWithFavoritesOnly(showFavoritesOnly: showFavoritesOnly);
     _performSearch();
   }
 
@@ -215,8 +214,8 @@ class ApplicationSearchController extends ChangeNotifier {
   /// Shows only applications updated within the last 7 days.
   ///
   /// @param showRecentOnly Whether to show only recently updated applications
-  void updateRecentFilter(bool showRecentOnly) {
-    _currentFilter = _currentFilter.copyWithRecentOnly(showRecentOnly);
+  void updateRecentFilter({required bool showRecentOnly}) {
+    _currentFilter = _currentFilter.copyWithRecentOnly(showRecentOnly: showRecentOnly);
     _performSearch();
   }
 

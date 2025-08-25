@@ -3,6 +3,7 @@
 /// This component provides a comprehensive search interface with text input,
 /// result count display, clear functionality, and integration with the
 /// search controller for real-time filtering and fuzzy matching.
+library;
 
 import 'package:flutter/material.dart';
 

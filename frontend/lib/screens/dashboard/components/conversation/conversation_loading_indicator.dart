@@ -28,7 +28,8 @@ class ConversationLoadingIndicator extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ThemeData theme = Theme.of(context);
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(
         horizontal: Insets.small,
         vertical: Insets.xxSmall,
@@ -37,6 +38,16 @@ class ConversationLoadingIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.3),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,25 +58,37 @@ class ConversationLoadingIndicator extends StatelessWidget {
             child: CircularProgressIndicator(
               strokeWidth: 2,
               value: progress > 0 ? progress / 100 : null,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                theme.colorScheme.primary,
+              ),
             ),
           ),
           const SizedBox(width: Insets.small),
           Expanded(
-            child: Text(
-              currentPhase ?? l10n.conversationDevelopmentInProgress,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: Text(
+                currentPhase ?? l10n.conversationDevelopmentInProgress,
+                key: ValueKey(currentPhase ?? l10n.conversationDevelopmentInProgress),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ),
           if (progress > 0) ...[
             const SizedBox(width: Insets.small),
-            Text(
-              '${progress.round()}%',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w500,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: Text(
+                '${progress.round()}%',
+                key: ValueKey(progress.round()),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

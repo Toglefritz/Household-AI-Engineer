@@ -363,29 +363,24 @@ class ApplicationDetailsDialog extends StatelessWidget {
         chipColor = Colors.orange.withValues(alpha: 0.1);
         textColor = Colors.orange;
         icon = Icons.schedule;
-        break;
       case ApplicationStatus.developing:
       case ApplicationStatus.testing:
       case ApplicationStatus.updating:
         chipColor = Colors.blue.withValues(alpha: 0.1);
         textColor = Colors.blue;
         icon = Icons.build;
-        break;
       case ApplicationStatus.ready:
         chipColor = Colors.green.withValues(alpha: 0.1);
         textColor = Colors.green;
         icon = Icons.check_circle;
-        break;
       case ApplicationStatus.running:
         chipColor = colorScheme.primary.withValues(alpha: 0.1);
         textColor = colorScheme.primary;
         icon = Icons.play_circle_filled;
-        break;
       case ApplicationStatus.failed:
         chipColor = colorScheme.error.withValues(alpha: 0.1);
         textColor = colorScheme.error;
         icon = Icons.error;
-        break;
     }
 
     return Container(
@@ -575,7 +570,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
       },
     );
 
-    if (confirmed == true && onDelete != null) {
+    if ((confirmed ?? false) && context.mounted) {
       Navigator.of(context).pop(); // Close details dialog
       onDelete!(application);
     }

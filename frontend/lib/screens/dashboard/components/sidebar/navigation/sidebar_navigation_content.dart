@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
+import '../../search/search_controller.dart' as search;
 import '../categories/sidebar_categories_section.dart';
 import '../quick_actions/sidebar_quick_actions.dart';
 import '../search/sidebar_search.dart';
-import '../../search/search_controller.dart' as search;
 import 'sidebar_navigation_section.dart';
 
 /// Main navigation content component for the dashboard sidebar.

@@ -345,7 +345,7 @@ class UserApplicationService {
   ///
   /// @param applicationId The ID of the application to update
   /// @param isFavorite Whether the application should be marked as favorite
-  Future<void> updateFavoriteStatus(String applicationId, bool isFavorite) async {
+  Future<void> updateFavoriteStatus({required String applicationId, required bool isFavorite}) async {
     debugPrint('Updating favorite status for application: $applicationId to $isFavorite');
 
     try {

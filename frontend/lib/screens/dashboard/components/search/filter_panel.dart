@@ -4,6 +4,7 @@
 /// category filters, status filters, date range selection, and filter
 /// management. Integrates with the search controller for real-time
 /// filter updates and state management.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -188,7 +189,7 @@ class _FilterPanelState extends State<FilterPanel> {
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: Insets.small),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -243,7 +244,7 @@ class _FilterPanelState extends State<FilterPanel> {
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: Insets.small),
           );
-        }).toList(),
+        }),
       ],
     );
   }

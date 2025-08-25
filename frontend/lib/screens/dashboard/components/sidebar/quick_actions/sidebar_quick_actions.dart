@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../theme/animated_components.dart';
 import '../../../../../theme/insets.dart';
 
 // Parts (same directory)

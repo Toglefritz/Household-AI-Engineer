@@ -2,7 +2,7 @@ part of 'sidebar_quick_actions.dart';
 
 /// Expanded create button when sidebar is expanded.
 ///
-/// Shows the full button with icon and label.
+/// Shows the full button with icon and label with enhanced animations.
 class _ExpandedCreateButton extends StatelessWidget {
   /// Creates an expanded create button.
   const _ExpandedCreateButton({
@@ -15,10 +15,8 @@ class _ExpandedCreateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
+    return AnimatedButton(
       onPressed: openNewApplicationConversation,
-      icon: const Icon(Icons.add, size: 18),
-      label: Text(AppLocalizations.of(context)!.buttonCreateNewApp),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -27,6 +25,14 @@ class _ExpandedCreateButton extends StatelessWidget {
           vertical: Insets.small,
         ),
         minimumSize: const Size(double.infinity, 40),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.add, size: 18),
+          const SizedBox(width: 8),
+          Text(AppLocalizations.of(context)!.buttonCreateNewApp),
+        ],
       ),
     );
   }

@@ -166,8 +166,6 @@ class ApplicationGrid extends StatelessWidget {
                   child: ApplicationTile(
                     application: application,
                     isSelected: isSelected,
-                    onTap: null, // Handled by GestureDetector
-                    onSecondaryTap: null, // Handled by GestureDetector
                   ),
                 );
               },
@@ -212,7 +210,7 @@ class ApplicationGrid extends StatelessWidget {
       onSelectNone!();
     } else if (onApplicationTap != null) {
       // Normal tap action
-      onApplicationTap!(application);
+      onApplicationTap?.call(application);
     }
   }
 
@@ -224,7 +222,7 @@ class ApplicationGrid extends StatelessWidget {
   /// @param details Tap details containing position information
   void _handleSecondaryTap(UserApplication application, TapDownDetails details) {
     if (onApplicationSecondaryTap != null) {
-      onApplicationSecondaryTap!(application, details.globalPosition);
+      onApplicationSecondaryTap?.call(application, details.globalPosition);
     }
   }
 

@@ -7,6 +7,7 @@ import '../services/setup/setup_state_service.dart';
 /// reinstall the application.
 ///
 /// **Note**: This should only be used during development and testing.
+// ignore_for_file: avoid_print
 class SetupDebugHelper {
   /// Resets the setup completion state to force the setup flow to show again.
   ///

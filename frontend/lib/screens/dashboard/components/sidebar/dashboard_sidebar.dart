@@ -129,18 +129,18 @@ class _DashboardSidebarState extends State<DashboardSidebar> with TickerProvider
   ///
   /// Content elements fade between expanded and collapsed states during this period.
   static const Duration _contentTransitionDuration = Duration(
-    milliseconds: 100,
+    milliseconds: 150,
   );
 
   /// Duration for width transition (stage 2).
   ///
   /// Sidebar width animates to final size after content has transitioned.
-  static const Duration _widthTransitionDuration = Duration(milliseconds: 150);
+  static const Duration _widthTransitionDuration = Duration(milliseconds: 250);
 
   /// Delay before starting width transition.
   ///
   /// Allows content transition to complete before width animation begins.
-  static const Duration _widthTransitionDelay = Duration(milliseconds: 50);
+  static const Duration _widthTransitionDelay = Duration(milliseconds: 75);
 
   /// Animation controller for content transitions.
   late AnimationController _contentController;

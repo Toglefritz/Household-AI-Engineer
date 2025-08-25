@@ -75,7 +75,7 @@
   - Write integration tests for application launching
   - _Requirements: 4.1, 4.2, 4.3, 4.6_
 
-- [x] 13. Implement application management features
+- [x] 11. Implement application management features
   - Add context menu actions for application management (modify, delete, restart)
   - Create application modification workflow with existing context
   - Implement application stopping and restarting functionality
@@ -83,7 +83,7 @@
   - Write widget tests for management interface components
   - _Requirements: 5.1, 5.2, 4.4, 9.6_
 
-- [x] 14. Create search and filtering system
+- [x] 12. Create search and filtering system
   - Build search bar with real-time filtering and fuzzy matching
   - Implement filter panel with category, status, and date filters
   - Add sort controls with multiple sorting options
@@ -91,7 +91,7 @@
   - Write unit tests for search and filtering logic
   - _Requirements: 9.1, 9.2, 9.4, 9.5_
 
-- [x] 14.5. Implement immediate loading feedback in conversation modal
+- [x] 13. Implement immediate loading feedback in conversation modal
   - Add immediate generic loading indicator when user submits a message
   - Show processing message while system analyzes user input
   - Transition from generic loading to specific progress when manifest is available
@@ -99,15 +99,7 @@
   - Write tests for loading state transitions and user feedback
   - _Requirements: 2.7, 2.8, 7.1_
 
-- [ ] 15. Implement error handling and user feedback
-  - Create error display components with progressive disclosure
-  - Add toast notification system for non-critical messages
-  - Implement modal error dialogs for critical issues
-  - Create loading states and busy indicators for all async operations
-  - Write tests for error handling and user feedback systems
-  - _Requirements: 7.4, 6.5, 1.4, 4.5_
-
-- [ ] 16. Add visual feedback and animations
+- [x] 14. Add visual feedback and animations
   - Implement hover states and click feedback for all interactive elements
   - Create smooth transitions between different interface states
   - Add success animations for completed operations
@@ -115,15 +107,7 @@
   - Write tests for animation behavior and performance
   - _Requirements: 7.1, 7.2, 7.5, 6.2_
 
-- [ ] 17. Integrate macOS platform features
-  - Add native macOS window controls and behaviors
-  - Implement macOS notification system integration
-  - Create keyboard shortcut handling following macOS conventions
-  - Add light/dark mode support with automatic theme switching
-  - Write platform-specific tests for macOS integration
-  - _Requirements: 8.1, 8.2, 8.3, 8.5_
-
-- [ ] 18. Implement accessibility features
+- [ ] 15. Implement accessibility features
   - Add VoiceOver support with proper semantic labels
   - Implement keyboard navigation for all interface elements
   - Create focus management and tab order for complex components
@@ -131,47 +115,7 @@
   - Write accessibility tests with screen reader simulation
   - _Requirements: 8.6_
 
-- [ ] 19. Add local storage and caching
-  - Implement local storage for application metadata caching
-  - Create offline mode support with cached data display
-  - Add user preferences storage for interface settings
-  - Implement conversation history persistence
-  - Write tests for storage and caching functionality
-  - _Requirements: 6.5, 2.6_
-
-- [ ] 20. Create comprehensive error recovery
-  - Implement automatic retry mechanisms for failed operations
-  - Add connection recovery for network interruptions
-  - Create data validation and corruption recovery
-  - Implement graceful degradation for missing features
-  - Write tests for error recovery scenarios
-  - _Requirements: 6.5, 4.5, 5.6_
-
-- [ ] 21. Optimize performance and resource usage
-  - Implement lazy loading for application tiles and images
-  - Add memory management for large conversation histories
-  - Optimize rendering performance for smooth 60fps animations
-  - Create efficient state updates to minimize rebuilds
-  - Write performance tests and benchmarks
-  - _Requirements: 6.1, 6.2, 6.4, 6.6_
-
-- [ ] 22. Build comprehensive widget test suite
-  - Create widget tests for all major UI components
-  - Add interaction tests for user workflows and edge cases
-  - Implement visual regression tests for UI consistency
-  - Create accessibility tests for screen reader compatibility
-  - Add responsive design tests for different screen sizes
-  - _Requirements: All UI requirements validation_
-
-- [ ] 23. Implement integration testing
-  - Create end-to-end tests for complete user workflows
-  - Add integration tests for API communication and state management
-  - Implement WebSocket integration tests for real-time features
-  - Create platform integration tests for macOS-specific features
-  - Add performance integration tests for resource usage
-  - _Requirements: All requirements integration validation_
-
-- [x] 24. Replace mocked data with Kiro Bridge integration
+- [x] 16. Replace mocked data with Kiro Bridge integration
   - Remove SampleDataService and replace with real Kiro Bridge API calls
   - Update UserApplicationService to use Kiro Bridge for application metadata
   - Implement real-time application status updates through WebSocket connection
@@ -180,25 +124,7 @@
   - Write integration tests for Kiro Bridge communication
   - _Requirements: All data integration requirements_
 
-- [ ] 25. Implement application lifecycle management through Kiro Bridge
-  - Add application creation workflow using Kiro Bridge execute endpoint
-  - Implement application modification requests through bridge API
-  - Add application deployment and launch management via bridge
-  - Create application deletion and cleanup through bridge commands
-  - Implement progress monitoring using bridge WebSocket events
-  - Write tests for complete application lifecycle workflows
-  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 4.1, 4.2, 5.1, 5.2_
-
-- [ ] 26. Add comprehensive error handling for bridge integration
-  - Implement fallback behavior when bridge is unavailable
-  - Add retry mechanisms for failed bridge communications
-  - Create user-friendly error messages for bridge failures
-  - Implement offline mode with cached data when bridge is down
-  - Add connection status monitoring and recovery
-  - Write tests for error scenarios and recovery mechanisms
-  - _Requirements: 6.5, 7.4_
-
-- [ ] 27. Final polish and deployment preparation
+- [ ] 17. Final polish and deployment preparation
   - Add application icons and branding elements
   - Implement final UI polish with consistent styling and spacing
   - Create application packaging and distribution configuration

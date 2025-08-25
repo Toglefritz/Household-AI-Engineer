@@ -28,9 +28,9 @@ class KiroDetectionService {
             runInShell: true,
           ).timeout(
             const Duration(seconds: 10),
-            onTimeout: () => throw TimeoutException(
+            onTimeout: () => throw const TimeoutException(
               'Kiro version check timed out',
-              const Duration(seconds: 10),
+              Duration(seconds: 10),
             ),
           );
 

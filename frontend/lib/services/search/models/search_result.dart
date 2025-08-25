@@ -3,6 +3,7 @@
 /// This module provides data structures for representing search results
 /// with highlighting information, match scores, and result metadata.
 /// Supports fuzzy matching results with detailed match information.
+library;
 
 import '../../../services/user_application/models/user_application.dart';
 
@@ -54,19 +55,6 @@ class TextMatch {
   /// Convenience getter for calculating highlight spans
   /// and match quality scoring.
   int get length => end - start;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! TextMatch) return false;
-
-    return start == other.start && end == other.end && matchedText == other.matchedText && field == other.field;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(start, end, matchedText, field);
-  }
 
   @override
   String toString() {
@@ -143,19 +131,6 @@ class SearchResult {
   /// Description matches provide context about application
   /// functionality and purpose for search relevance.
   bool get hasDescriptionMatches => matches.any((match) => match.field == 'description');
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SearchResult) return false;
-
-    return application == other.application && matches == other.matches && score == other.score;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(application, matches, score);
-  }
 
   @override
   String toString() {
@@ -265,35 +240,13 @@ class SearchResultSet {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SearchResultSet) return false;
-
-    return results == other.results &&
-        totalCount == other.totalCount &&
-        filteredCount == other.filteredCount &&
-        query == other.query &&
-        searchDurationMs == other.searchDurationMs;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      results,
-      totalCount,
-      filteredCount,
-      query,
-      searchDurationMs,
-    );
-  }
-
-  @override
   String toString() {
     return 'SearchResultSet('
         'results: ${results.length}, '
         'total: $totalCount, '
         'filtered: $filteredCount, '
         'query: "$query", '
+        // ignore: missing_whitespace_between_adjacent_strings
         'duration: ${searchDurationMs}ms'
         ')';
   }

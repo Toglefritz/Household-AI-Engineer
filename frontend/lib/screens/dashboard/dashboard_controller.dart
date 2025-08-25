@@ -1,10 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../l10n/app_localizations.dart';
-
 import '../../services/application_launcher/application_launcher_service.dart';
 import '../../services/application_launcher/models/application_process.dart';
 import '../../services/application_launcher/models/launch_result.dart';
@@ -13,11 +13,11 @@ import '../../services/conversation/models/conversation_thread.dart';
 import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
 import '../../services/user_application/user_application_service.dart';
-import 'components/search/search_controller.dart' as search;
 import '../application_launcher/application_launcher_window.dart';
 import 'components/applications/application_context_menu.dart';
 import 'components/applications/application_details_dialog.dart';
 import 'components/conversation/conversation_modal.dart';
+import 'components/search/search_controller.dart' as search;
 import 'dashboard_route.dart';
 import 'dashboard_view.dart';
 import 'models/status_bar/connection_status.dart';
@@ -379,9 +379,7 @@ class DashboardController extends State<DashboardRoute> {
   ///
   /// Removes all application IDs from the selection set.
   void onSelectNoApplications() {
-    setState(() {
-      _selectedApplicationIds.clear();
-    });
+    setState(_selectedApplicationIds.clear);
   }
 
   /// Handles bulk delete operation for selected applications.
@@ -398,9 +396,7 @@ class DashboardController extends State<DashboardRoute> {
     }
 
     // Clear selection
-    setState(() {
-      _selectedApplicationIds.clear();
-    });
+    setState(_selectedApplicationIds.clear);
 
     // Show bulk feedback
     if (mounted) {
@@ -489,12 +485,12 @@ class DashboardController extends State<DashboardRoute> {
     ApplicationDetailsDialog.show(
       context: context,
       application: application,
-      onLaunch: (app) => _launchApplication(app),
-      onModify: (app) => openModifyApplicationConversation(app),
-      onRestart: (app) => _restartApplication(app),
-      onStop: (app) => _stopApplication(app),
-      onDelete: (app) => _deleteApplication(app),
-      onToggleFavorite: (app) => _toggleApplicationFavorite(app),
+      onLaunch: _launchApplication,
+      onModify: openModifyApplicationConversation,
+      onRestart: _restartApplication,
+      onStop: _stopApplication,
+      onDelete: _deleteApplication,
+      onToggleFavorite: _toggleApplicationFavorite,
     );
   }
 
@@ -512,13 +508,13 @@ class DashboardController extends State<DashboardRoute> {
       context: context,
       position: position,
       application: application,
-      onLaunch: (app) => _launchApplication(app),
-      onModify: (app) => openModifyApplicationConversation(app),
-      onRestart: (app) => _restartApplication(app),
-      onStop: (app) => _stopApplication(app),
-      onDelete: (app) => _deleteApplication(app),
-      onViewDetails: (app) => _showApplicationDetails(app),
-      onToggleFavorite: (app) => _toggleApplicationFavorite(app),
+      onLaunch: _launchApplication,
+      onModify: openModifyApplicationConversation,
+      onRestart: _restartApplication,
+      onStop: _stopApplication,
+      onDelete: _deleteApplication,
+      onViewDetails: _showApplicationDetails,
+      onToggleFavorite: _toggleApplicationFavorite,
     );
   }
 
@@ -624,7 +620,7 @@ class DashboardController extends State<DashboardRoute> {
       await _applicationLauncherService!.stopApplication(application.id);
 
       // Wait a moment for cleanup
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       // Launch it again
       final LaunchResult result = await _applicationLauncherService!.launchApplication(application);
@@ -735,7 +731,10 @@ class DashboardController extends State<DashboardRoute> {
 
       // Toggle the favorite status
       final bool newFavoriteStatus = !application.isFavorite;
-      await _userApplicationService.updateFavoriteStatus(application.id, newFavoriteStatus);
+      await _userApplicationService.updateFavoriteStatus(
+        applicationId: application.id,
+        isFavorite: newFavoriteStatus,
+      );
 
       debugPrint('Successfully toggled favorite status for application: ${application.title}');
 
@@ -842,8 +841,8 @@ class DashboardController extends State<DashboardRoute> {
     // Clean up resources
     _applicationSubscription?.cancel();
     _launchEventsSubscription?.cancel();
-    _searchController.removeListener(_onSearchResultsChanged);
-    _searchController.dispose();
+    _searchController..removeListener(_onSearchResultsChanged)
+    ..dispose();
     _userApplicationService.dispose();
     _applicationLauncherService?.dispose();
     super.dispose();

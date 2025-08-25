@@ -4,6 +4,7 @@
 /// filter criteria, and sorting options for the application grid.
 /// Supports fuzzy matching, category filtering, status filtering,
 /// and date-based sorting with comprehensive state management.
+library;
 
 import '../../../services/user_application/models/application_category.dart';
 import '../../../services/user_application/models/application_status.dart';
@@ -270,7 +271,7 @@ class SearchFilter {
   ///
   /// @param showFavoritesOnly Whether to show only favorite applications
   /// @returns New SearchFilter instance with updated favorites filter
-  SearchFilter copyWithFavoritesOnly(bool showFavoritesOnly) {
+  SearchFilter copyWithFavoritesOnly({required bool showFavoritesOnly}) {
     return SearchFilter(
       query: query,
       selectedCategories: selectedCategories,
@@ -287,7 +288,7 @@ class SearchFilter {
   ///
   /// @param showRecentOnly Whether to show only recently updated applications
   /// @returns New SearchFilter instance with updated recent filter
-  SearchFilter copyWithRecentOnly(bool showRecentOnly) {
+  SearchFilter copyWithRecentOnly({required bool showRecentOnly}) {
     return SearchFilter(
       query: query,
       selectedCategories: selectedCategories,
@@ -308,35 +309,6 @@ class SearchFilter {
   /// @returns New SearchFilter instance with no active filters
   SearchFilter copyWithClearedFilters() {
     return const SearchFilter();
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SearchFilter) return false;
-
-    return query == other.query &&
-        selectedCategories == other.selectedCategories &&
-        selectedStatuses == other.selectedStatuses &&
-        sortOption == other.sortOption &&
-        dateRangeStart == other.dateRangeStart &&
-        dateRangeEnd == other.dateRangeEnd &&
-        favoritesOnly == other.favoritesOnly &&
-        recentOnly == other.recentOnly;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      query,
-      selectedCategories,
-      selectedStatuses,
-      sortOption,
-      dateRangeStart,
-      dateRangeEnd,
-      favoritesOnly,
-      recentOnly,
-    );
   }
 
   @override

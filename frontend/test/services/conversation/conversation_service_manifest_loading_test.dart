@@ -1,7 +1,5 @@
-import 'package:flutter/services.dart';
+import 'package:dwellware/services/conversation/conversation_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../lib/services/conversation/conversation_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

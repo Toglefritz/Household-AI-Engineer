@@ -43,7 +43,7 @@ class SetupStateService {
   /// Throws [SetupStateException] if the service is not initialized.
   Future<bool> isSetupComplete() async {
     if (_prefs == null) {
-      throw SetupStateException('SetupStateService not initialized');
+      throw const SetupStateException('SetupStateService not initialized');
     }
 
     return _prefs!.getBool(_setupCompleteKey) ?? false;
@@ -62,7 +62,7 @@ class SetupStateService {
   /// or if saving the state fails.
   Future<void> markSetupComplete() async {
     if (_prefs == null) {
-      throw SetupStateException('SetupStateService not initialized');
+      throw const SetupStateException('SetupStateService not initialized');
     }
 
     try {
@@ -87,7 +87,7 @@ class SetupStateService {
   /// or if clearing the state fails.
   Future<void> resetSetupState() async {
     if (_prefs == null) {
-      throw SetupStateException('SetupStateService not initialized');
+      throw const SetupStateException('SetupStateService not initialized');
     }
 
     try {

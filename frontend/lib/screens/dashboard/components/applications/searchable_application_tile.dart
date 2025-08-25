@@ -4,6 +4,7 @@
 /// highlighting capabilities. It displays search matches in the title
 /// and description with visual highlighting to show users exactly
 /// what matched their search query.
+library;
 
 import 'package:flutter/material.dart';
 

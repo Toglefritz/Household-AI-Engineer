@@ -10,33 +10,30 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   # Used to define localizable strings
   flutter_localizations:
     sdk: flutter
+  # HTTP client for health checking
+  http: ^1.1.0
   # Path utilities
   path: ^1.9.0
   # Used for getting commonly used locations on host platform file systems.
   path_provider: ^2.1.5
   # Local storage and preferences
   shared_preferences: ^2.2.2
-  # Window management for macOS
-  window_manager: ^0.3.8
+    # URL launcher for opening external links
+  url_launcher: ^6.2.1
   # WebView support for launching web applications
   webview_flutter: ^4.4.2
-  # HTTP client for health checking
-  http: ^1.1.0
-  # URL launcher for opening external links
-  url_launcher: ^6.2.1
+  # Window management for macOS
+  window_manager: ^0.3.8
 
 dev_dependencies:
+  build_runner: ^2.4.7
   flutter_test:
     sdk: flutter
-  # Lint rules for Dart and Flutter used internally at Very Good Ventures
-  very_good_analysis: ^7.0.0
-  # Mocking framework for testing
   mockito: ^5.4.2
-  build_runner: ^2.4.7
+  very_good_analysis: ^7.0.0
 
 flutter:
   uses-material-design: true

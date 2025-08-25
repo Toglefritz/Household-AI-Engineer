@@ -1,9 +1,6 @@
-import 'package:flutter/services.dart';
+import 'package:dwellware/services/conversation/conversation_service.dart';
+import 'package:dwellware/services/conversation/models/message_action.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import '../../../lib/services/conversation/conversation_service.dart';
-import '../../../lib/services/conversation/models/message_action.dart';
-import '../../../lib/services/conversation/models/message_action_type.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -49,9 +46,8 @@ void main() {
         // Arrange: Set up a new conversation
         await conversationService.startNewApplicationConversation();
 
-        final MessageAction testAction = MessageAction(
+        const MessageAction testAction = MessageAction(
           id: 'action_budget_tracker',
-          type: MessageActionType.suggestion,
           label: 'Budget Tracker',
           value: 'I want to create a budget tracking application',
         );

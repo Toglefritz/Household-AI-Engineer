@@ -1,6 +1,7 @@
 // This library groups widgets related to the application tiles.
 library;
 
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../services/user_application/models/application_status.dart';
@@ -69,8 +70,7 @@ class ApplicationTile extends StatefulWidget {
 }
 
 /// State for the [ApplicationTile] widget.
-class _ApplicationTileState extends State<ApplicationTile>
-    with SingleTickerProviderStateMixin {
+class _ApplicationTileState extends State<ApplicationTile> with TickerProviderStateMixin {
   /// Whether the mouse is currently hovering over this tile.
   ///
   /// Used to show hover effects and provide visual feedback
@@ -81,7 +81,17 @@ class _ApplicationTileState extends State<ApplicationTile>
   ///
   /// Provides smooth transitions between different visual states
   /// to enhance the user experience.
-  late AnimationController _animationController;
+  late AnimationController _hoverController;
+
+  /// Animation controller for press feedback.
+  ///
+  /// Provides immediate visual feedback when the tile is pressed.
+  late AnimationController _pressController;
+
+  /// Animation controller for success states.
+  ///
+  /// Used when applications complete development or launch successfully.
+  late AnimationController _successController;
 
   /// Animation for scaling effects during hover and selection.
   ///
@@ -89,23 +99,113 @@ class _ApplicationTileState extends State<ApplicationTile>
   /// without being distracting.
   late Animation<double> _scaleAnimation;
 
+  /// Animation for press feedback scaling.
+  ///
+  /// Provides quick scale-down effect when tile is pressed.
+  late Animation<double> _pressAnimation;
+
+  /// Animation for success celebration effects.
+  ///
+  /// Creates a brief highlight and scale effect for successful operations.
+  late Animation<double> _successAnimation;
+
+  /// Animation for shadow opacity during hover.
+  ///
+  /// Creates depth perception through shadow transitions.
+  late Animation<double> _shadowAnimation;
+
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+
+    // Initialize animation controllers
+    _hoverController = AnimationController(
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
+
+    _pressController = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this,
+    );
+
+    _successController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    // Initialize animations
     _scaleAnimation =
         Tween<double>(
           begin: 1.0,
-          end: 1.02,
+          end: 1.03,
         ).animate(
           CurvedAnimation(
-            parent: _animationController,
+            parent: _hoverController,
             curve: Curves.easeInOut,
           ),
         );
+
+    _pressAnimation =
+        Tween<double>(
+          begin: 1.0,
+          end: 0.97,
+        ).animate(
+          CurvedAnimation(
+            parent: _pressController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
+    _successAnimation =
+        Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: _successController,
+            curve: Curves.elasticOut,
+          ),
+        );
+
+    _shadowAnimation =
+        Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: _hoverController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
+    // Success animation is only triggered when status changes to ready,
+    // not when the widget is initially created with ready status
+  }
+
+  @override
+  void didUpdateWidget(ApplicationTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Trigger success animation when status changes to ready
+    if (oldWidget.application.status != ApplicationStatus.ready &&
+        widget.application.status == ApplicationStatus.ready) {
+      _triggerSuccessAnimation();
+    }
+  }
+
+  /// Triggers the success animation for completed applications.
+  ///
+  /// Plays a brief celebration animation when applications complete
+  /// development or other successful operations.
+  void _triggerSuccessAnimation() {
+    _successController.forward().then((_) {
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted) {
+          _successController.reverse();
+        }
+      });
+    });
   }
 
   /// Handles mouse enter events for hover effects.
@@ -116,7 +216,7 @@ class _ApplicationTileState extends State<ApplicationTile>
     setState(() {
       _isHovered = true;
     });
-    _animationController.forward();
+    _hoverController.forward();
   }
 
   /// Handles mouse exit events for hover effects.
@@ -127,7 +227,22 @@ class _ApplicationTileState extends State<ApplicationTile>
     setState(() {
       _isHovered = false;
     });
-    _animationController.reverse();
+    _hoverController.reverse();
+    _pressController.reverse();
+  }
+
+  /// Handles tap down events for press feedback.
+  ///
+  /// Provides immediate visual feedback when the user starts pressing.
+  void _onTapDown() {
+    _pressController.forward();
+  }
+
+  /// Handles tap up events for press feedback.
+  ///
+  /// Returns the tile to normal state after press is released.
+  void _onTapUp() {
+    _pressController.reverse();
   }
 
   @override
@@ -138,36 +253,99 @@ class _ApplicationTileState extends State<ApplicationTile>
     return MouseRegion(
       onEnter: (_) => _onMouseEnter(),
       onExit: (_) => _onMouseExit(),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (BuildContext context, Widget? child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: GestureDetector(
-              onTap: widget.onTap,
-              onSecondaryTap: widget.onSecondaryTap,
+      child: GestureDetector(
+        onTapDown: (_) => _onTapDown(),
+        onTapUp: (_) => _onTapUp(),
+        onTapCancel: _onTapUp,
+        onTap: widget.onTap,
+        onSecondaryTap: widget.onSecondaryTap,
+        child: AnimatedBuilder(
+          animation: Listenable.merge([
+            _scaleAnimation,
+            _pressAnimation,
+            _successAnimation,
+            _shadowAnimation,
+          ]),
+          builder: (BuildContext context, Widget? child) {
+            // Calculate combined scale from hover and press animations
+            double combinedScale = _scaleAnimation.value * _pressAnimation.value;
+
+            // Add success animation scaling
+            if (_successAnimation.value > 0) {
+              combinedScale *= 1.0 + 0.05 * _successAnimation.value;
+            }
+
+            // Calculate border color based on state
+            Color borderColor;
+            if (widget.isSelected) {
+              borderColor = colorScheme.primary;
+            } else if (_successAnimation.value > 0) {
+              borderColor = Color.lerp(
+                colorScheme.outline,
+                Colors.green,
+                _successAnimation.value,
+              )!;
+            } else if (_isHovered) {
+              borderColor =
+                  Color.lerp(
+                    colorScheme.outline,
+                    colorScheme.primary.withValues(alpha: 0.6),
+                    _hoverController.value,
+                  ) ??
+                  colorScheme.outline;
+            } else {
+              borderColor = colorScheme.outline;
+            }
+
+            // Calculate shadow based on hover and success states
+            List<BoxShadow>? boxShadow;
+            if (_isHovered || widget.isSelected || _successAnimation.value > 0) {
+              // Base shadow values for hover and selection
+              double shadowOpacity = 0.0;
+              double shadowBlur = 0.0;
+              double shadowSpread = 0.0;
+              Color shadowColor = colorScheme.shadow;
+
+              // Apply hover/selection shadow effects
+              if (_isHovered || widget.isSelected) {
+                shadowOpacity = 0.1 * _shadowAnimation.value;
+                shadowBlur = 8.0 * _shadowAnimation.value;
+                shadowSpread = 0.0;
+              }
+
+              // Apply success shadow effects (independent of hover state)
+              if (_successAnimation.value > 0) {
+                shadowOpacity = math.max(shadowOpacity, 0.2 * _successAnimation.value);
+                shadowBlur = math.max(shadowBlur, 12.0 * _successAnimation.value);
+                shadowSpread = math.max(shadowSpread, 2.0 * _successAnimation.value);
+                shadowColor = Colors.green;
+              }
+
+              // Only create shadow if there are actual shadow effects
+              if (shadowOpacity > 0) {
+                boxShadow = [
+                  BoxShadow(
+                    color: shadowColor.withValues(alpha: shadowOpacity),
+                    blurRadius: shadowBlur,
+                    spreadRadius: shadowSpread,
+                    offset: const Offset(0, 4),
+                  ),
+                ];
+              }
+            }
+
+            return Transform.scale(
+              scale: combinedScale,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 200),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: widget.isSelected
-                        ? colorScheme.primary
-                        : _isHovered
-                        ? colorScheme.outline.withValues(alpha: 0.5)
-                        : colorScheme.outline,
+                    color: borderColor,
                     width: widget.isSelected ? 2 : 1,
                   ),
-                  boxShadow: _isHovered || widget.isSelected
-                      ? [
-                          BoxShadow(
-                            color: colorScheme.shadow.withValues(alpha: 0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
+                  boxShadow: boxShadow,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(Insets.small),
@@ -253,9 +431,9 @@ class _ApplicationTileState extends State<ApplicationTile>
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -459,7 +637,9 @@ class _ApplicationTileState extends State<ApplicationTile>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _hoverController.dispose();
+    _pressController.dispose();
+    _successController.dispose();
     super.dispose();
   }
 }
