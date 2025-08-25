@@ -9,6 +9,7 @@ import '../../../../services/conversation/models/conversation_thread.dart';
 import '../../../../services/conversation/models/message_action.dart';
 import '../../../../services/conversation/models/message_sender.dart';
 import '../../../../services/user_application/models/user_application.dart';
+import '../../../../theme/accessibility_helper.dart';
 import '../../../../theme/insets.dart';
 import 'conversation_immediate_loading_widget.dart';
 import 'conversation_input_widget.dart';
@@ -126,94 +127,104 @@ class _ConversationModalState extends State<ConversationModal> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     // Modal display parameters
     final Size screenSize = MediaQuery.of(context).size;
     final double modalWidth = (screenSize.width * 0.8).clamp(600.0, 800.0);
     final double modalHeight = (screenSize.height * 0.8).clamp(500.0, 700.0);
 
+    // Create semantic labels for the modal
+    final String modalLabel = l10n.accessibilityConversationModal;
+    final String modalHint = l10n.accessibilityConversationModalHint;
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: Container(
-        width: modalWidth,
-        height: modalHeight,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.outline,
+      child: AccessibilityHelper.createSemanticContainer(
+        label: modalLabel,
+        hint: modalHint,
+        child: Container(
+          width: modalWidth,
+          height: modalHeight,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            // Header
-            ConversationModalHeader(
-              applicationToModify: widget.applicationToModify,
-              onClose: _handleClose,
-            ),
+          child: Column(
+            children: [
+              // Header
+              ConversationModalHeader(
+                applicationToModify: widget.applicationToModify,
+                onClose: _handleClose,
+              ),
 
-            // Messages
-            Expanded(
-              child: ListenableBuilder(
+              // Messages
+              Expanded(
+                child: ListenableBuilder(
+                  listenable: _controller,
+                  builder: (BuildContext context, Widget? child) {
+                    return Column(
+                      children: [
+                        // Messages list
+                        Expanded(
+                          child: ConversationMessagesList(
+                            controller: _controller,
+                            scrollController: _scrollController,
+                            onActionTap: _handleActionTap,
+                          ),
+                        ),
+
+                        // Immediate loading indicator (shown right after user input)
+                        if (_controller.isShowingImmediateLoading) ...[
+                          Builder(
+                            builder: (context) {
+                              debugPrint('ConversationModal: Showing immediate loading widget');
+                              return const ConversationImmediateLoadingWidget();
+                            },
+                          ),
+                        ]
+                        // Development progress indicator (shown when specific progress is available)
+                        else if (_controller.isDevelopmentInProgress) ...[
+                          ConversationLoadingIndicator(
+                            progress: _controller.developmentProgress,
+                            currentPhase: _controller.currentApplication?.progress?.currentPhase,
+                          ),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+              ),
+
+              // Input
+              ListenableBuilder(
                 listenable: _controller,
                 builder: (BuildContext context, Widget? child) {
-                  return Column(
-                    children: [
-                      // Messages list
-                      Expanded(
-                        child: ConversationMessagesList(
-                          controller: _controller,
-                          scrollController: _scrollController,
-                          onActionTap: _handleActionTap,
-                        ),
-                      ),
-
-                      // Immediate loading indicator (shown right after user input)
-                      if (_controller.isShowingImmediateLoading) ...[
-                        Builder(
-                          builder: (context) {
-                            debugPrint('ConversationModal: Showing immediate loading widget');
-                            return const ConversationImmediateLoadingWidget();
-                          },
-                        ),
-                      ]
-                      // Development progress indicator (shown when specific progress is available)
-                      else if (_controller.isDevelopmentInProgress) ...[
-                        ConversationLoadingIndicator(
-                          progress: _controller.developmentProgress,
-                          currentPhase: _controller.currentApplication?.progress?.currentPhase,
-                        ),
-                      ],
-                    ],
+                  return ConversationInputWidget(
+                    onSendMessage: _handleSendMessage,
+                    enabled: _controller.canAcceptInput,
+                    placeholder: _controller.isProcessing
+                        ? AppLocalizations.of(
+                            context,
+                          )!.conversationInputPlaceholderWaiting
+                        : AppLocalizations.of(
+                            context,
+                          )!.conversationInputPlaceholder,
                   );
                 },
               ),
-            ),
-
-            // Input
-            ListenableBuilder(
-              listenable: _controller,
-              builder: (BuildContext context, Widget? child) {
-                return ConversationInputWidget(
-                  onSendMessage: _handleSendMessage,
-                  enabled: _controller.canAcceptInput,
-                  placeholder: _controller.isProcessing
-                      ? AppLocalizations.of(
-                          context,
-                        )!.conversationInputPlaceholderWaiting
-                      : AppLocalizations.of(
-                          context,
-                        )!.conversationInputPlaceholder,
-                );
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

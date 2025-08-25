@@ -497,4 +497,175 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get splashForceSetup => 'Go to Setup';
+
+  @override
+  String accessibilityApplicationTile(String title) {
+    return 'Application tile for $title';
+  }
+
+  @override
+  String accessibilityApplicationTileHint(String status, String description) {
+    return 'Status: $status. $description. Double tap to launch, long press for options.';
+  }
+
+  @override
+  String accessibilityApplicationTileHintDeveloping(
+    String status,
+    String description,
+    int progress,
+  ) {
+    return 'Status: $status. $description. Progress: $progress%. Double tap for details.';
+  }
+
+  @override
+  String get accessibilityApplicationGrid => 'Application grid';
+
+  @override
+  String accessibilityApplicationGridHint(int count) {
+    return 'Grid containing $count applications. Use arrow keys to navigate.';
+  }
+
+  @override
+  String get accessibilityCreateNewAppTile => 'Create new application';
+
+  @override
+  String get accessibilityCreateNewAppTileHint =>
+      'Double tap to start creating a new application';
+
+  @override
+  String get accessibilitySidebar => 'Navigation sidebar';
+
+  @override
+  String get accessibilitySidebarHint =>
+      'Contains navigation, search, and application categories';
+
+  @override
+  String get accessibilitySidebarToggle => 'Toggle sidebar';
+
+  @override
+  String accessibilitySidebarToggleHint(String action) {
+    return 'Double tap to $action the sidebar';
+  }
+
+  @override
+  String get accessibilitySearchField => 'Search applications';
+
+  @override
+  String get accessibilitySearchFieldHint =>
+      'Type to search through your applications';
+
+  @override
+  String get accessibilitySearchClear => 'Clear search';
+
+  @override
+  String get accessibilitySearchClearHint =>
+      'Double tap to clear the current search';
+
+  @override
+  String accessibilityNavigationItem(String label) {
+    return '$label navigation';
+  }
+
+  @override
+  String accessibilityNavigationItemHint(String label) {
+    return 'Double tap to filter applications by $label';
+  }
+
+  @override
+  String accessibilityCategoryItem(String category) {
+    return '$category category';
+  }
+
+  @override
+  String accessibilityCategoryItemHint(int count) {
+    return '$count applications in this category. Double tap to filter.';
+  }
+
+  @override
+  String get accessibilityStatusBar => 'System status bar';
+
+  @override
+  String get accessibilityStatusBarHint =>
+      'Shows connection status and system information';
+
+  @override
+  String accessibilityConnectionStatus(String status) {
+    return 'Connection status: $status';
+  }
+
+  @override
+  String get accessibilityConversationModal =>
+      'Application creation conversation';
+
+  @override
+  String get accessibilityConversationModalHint =>
+      'Chat interface for creating or modifying applications';
+
+  @override
+  String accessibilityConversationMessage(String sender) {
+    return 'Message from $sender';
+  }
+
+  @override
+  String get accessibilityConversationInput => 'Message input';
+
+  @override
+  String get accessibilityConversationInputHint =>
+      'Type your message to the assistant';
+
+  @override
+  String get accessibilityConversationSend => 'Send message';
+
+  @override
+  String get accessibilityConversationSendHint =>
+      'Double tap to send your message';
+
+  @override
+  String get accessibilityConversationClose => 'Close conversation';
+
+  @override
+  String get accessibilityConversationCloseHint =>
+      'Double tap to close the conversation and return to dashboard';
+
+  @override
+  String get accessibilityProgressIndicator => 'Development progress';
+
+  @override
+  String accessibilityProgressIndicatorHint(int percentage, String phase) {
+    return '$percentage% complete. Current phase: $phase';
+  }
+
+  @override
+  String get accessibilityBulkSelectionToolbar => 'Bulk selection toolbar';
+
+  @override
+  String accessibilityBulkSelectionToolbarHint(int count) {
+    return '$count applications selected. Actions available.';
+  }
+
+  @override
+  String get accessibilityMainContent => 'Main content area';
+
+  @override
+  String get accessibilityMainContentHint =>
+      'Contains application grid and primary interface';
+
+  @override
+  String get accessibilityEmptyState => 'No applications';
+
+  @override
+  String get accessibilityEmptyStateHint =>
+      'You haven\'t created any applications yet. Use the create button to get started.';
+
+  @override
+  String get expand => 'expand';
+
+  @override
+  String get collapse => 'collapse';
+
+  @override
+  String get user => 'user';
+
+  @override
+  String get assistant => 'assistant';
 }

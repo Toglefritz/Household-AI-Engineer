@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/accessibility_helper.dart';
 import '../../theme/insets.dart';
 import 'components/applications/application_grid.dart';
 
@@ -34,90 +35,109 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Column(
         children: [
-          // Status bar at the top
-          DashboardStatusBar(
-            connectionStatus: state.connectionStatus,
-            onToggleSidebar: state.toggleSidebar,
-            isSidebarExpanded: state.isSidebarExpanded,
-            applications: state.applications,
+          // Status bar at the top with accessibility support
+          AccessibilityHelper.createSemanticContainer(
+            label: l10n.accessibilityStatusBar,
+            hint: l10n.accessibilityStatusBarHint,
+            child: DashboardStatusBar(
+              connectionStatus: state.connectionStatus,
+              onToggleSidebar: state.toggleSidebar,
+              isSidebarExpanded: state.isSidebarExpanded,
+              applications: state.applications,
+            ),
           ),
 
           // Main content area with sidebar
           Expanded(
             child: Row(
               children: [
-                // Sidebar
-                DashboardSidebar(
-                  isExpanded: state.isSidebarExpanded,
-                  onToggle: state.toggleSidebar,
-                  applications: state.applications,
-                  openNewApplicationConversation: state.openNewApplicationConversation,
-                  searchController: state.searchController,
+                // Sidebar with accessibility support
+                AccessibilityHelper.createSemanticContainer(
+                  label: l10n.accessibilitySidebar,
+                  hint: l10n.accessibilitySidebarHint,
+                  child: DashboardSidebar(
+                    isExpanded: state.isSidebarExpanded,
+                    onToggle: state.toggleSidebar,
+                    applications: state.applications,
+                    openNewApplicationConversation: state.openNewApplicationConversation,
+                    searchController: state.searchController,
+                  ),
                 ),
 
-                // Main content area
+                // Main content area with accessibility support
                 Expanded(
-                  child: ColoredBox(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.all(Insets.medium),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: Column(
-                            key: ValueKey('dashboard-${state.filteredApplications.length}'),
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AnimatedOpacity(
-                                duration: const Duration(milliseconds: 500),
-                                opacity: 0.6,
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.greeting},',
-                                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                  child: AccessibilityHelper.createSemanticContainer(
+                    label: l10n.accessibilityMainContent,
+                    hint: l10n.accessibilityMainContentHint,
+                    child: ColoredBox(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(Insets.medium),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: Column(
+                              key: ValueKey('dashboard-${state.filteredApplications.length}'),
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Greeting with semantic header
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 500),
+                                  opacity: 0.6,
+                                  child: AccessibilityHelper.createSemanticHeader(
+                                    level: 1,
+                                    child: Text(
+                                      '${l10n.greeting},',
+                                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: Insets.small,
-                                  bottom: Insets.large,
-                                ),
-                                child: AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 600),
-                                  opacity: 1.0,
-                                  child: Text(
-                                    AppLocalizations.of(context)!.welcomeMessage,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium,
+                                // Welcome message
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: Insets.small,
+                                    bottom: Insets.large,
+                                  ),
+                                  child: AnimatedOpacity(
+                                    duration: const Duration(milliseconds: 600),
+                                    opacity: 1.0,
+                                    child: Text(
+                                      l10n.welcomeMessage,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.displayMedium,
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              // Application grid with fade transition
-                              Expanded(
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 400),
-                                  child: ApplicationGrid(
-                                    key: ValueKey('grid-${state.filteredApplications.length}'),
-                                    applications: state.filteredApplications,
-                                    selectedApplicationIds: state.selectedApplicationIds,
-                                    onApplicationTap: state.onApplicationTap,
-                                    onApplicationSecondaryTap: state.onApplicationSecondaryTap,
-                                    onCreateNewApplication: state.openNewApplicationConversation,
-                                    onSelectionChanged: state.onApplicationSelectionChanged,
-                                    onSelectAll: state.onSelectAllApplications,
-                                    onSelectNone: state.onSelectNoApplications,
-                                    onBulkDelete: state.onBulkDeleteApplications,
+                                // Application grid with fade transition
+                                Expanded(
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 400),
+                                    child: ApplicationGrid(
+                                      key: ValueKey('grid-${state.filteredApplications.length}'),
+                                      applications: state.filteredApplications,
+                                      selectedApplicationIds: state.selectedApplicationIds,
+                                      onApplicationTap: state.onApplicationTap,
+                                      onApplicationSecondaryTap: state.onApplicationSecondaryTap,
+                                      onCreateNewApplication: state.openNewApplicationConversation,
+                                      onSelectionChanged: state.onApplicationSelectionChanged,
+                                      onSelectAll: state.onSelectAllApplications,
+                                      onSelectNone: state.onSelectNoApplications,
+                                      onBulkDelete: state.onBulkDeleteApplications,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -3,10 +3,12 @@ library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../services/user_application/models/application_status.dart';
 import '../../../../services/user_application/models/development_progress.dart';
 import '../../../../services/user_application/models/user_application.dart';
+import '../../../../theme/accessibility_helper.dart';
 import '../../../../theme/insets.dart';
 
 // Parts
@@ -114,9 +116,18 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
   /// Creates depth perception through shadow transitions.
   late Animation<double> _shadowAnimation;
 
+  /// Focus node for keyboard navigation support.
+  ///
+  /// Manages focus state for this tile to support keyboard navigation
+  /// and screen reader interaction.
+  late FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
+
+    // Initialize focus node
+    _focusNode = FocusNode();
 
     // Initialize animation controllers
     _hoverController = AnimationController(
@@ -249,193 +260,250 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    return MouseRegion(
-      onEnter: (_) => _onMouseEnter(),
-      onExit: (_) => _onMouseExit(),
-      child: GestureDetector(
-        onTapDown: (_) => _onTapDown(),
-        onTapUp: (_) => _onTapUp(),
-        onTapCancel: _onTapUp,
-        onTap: widget.onTap,
-        onSecondaryTap: widget.onSecondaryTap,
-        child: AnimatedBuilder(
-          animation: Listenable.merge([
-            _scaleAnimation,
-            _pressAnimation,
-            _successAnimation,
-            _shadowAnimation,
-          ]),
-          builder: (BuildContext context, Widget? child) {
-            // Calculate combined scale from hover and press animations
-            double combinedScale = _scaleAnimation.value * _pressAnimation.value;
+    // Create semantic label and hint for accessibility
+    final String semanticLabel = l10n.accessibilityApplicationTile(widget.application.title);
+    final String semanticHint = widget.application.isInDevelopment
+        ? l10n.accessibilityApplicationTileHintDeveloping(
+            widget.application.status.displayName,
+            widget.application.description,
+            widget.application.progress?.percentage?.round() ?? 0,
+          )
+        : l10n.accessibilityApplicationTileHint(
+            widget.application.status.displayName,
+            widget.application.description,
+          );
 
-            // Add success animation scaling
-            if (_successAnimation.value > 0) {
-              combinedScale *= 1.0 + 0.05 * _successAnimation.value;
-            }
+    return AccessibilityHelper.createSemanticWidget(
+      label: semanticLabel,
+      hint: semanticHint,
+      button: true,
+      enabled: widget.onTap != null,
+      selected: widget.isSelected,
+      onTap: widget.onTap,
+      child: Focus(
+        focusNode: _focusNode,
+        onKeyEvent: _handleKeyEvent,
+        child: MouseRegion(
+          onEnter: (_) => _onMouseEnter(),
+          onExit: (_) => _onMouseExit(),
+          child: GestureDetector(
+            onTapDown: (_) => _onTapDown(),
+            onTapUp: (_) => _onTapUp(),
+            onTapCancel: _onTapUp,
+            onTap: widget.onTap,
+            onSecondaryTap: widget.onSecondaryTap,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                _scaleAnimation,
+                _pressAnimation,
+                _successAnimation,
+                _shadowAnimation,
+              ]),
+              builder: (BuildContext context, Widget? child) {
+                // Calculate combined scale from hover and press animations
+                double combinedScale = _scaleAnimation.value * _pressAnimation.value;
 
-            // Calculate border color based on state
-            Color borderColor;
-            if (widget.isSelected) {
-              borderColor = colorScheme.primary;
-            } else if (_successAnimation.value > 0) {
-              borderColor = Color.lerp(
-                colorScheme.outline,
-                Colors.green,
-                _successAnimation.value,
-              )!;
-            } else if (_isHovered) {
-              borderColor =
-                  Color.lerp(
+                // Add success animation scaling
+                if (_successAnimation.value > 0) {
+                  combinedScale *= 1.0 + 0.05 * _successAnimation.value;
+                }
+
+                // Calculate border color based on state
+                Color borderColor;
+                if (widget.isSelected) {
+                  borderColor = colorScheme.primary;
+                } else if (_successAnimation.value > 0) {
+                  borderColor = Color.lerp(
                     colorScheme.outline,
-                    colorScheme.primary.withValues(alpha: 0.6),
-                    _hoverController.value,
-                  ) ??
-                  colorScheme.outline;
-            } else {
-              borderColor = colorScheme.outline;
-            }
+                    Colors.green,
+                    _successAnimation.value,
+                  )!;
+                } else if (_isHovered) {
+                  borderColor =
+                      Color.lerp(
+                        colorScheme.outline,
+                        colorScheme.primary.withValues(alpha: 0.6),
+                        _hoverController.value,
+                      ) ??
+                      colorScheme.outline;
+                } else {
+                  borderColor = colorScheme.outline;
+                }
 
-            // Calculate shadow based on hover and success states
-            List<BoxShadow>? boxShadow;
-            if (_isHovered || widget.isSelected || _successAnimation.value > 0) {
-              // Base shadow values for hover and selection
-              double shadowOpacity = 0.0;
-              double shadowBlur = 0.0;
-              double shadowSpread = 0.0;
-              Color shadowColor = colorScheme.shadow;
+                // Calculate shadow based on hover and success states
+                List<BoxShadow>? boxShadow;
+                if (_isHovered || widget.isSelected || _successAnimation.value > 0) {
+                  // Base shadow values for hover and selection
+                  double shadowOpacity = 0.0;
+                  double shadowBlur = 0.0;
+                  double shadowSpread = 0.0;
+                  Color shadowColor = colorScheme.shadow;
 
-              // Apply hover/selection shadow effects
-              if (_isHovered || widget.isSelected) {
-                shadowOpacity = 0.1 * _shadowAnimation.value;
-                shadowBlur = 8.0 * _shadowAnimation.value;
-                shadowSpread = 0.0;
-              }
+                  // Apply hover/selection shadow effects
+                  if (_isHovered || widget.isSelected) {
+                    shadowOpacity = 0.1 * _shadowAnimation.value;
+                    shadowBlur = 8.0 * _shadowAnimation.value;
+                    shadowSpread = 0.0;
+                  }
 
-              // Apply success shadow effects (independent of hover state)
-              if (_successAnimation.value > 0) {
-                shadowOpacity = math.max(shadowOpacity, 0.2 * _successAnimation.value);
-                shadowBlur = math.max(shadowBlur, 12.0 * _successAnimation.value);
-                shadowSpread = math.max(shadowSpread, 2.0 * _successAnimation.value);
-                shadowColor = Colors.green;
-              }
+                  // Apply success shadow effects (independent of hover state)
+                  if (_successAnimation.value > 0) {
+                    shadowOpacity = math.max(shadowOpacity, 0.2 * _successAnimation.value);
+                    shadowBlur = math.max(shadowBlur, 12.0 * _successAnimation.value);
+                    shadowSpread = math.max(shadowSpread, 2.0 * _successAnimation.value);
+                    shadowColor = Colors.green;
+                  }
 
-              // Only create shadow if there are actual shadow effects
-              if (shadowOpacity > 0) {
-                boxShadow = [
-                  BoxShadow(
-                    color: shadowColor.withValues(alpha: shadowOpacity),
-                    blurRadius: shadowBlur,
-                    spreadRadius: shadowSpread,
-                    offset: const Offset(0, 4),
-                  ),
-                ];
-              }
-            }
+                  // Only create shadow if there are actual shadow effects
+                  if (shadowOpacity > 0) {
+                    boxShadow = [
+                      BoxShadow(
+                        color: shadowColor.withValues(alpha: shadowOpacity),
+                        blurRadius: shadowBlur,
+                        spreadRadius: shadowSpread,
+                        offset: const Offset(0, 4),
+                      ),
+                    ];
+                  }
+                }
 
-            return Transform.scale(
-              scale: combinedScale,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: borderColor,
-                    width: widget.isSelected ? 2 : 1,
-                  ),
-                  boxShadow: boxShadow,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(Insets.small),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with icon and status indicator
-                      Row(
+                return Transform.scale(
+                  scale: combinedScale,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: borderColor,
+                        width: widget.isSelected ? 2 : 1,
+                      ),
+                      boxShadow: boxShadow,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(Insets.small),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Application icon
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(12),
+                          // Header with icon and status indicator
+                          Row(
+                            children: [
+                              // Application icon
+                              Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  _getApplicationIcon(),
+                                  color: colorScheme.onPrimaryContainer,
+                                  size: 24,
+                                ),
+                              ),
+
+                              const Spacer(),
+
+                              // Status indicator
+                              _buildStatusIndicator(context),
+                            ],
+                          ),
+
+                          // Application title
+                          Padding(
+                            padding: const EdgeInsets.only(top: Insets.small),
+                            child: Text(
+                              widget.application.title,
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            child: Icon(
-                              _getApplicationIcon(),
-                              color: colorScheme.onPrimaryContainer,
-                              size: 24,
+                          ),
+
+                          // Application description
+                          Padding(
+                            padding: const EdgeInsets.only(top: Insets.xxSmall),
+                            child: Text(
+                              widget.application.description,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.tertiary,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
 
                           const Spacer(),
 
-                          // Status indicator
-                          _buildStatusIndicator(context),
+                          // Progress indicator for developing applications
+                          if (widget.application.isInDevelopment) ...[
+                            Padding(
+                              padding: const EdgeInsets.only(top: Insets.xSmall),
+                              child: ApplicationDevelopmentProgress(
+                                progress: widget.application.progress,
+                              ),
+                            ),
+                          ],
+
+                          // Footer with timestamp
+                          Padding(
+                            padding: const EdgeInsets.only(top: Insets.xSmall),
+                            child: Text(
+                              widget.application.updatedTimeDescription,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.tertiary,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-
-                      // Application title
-                      Padding(
-                        padding: const EdgeInsets.only(top: Insets.small),
-                        child: Text(
-                          widget.application.title,
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: colorScheme.onSurface,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-
-                      // Application description
-                      Padding(
-                        padding: const EdgeInsets.only(top: Insets.xxSmall),
-                        child: Text(
-                          widget.application.description,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.tertiary,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-
-                      const Spacer(),
-
-                      // Progress indicator for developing applications
-                      if (widget.application.isInDevelopment) ...[
-                        Padding(
-                          padding: const EdgeInsets.only(top: Insets.xSmall),
-                          child: ApplicationDevelopmentProgress(
-                            progress: widget.application.progress,
-                          ),
-                        ),
-                      ],
-
-                      // Footer with timestamp
-                      Padding(
-                        padding: const EdgeInsets.only(top: Insets.xSmall),
-                        child: Text(
-                          widget.application.updatedTimeDescription,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.tertiary,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  /// Handles keyboard events for accessibility navigation.
+  ///
+  /// Processes keyboard input to provide accessible interaction with the tile.
+  /// Supports Enter and Space keys for activation, and context menu key for
+  /// secondary actions.
+  ///
+  /// @param node The focus node that received the key event
+  /// @param event The keyboard event to process
+  /// @returns KeyEventResult indicating if the event was handled
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+
+    switch (event.logicalKey) {
+      case LogicalKeyboardKey.enter:
+      case LogicalKeyboardKey.space:
+        if (widget.onTap != null) {
+          widget.onTap!();
+          return KeyEventResult.handled;
+        }
+        break;
+      case LogicalKeyboardKey.contextMenu:
+        if (widget.onSecondaryTap != null) {
+          widget.onSecondaryTap!();
+          return KeyEventResult.handled;
+        }
+        break;
+    }
+
+    return KeyEventResult.ignored;
   }
 
   /// Builds the status indicator widget based on application status.
@@ -637,6 +705,7 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _hoverController.dispose();
     _pressController.dispose();
     _successController.dispose();

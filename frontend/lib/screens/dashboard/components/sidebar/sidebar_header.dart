@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/accessibility_helper.dart';
 import '../../../../theme/insets.dart';
 
 /// Header component for the dashboard sidebar.
@@ -37,6 +38,13 @@ class SidebarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    // Create semantic labels for the toggle button
+    final String toggleLabel = l10n.accessibilitySidebarToggle;
+    final String toggleAction = isExpanded ? l10n.collapse : l10n.expand;
+    final String toggleHint = l10n.accessibilitySidebarToggleHint(toggleAction);
+
     return Container(
       height: 60.0,
       padding: const EdgeInsets.symmetric(
@@ -45,33 +53,39 @@ class SidebarHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Toggle button
-          IconButton(
+          // Toggle button with accessibility support
+          AccessibilityHelper.createAccessibleButton(
+            label: toggleLabel,
+            hint: toggleHint,
             onPressed: onToggle,
-            icon: Icon(
-              isExpanded ? Icons.menu_open : Icons.menu,
-              size: 20,
-            ),
-            tooltip: isExpanded
-                ? AppLocalizations.of(context)!.sidebarToggleCollapse
-                : AppLocalizations.of(context)!.sidebarToggleExpand,
-            style: IconButton.styleFrom(
-              minimumSize: const Size(32, 32),
-              padding: const EdgeInsets.all(6),
+            child: IconButton(
+              onPressed: onToggle,
+              icon: Icon(
+                isExpanded ? Icons.menu_open : Icons.menu,
+                size: 20,
+              ),
+              tooltip: isExpanded ? l10n.sidebarToggleCollapse : l10n.sidebarToggleExpand,
+              style: IconButton.styleFrom(
+                minimumSize: const Size(32, 32),
+                padding: const EdgeInsets.all(6),
+              ),
             ),
           ),
 
-          // Title (only shown when expanded)
+          // Title (only shown when expanded) with semantic header
           if (showExpandedContent) ...[
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: Insets.xSmall),
-                child: Text(
-                  AppLocalizations.of(context)!.sidebarTitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                child: AccessibilityHelper.createSemanticHeader(
+                  level: 1,
+                  child: Text(
+                    l10n.sidebarTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),

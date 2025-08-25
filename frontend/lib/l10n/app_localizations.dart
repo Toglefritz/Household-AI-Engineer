@@ -975,6 +975,268 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to Setup'**
   String get splashForceSetup;
+
+  /// Semantic label for application tiles
+  ///
+  /// In en, this message translates to:
+  /// **'Application tile for {title}'**
+  String accessibilityApplicationTile(String title);
+
+  /// Semantic hint for application tiles
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}. {description}. Double tap to launch, long press for options.'**
+  String accessibilityApplicationTileHint(String status, String description);
+
+  /// Semantic hint for developing application tiles
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}. {description}. Progress: {progress}%. Double tap for details.'**
+  String accessibilityApplicationTileHintDeveloping(
+    String status,
+    String description,
+    int progress,
+  );
+
+  /// Semantic label for the application grid
+  ///
+  /// In en, this message translates to:
+  /// **'Application grid'**
+  String get accessibilityApplicationGrid;
+
+  /// Semantic hint for the application grid
+  ///
+  /// In en, this message translates to:
+  /// **'Grid containing {count} applications. Use arrow keys to navigate.'**
+  String accessibilityApplicationGridHint(int count);
+
+  /// Semantic label for the create new app tile
+  ///
+  /// In en, this message translates to:
+  /// **'Create new application'**
+  String get accessibilityCreateNewAppTile;
+
+  /// Semantic hint for the create new app tile
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to start creating a new application'**
+  String get accessibilityCreateNewAppTileHint;
+
+  /// Semantic label for the sidebar
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation sidebar'**
+  String get accessibilitySidebar;
+
+  /// Semantic hint for the sidebar
+  ///
+  /// In en, this message translates to:
+  /// **'Contains navigation, search, and application categories'**
+  String get accessibilitySidebarHint;
+
+  /// Semantic label for the sidebar toggle button
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle sidebar'**
+  String get accessibilitySidebarToggle;
+
+  /// Semantic hint for the sidebar toggle button
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to {action} the sidebar'**
+  String accessibilitySidebarToggleHint(String action);
+
+  /// Semantic label for the search field
+  ///
+  /// In en, this message translates to:
+  /// **'Search applications'**
+  String get accessibilitySearchField;
+
+  /// Semantic hint for the search field
+  ///
+  /// In en, this message translates to:
+  /// **'Type to search through your applications'**
+  String get accessibilitySearchFieldHint;
+
+  /// Semantic label for the search clear button
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get accessibilitySearchClear;
+
+  /// Semantic hint for the search clear button
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to clear the current search'**
+  String get accessibilitySearchClearHint;
+
+  /// Semantic label for navigation items
+  ///
+  /// In en, this message translates to:
+  /// **'{label} navigation'**
+  String accessibilityNavigationItem(String label);
+
+  /// Semantic hint for navigation items
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to filter applications by {label}'**
+  String accessibilityNavigationItemHint(String label);
+
+  /// Semantic label for category items
+  ///
+  /// In en, this message translates to:
+  /// **'{category} category'**
+  String accessibilityCategoryItem(String category);
+
+  /// Semantic hint for category items
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications in this category. Double tap to filter.'**
+  String accessibilityCategoryItemHint(int count);
+
+  /// Semantic label for the status bar
+  ///
+  /// In en, this message translates to:
+  /// **'System status bar'**
+  String get accessibilityStatusBar;
+
+  /// Semantic hint for the status bar
+  ///
+  /// In en, this message translates to:
+  /// **'Shows connection status and system information'**
+  String get accessibilityStatusBarHint;
+
+  /// Semantic label for connection status
+  ///
+  /// In en, this message translates to:
+  /// **'Connection status: {status}'**
+  String accessibilityConnectionStatus(String status);
+
+  /// Semantic label for the conversation modal
+  ///
+  /// In en, this message translates to:
+  /// **'Application creation conversation'**
+  String get accessibilityConversationModal;
+
+  /// Semantic hint for the conversation modal
+  ///
+  /// In en, this message translates to:
+  /// **'Chat interface for creating or modifying applications'**
+  String get accessibilityConversationModalHint;
+
+  /// Semantic label for conversation messages
+  ///
+  /// In en, this message translates to:
+  /// **'Message from {sender}'**
+  String accessibilityConversationMessage(String sender);
+
+  /// Semantic label for the conversation input field
+  ///
+  /// In en, this message translates to:
+  /// **'Message input'**
+  String get accessibilityConversationInput;
+
+  /// Semantic hint for the conversation input field
+  ///
+  /// In en, this message translates to:
+  /// **'Type your message to the assistant'**
+  String get accessibilityConversationInputHint;
+
+  /// Semantic label for the send message button
+  ///
+  /// In en, this message translates to:
+  /// **'Send message'**
+  String get accessibilityConversationSend;
+
+  /// Semantic hint for the send message button
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to send your message'**
+  String get accessibilityConversationSendHint;
+
+  /// Semantic label for the close conversation button
+  ///
+  /// In en, this message translates to:
+  /// **'Close conversation'**
+  String get accessibilityConversationClose;
+
+  /// Semantic hint for the close conversation button
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap to close the conversation and return to dashboard'**
+  String get accessibilityConversationCloseHint;
+
+  /// Semantic label for progress indicators
+  ///
+  /// In en, this message translates to:
+  /// **'Development progress'**
+  String get accessibilityProgressIndicator;
+
+  /// Semantic hint for progress indicators
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% complete. Current phase: {phase}'**
+  String accessibilityProgressIndicatorHint(int percentage, String phase);
+
+  /// Semantic label for the bulk selection toolbar
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk selection toolbar'**
+  String get accessibilityBulkSelectionToolbar;
+
+  /// Semantic hint for the bulk selection toolbar
+  ///
+  /// In en, this message translates to:
+  /// **'{count} applications selected. Actions available.'**
+  String accessibilityBulkSelectionToolbarHint(int count);
+
+  /// Semantic label for the main content area
+  ///
+  /// In en, this message translates to:
+  /// **'Main content area'**
+  String get accessibilityMainContent;
+
+  /// Semantic hint for the main content area
+  ///
+  /// In en, this message translates to:
+  /// **'Contains application grid and primary interface'**
+  String get accessibilityMainContentHint;
+
+  /// Semantic label for the empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No applications'**
+  String get accessibilityEmptyState;
+
+  /// Semantic hint for the empty state
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t created any applications yet. Use the create button to get started.'**
+  String get accessibilityEmptyStateHint;
+
+  /// Action word for expanding something
+  ///
+  /// In en, this message translates to:
+  /// **'expand'**
+  String get expand;
+
+  /// Action word for collapsing something
+  ///
+  /// In en, this message translates to:
+  /// **'collapse'**
+  String get collapse;
+
+  /// Label for user messages in conversation
+  ///
+  /// In en, this message translates to:
+  /// **'user'**
+  String get user;
+
+  /// Label for assistant messages in conversation
+  ///
+  /// In en, this message translates to:
+  /// **'assistant'**
+  String get assistant;
 }
 
 class _AppLocalizationsDelegate
