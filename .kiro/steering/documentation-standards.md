@@ -2,7 +2,7 @@
 
 ## Philosophy
 
-Documentation is not optional—it is a critical component of code quality and project sustainability. Every piece of code written for the Household Software Engineer project must be thoroughly documented with the assumption that another developer will need to understand, maintain, and extend the work.
+Documentation is not optional—it is a critical component of code quality and project sustainability. Every piece of code written for the Dwellware project must be thoroughly documented with the assumption that another developer will need to understand, maintain, and extend the work.
 
 **Core Principle**: Code without proper documentation is incomplete code.
 

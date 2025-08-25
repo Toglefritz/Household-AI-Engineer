@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This document outlines the requirements for a Kiro Command Research Tool that will systematically investigate and document Kiro IDE commands to enable remote orchestration of the Kiro IDE for the Household AI Engineer project. The tool will discover command signatures, test their behavior, and create comprehensive documentation for integration purposes.
+This document outlines the requirements for a Kiro Command Research Tool that will systematically investigate and document Kiro IDE commands to enable remote orchestration of the Kiro IDE for the Dwellware project. The tool will discover command signatures, test their behavior, and create comprehensive documentation for integration purposes.
 
 ## Requirements
 
 ### Requirement 1
 
-**User Story:** As a developer building the Household AI Engineer orchestration layer, I want to understand the signature and behavior of each Kiro command, so that I can programmatically invoke them via a WebSocket bridge extension.
+**User Story:** As a developer building the Dwellware orchestration layer, I want to understand the signature and behavior of each Kiro command, so that I can programmatically invoke them via a WebSocket bridge extension.
 
 #### Acceptance Criteria
 

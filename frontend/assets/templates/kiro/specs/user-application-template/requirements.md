@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This spec guides the creation of a single user application within the Household Software Engineer system. This application must be simple, narrowly-focused, and completable with minimal technical input from the user. The application is designed for household management and personal productivity, targeting users who may lack technical expertise.
+This spec guides the creation of a single user application within the Dwellware system. This application must be simple, narrowly-focused, and completable with minimal technical input from the user. The application is designed for household management and personal productivity, targeting users who may lack technical expertise.
 
 ## Requirements
 

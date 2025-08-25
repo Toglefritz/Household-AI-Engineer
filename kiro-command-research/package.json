@@ -3,8 +3,8 @@
   "displayName": "Kiro Command Research Tool",
   "description": "Research and document Kiro IDE commands for remote orchestration",
   "version": "0.8.0",
-  "publisher": "household-ai-engineer",
-  "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
+  "publisher": "dwellware",
+  "repository": "https://github.com/Toglefritz/Dwellware",
   "engines": {
     "vscode": "^1.74.0"
   },

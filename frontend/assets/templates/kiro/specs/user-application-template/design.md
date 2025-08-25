@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design document outlines the architecture and implementation approach for creating this individual user application within the Household Software Engineer system. The design prioritizes simplicity, rapid development, and minimal user configuration while ensuring this application is self-contained and easily manageable.
+This design document outlines the architecture and implementation approach for creating this individual user application within the Dwellware system. The design prioritizes simplicity, rapid development, and minimal user configuration while ensuring this application is self-contained and easily manageable.
 
 ## Architecture
 

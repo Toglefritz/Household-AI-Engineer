@@ -1,6 +1,6 @@
 # Project Description
 
-This project is a desktop system that acts as a personal household software engineer, capable of creating bespoke applications for a single user or household on demand. While the system may eventually be deployed on bespoke hardware, the system will run initially on macOS and consist of:
+This project is a desktop system called Dwellware that acts as a personal household software engineer, capable of creating bespoke applications for a single user or household on demand. While the system may eventually be deployed on bespoke hardware, the system will run initially on macOS and consist of:
 
 ## 1. Frontend Dashboard (Flutter Desktop)
 - Serves as the main user interface for the system.

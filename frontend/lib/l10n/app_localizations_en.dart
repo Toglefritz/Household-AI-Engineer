@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeMessage => 'How can I help you today?';
 
   @override
-  String get sidebarTitle => 'Household Engineer';
+  String get sidebarTitle => 'Dwellware';
 
   @override
   String get sidebarToggleCollapse => 'Collapse sidebar';
@@ -415,7 +415,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupKiroRequiredDescription =>
-      'To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.';
+      'To use Dwellware, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.';
 
   @override
   String get setupDownloadKiro => 'Download Kiro IDE';
@@ -427,7 +427,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupChecking => 'Checking...';
 
   @override
-  String get setupWelcome => 'Welcome to Household Software Engineer!';
+  String get setupWelcome => 'Welcome to Dwellware!';
 
   @override
   String setupKiroDetected(String version) {
@@ -436,7 +436,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupTutorialDescription =>
-      'Let\'s get you started with creating and managing your household applications.';
+      'Let\'s get you started with creating and managing your custom applications.';
 
   @override
   String get setupTutorialTitle => 'Quick Start Guide';
@@ -469,7 +469,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupGetStarted => 'Get Started';
 
   @override
-  String get splashTitle => 'Household Software Engineer';
+  String get splashTitle => 'Dwellware';
 
   @override
   String get splashSubtitle => 'AI-Powered Home Application Development';

@@ -15,7 +15,7 @@ class HouseholdAIEngineerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Household Software Engineer',
+      title: 'Dwellware',
       debugShowCheckedModeBanner: false,
 
       // Localizations

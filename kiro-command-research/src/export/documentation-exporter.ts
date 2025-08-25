@@ -577,7 +577,7 @@ ${context.testResults.length > 0 ? '- [Examples](./EXAMPLES.md) - Usage examples
 
 ## Integration
 
-This documentation is designed for integration with the Household AI Engineer orchestration system. The generated schemas and API documentation enable remote command execution via WebSocket bridge.
+This documentation is designed for integration with the Dwellware orchestration system. The generated schemas and API documentation enable remote command execution via WebSocket bridge.
 
 ## Change Tracking
 

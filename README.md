@@ -1,10 +1,10 @@
-# Household Software Engineer
+# Dwellware
 
-A personal AI-powered software development system that creates custom applications for your household on demand. Simply describe what you need in plain English, and watch as your personal software engineer designs, codes, tests, and deploys bespoke tools tailored to your unique needs.
+A personal AI-powered software development system that creates custom applications for your home on demand. Simply describe what you need in plain English, and watch as your personal software engineer designs, codes, tests, and deploys bespoke tools tailored to your unique needs.
 
 ## Overview
 
-The Household Software Engineer transforms is a personal development environment where you can create custom applications without any technical knowledge. Through a conversational interface, you describe the tools you need, and the system handles everything from requirements gathering to deployment.
+Dwellware transforms is a personal development environment where you can create custom applications without any technical knowledge. Through a conversational interface, you describe the tools you need, and the system handles everything from requirements gathering to deployment.
 
 **Key Features:**
 - 🗣️ **Natural Language Interface** - Describe your needs in plain English
@@ -51,18 +51,18 @@ Ensures security and stability:
 
 ## Example Use Cases
 
-Transform your household management with custom applications:
+Transform your home management with custom applications:
 
-- **Chore Rotation Tracker** - Automatically rotate household tasks with custom rules for your family
+- **Chore Rotation Tracker** - Automatically rotate home tasks with custom rules for your family
 - **Trip Cost Forecaster** - Combine travel booking data with expense estimates for accurate trip budgeting  
 - **Seasonal Maintenance Reminders** - Get timely notifications for home maintenance tasks based on your location and preferences
 - **Local Events Dashboard** - Aggregate community events and activities relevant to your interests
 - **Family Calendar Coordinator** - Sync and manage multiple family schedules with conflict detection
-- **Household Inventory Manager** - Track supplies, expiration dates, and shopping lists with barcode scanning
+- **Home Inventory Manager** - Track supplies, expiration dates, and shopping lists with barcode scanning
 
 ## Getting Started
 
-1. **Launch the Dashboard** - Open the Household Software Engineer application
+1. **Launch the Dashboard** - Open the Dwellware application
 2. **Describe Your Need** - Click "Create New App" and describe what you want in plain English
 3. **Watch It Build** - Monitor real-time progress as your application is developed
 4. **Start Using** - Launch your new application directly from the dashboard

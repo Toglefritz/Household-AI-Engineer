@@ -109,7 +109,7 @@ abstract class AppLocalizations {
   /// Title displayed in the sidebar header
   ///
   /// In en, this message translates to:
-  /// **'Household Engineer'**
+  /// **'Dwellware'**
   String get sidebarTitle;
 
   /// Tooltip for the sidebar collapse button
@@ -394,7 +394,7 @@ abstract class AppLocalizations {
   /// **'Ready'**
   String get ready;
 
-  /// No description provided for @queued.
+  /// Describes the status of an entity that is awaiting further action
   ///
   /// In en, this message translates to:
   /// **'Queued'**
@@ -823,7 +823,7 @@ abstract class AppLocalizations {
   /// Description explaining why Kiro IDE is required
   ///
   /// In en, this message translates to:
-  /// **'To use the Household Software Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.'**
+  /// **'To use Dwellware, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.'**
   String get setupKiroRequiredDescription;
 
   /// Button text to download Kiro IDE
@@ -847,7 +847,7 @@ abstract class AppLocalizations {
   /// Welcome message in the tutorial phase
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Household Software Engineer!'**
+  /// **'Welcome to Dwellware!'**
   String get setupWelcome;
 
   /// Message confirming Kiro IDE version is detected
@@ -859,7 +859,7 @@ abstract class AppLocalizations {
   /// Description for the tutorial phase
   ///
   /// In en, this message translates to:
-  /// **'Let\'s get you started with creating and managing your household applications.'**
+  /// **'Let\'s get you started with creating and managing your custom applications.'**
   String get setupTutorialDescription;
 
   /// Title for the tutorial section
@@ -919,7 +919,7 @@ abstract class AppLocalizations {
   /// Application title shown on splash screen
   ///
   /// In en, this message translates to:
-  /// **'Household Software Engineer'**
+  /// **'Dwellware'**
   String get splashTitle;
 
   /// Application subtitle shown on splash screen

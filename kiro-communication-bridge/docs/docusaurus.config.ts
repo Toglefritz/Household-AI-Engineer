@@ -257,7 +257,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Household AI Engineer. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Dwellware. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

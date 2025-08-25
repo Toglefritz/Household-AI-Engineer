@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Kiro Command Research Tool is a simplified VS Code extension that discovers and documents Kiro IDE commands for remote orchestration. It focuses on command discovery, basic analysis, and JSON-based documentation generation for integration with the Household AI Engineer orchestration layer.
+The Kiro Command Research Tool is a simplified VS Code extension that discovers and documents Kiro IDE commands for remote orchestration. It focuses on command discovery, basic analysis, and JSON-based documentation generation for integration with the Dwellware orchestration layer.
 
 ## Architecture
 

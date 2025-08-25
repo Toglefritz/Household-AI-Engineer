@@ -1,5 +1,5 @@
-name: household_ai_engineer
-description: "Flutter dashboard for the Household Software Engineer system - a native macOS application for creating and managing custom household applications."
+name: dwellware
+description: "Flutter dashboard for the Dwellware system - a native macOS application for creating and managing custom household applications."
 publish_to: 'none'
 
 version: 1.0.0+1

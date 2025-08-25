@@ -400,7 +400,7 @@ factory BrineDevice.fromJson(Map<String, dynamic> json) {
 ### Use Localizable Strings
 - Never hard-code strings directly in widgets
 - All user-facing text must use the `l10n/app_localizations.dart` dependency
-- Add strings to `household_ai_engineer/lib/l10n/app_en.arb`
+- Add strings to `frontend/lib/l10n/app_en.arb`
 - Generate localizable strings using `flutter gen-l10n`
 
 **✅ Preferred localization pattern:**
@@ -487,7 +487,7 @@ Text(AppLocalizations.of(context)!.itemCount(items.length))
 ```
 
 ### Localization Workflow
-1. Add new strings to `household_ai_engineer/lib/l10n/app_en.arb`
+1. Add new strings to `frontend/lib/l10n/app_en.arb`
 2. Run `flutter gen-l10n` to generate the localization classes
 3. Import `AppLocalizations` in your widget files
 4. Use `AppLocalizations.of(context)!.stringKey` to access strings

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Flutter Dashboard is the primary user interface for the Household Software Engineer system, providing a native macOS desktop application that enables non-technical users to create, manage, and launch custom household applications. The dashboard serves as a central hub with an intuitive grid-based layout, conversational interface for application requests, real-time development progress monitoring, and seamless application launching capabilities. The interface prioritizes simplicity and clarity while providing powerful functionality for managing multiple custom applications.
+The Flutter Dashboard is the primary user interface for the Dwellware system, providing a native macOS desktop application that enables non-technical users to create, manage, and launch custom household applications. The dashboard serves as a central hub with an intuitive grid-based layout, conversational interface for application requests, real-time development progress monitoring, and seamless application launching capabilities. The interface prioritizes simplicity and clarity while providing powerful functionality for managing multiple custom applications.
 
 ## Requirements
 

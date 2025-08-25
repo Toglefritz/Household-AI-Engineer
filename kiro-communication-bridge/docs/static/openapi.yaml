@@ -20,9 +20,9 @@ info:
     The port can be configured through VS Code settings.
   version: 1.0.0
   contact:
-    name: Household AI Engineer
-    url: https://github.com/Toglefritz/Household-AI-Engineer
-    email: support@household-ai-engineer.com
+    name: Dwellware
+    url: https://github.com/Toglefritz/Dwellware
+    email: support@dwellware.com
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -641,4 +641,4 @@ tags:
 
 externalDocs:
   description: Complete API Documentation
-  url: https://toglefritz.github.io/Household-AI-Engineer/docs/api/overview
+  url: https://toglefritz.github.io/Dwellware/docs/api/overview

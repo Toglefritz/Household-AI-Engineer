@@ -8,7 +8,7 @@
   "@welcomeMessage": {
     "description": "A message welcoming the user to the app"
   },
-  "sidebarTitle": "Household Engineer",
+  "sidebarTitle": "Dwellware",
   "@sidebarTitle": {
     "description": "Title displayed in the sidebar header"
   },
@@ -228,7 +228,7 @@
   },
   "queued": "Queued",
   "@queued": {
-    "describes": "Describes the status of an entity that is awaiting further action"
+    "description": "Describes the status of an entity that is awaiting further action"
   },
   "running": "Running",
   "@running": {
@@ -592,7 +592,7 @@
   "@setupKiroRequired": {
     "description": "Title shown when Kiro IDE is not installed"
   },
-  "setupKiroRequiredDescription": "To use the Household AI Engineer, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.",
+  "setupKiroRequiredDescription": "To use Dwellware, you need to have Kiro IDE installed on your system. Please download and install Kiro from the official website.",
   "@setupKiroRequiredDescription": {
     "description": "Description explaining why Kiro IDE is required"
   },
@@ -608,7 +608,7 @@
   "@setupChecking": {
     "description": "Text shown on button while checking for Kiro"
   },
-  "setupWelcome": "Welcome to Household AI Engineer!",
+  "setupWelcome": "Welcome to Dwellware!",
   "@setupWelcome": {
     "description": "Welcome message in the tutorial phase"
   },
@@ -622,7 +622,7 @@
       }
     }
   },
-  "setupTutorialDescription": "Let's get you started with creating and managing your household applications.",
+  "setupTutorialDescription": "Let's get you started with creating and managing your custom applications.",
   "@setupTutorialDescription": {
     "description": "Description for the tutorial phase"
   },
@@ -662,7 +662,7 @@
   "@setupGetStarted": {
     "description": "Button text to complete setup and enter the main app"
   },
-  "splashTitle": "Household AI Engineer",
+  "splashTitle": "Dwellware",
   "@splashTitle": {
     "description": "Application title shown on splash screen"
   },

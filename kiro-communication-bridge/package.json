@@ -1,10 +1,10 @@
 {
   "name": "kiro-communication-bridge",
   "displayName": "Kiro Communication Bridge",
-  "description": "Communication bridge between Flutter frontend and Kiro IDE for the Household Software Engineer system",
+  "description": "Communication bridge between Flutter frontend and Kiro IDE for the Dwellware system",
   "version": "0.8.0",
-  "publisher": "household-ai-engineer",
-  "repository": "https://github.com/Toglefritz/Household-AI-Engineer",
+  "publisher": "dwellware",
+  "repository": "https://github.com/Toglefritz/Dwellware",
   "engines": {
     "vscode": "^1.74.0"
   },
