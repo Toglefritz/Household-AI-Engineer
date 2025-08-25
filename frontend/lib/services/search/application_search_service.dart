@@ -130,6 +130,17 @@ class ApplicationSearchService {
         debugPrint('Keeping ${app.title} because it is a favorite');
       }
 
+      // Recent filter (last 7 days)
+      if (filter.recentOnly) {
+        final DateTime sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+        debugPrint('Recent filter active: checking ${app.title}, updatedAt: ${app.updatedAt}');
+        if (app.updatedAt.isBefore(sevenDaysAgo)) {
+          debugPrint('Filtering out ${app.title} because it was not updated recently');
+          return false;
+        }
+        debugPrint('Keeping ${app.title} because it was updated recently');
+      }
+
       return true;
     }).toList();
   }

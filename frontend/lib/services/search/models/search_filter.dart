@@ -86,6 +86,7 @@ class SearchFilter {
   /// @param dateRangeStart Optional start date for date filtering
   /// @param dateRangeEnd Optional end date for date filtering
   /// @param favoritesOnly Whether to show only favorite applications
+  /// @param recentOnly Whether to show only recently updated applications
   const SearchFilter({
     this.query = '',
     this.selectedCategories = const {},
@@ -94,6 +95,7 @@ class SearchFilter {
     this.dateRangeStart,
     this.dateRangeEnd,
     this.favoritesOnly = false,
+    this.recentOnly = false,
   });
 
   /// Text search query for fuzzy matching against application titles and descriptions.
@@ -142,10 +144,17 @@ class SearchFilter {
   /// are included regardless of favorite status.
   final bool favoritesOnly;
 
+  /// Whether to show only recently updated applications.
+  ///
+  /// When true, only applications updated within the last 7 days
+  /// will be included in the results, sorted by most recent first.
+  /// When false, all applications are included regardless of update time.
+  final bool recentOnly;
+
   /// Whether any filters are currently active.
   ///
   /// Returns true if any filtering criteria are applied, including
-  /// text search, category filters, status filters, date ranges, or favorites.
+  /// text search, category filters, status filters, date ranges, favorites, or recent.
   /// Used to show filter indicators and clear filter options.
   bool get hasActiveFilters {
     return query.isNotEmpty ||
@@ -153,7 +162,8 @@ class SearchFilter {
         selectedStatuses.isNotEmpty ||
         dateRangeStart != null ||
         dateRangeEnd != null ||
-        favoritesOnly;
+        favoritesOnly ||
+        recentOnly;
   }
 
   /// Whether only text search is active with no other filters.
@@ -166,7 +176,8 @@ class SearchFilter {
         selectedStatuses.isEmpty &&
         dateRangeStart == null &&
         dateRangeEnd == null &&
-        !favoritesOnly;
+        !favoritesOnly &&
+        !recentOnly;
   }
 
   /// Creates a copy of this filter with updated search query.
@@ -182,6 +193,7 @@ class SearchFilter {
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
       favoritesOnly: favoritesOnly,
+      recentOnly: recentOnly,
     );
   }
 
@@ -198,6 +210,7 @@ class SearchFilter {
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
       favoritesOnly: favoritesOnly,
+      recentOnly: recentOnly,
     );
   }
 
@@ -214,6 +227,7 @@ class SearchFilter {
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
       favoritesOnly: favoritesOnly,
+      recentOnly: recentOnly,
     );
   }
 
@@ -230,6 +244,7 @@ class SearchFilter {
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
       favoritesOnly: favoritesOnly,
+      recentOnly: recentOnly,
     );
   }
 
@@ -247,6 +262,7 @@ class SearchFilter {
       dateRangeStart: startDate,
       dateRangeEnd: endDate,
       favoritesOnly: favoritesOnly,
+      recentOnly: recentOnly,
     );
   }
 
@@ -263,6 +279,24 @@ class SearchFilter {
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
       favoritesOnly: showFavoritesOnly,
+      recentOnly: recentOnly,
+    );
+  }
+
+  /// Creates a copy of this filter with updated recent filter.
+  ///
+  /// @param showRecentOnly Whether to show only recently updated applications
+  /// @returns New SearchFilter instance with updated recent filter
+  SearchFilter copyWithRecentOnly(bool showRecentOnly) {
+    return SearchFilter(
+      query: query,
+      selectedCategories: selectedCategories,
+      selectedStatuses: selectedStatuses,
+      sortOption: sortOption,
+      dateRangeStart: dateRangeStart,
+      dateRangeEnd: dateRangeEnd,
+      favoritesOnly: favoritesOnly,
+      recentOnly: showRecentOnly,
     );
   }
 
@@ -287,7 +321,8 @@ class SearchFilter {
         sortOption == other.sortOption &&
         dateRangeStart == other.dateRangeStart &&
         dateRangeEnd == other.dateRangeEnd &&
-        favoritesOnly == other.favoritesOnly;
+        favoritesOnly == other.favoritesOnly &&
+        recentOnly == other.recentOnly;
   }
 
   @override
@@ -300,6 +335,7 @@ class SearchFilter {
       dateRangeStart,
       dateRangeEnd,
       favoritesOnly,
+      recentOnly,
     );
   }
 

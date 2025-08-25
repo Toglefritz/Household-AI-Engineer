@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../services/search/models/search_filter.dart';
 import '../../../../../services/user_application/models/application_status.dart';
 import '../../../../../services/user_application/models/user_application.dart';
 import '../../../../../theme/insets.dart';
@@ -126,13 +127,13 @@ class SidebarNavigationSection extends StatelessWidget {
 
   /// Handles the "Recent" navigation item tap.
   ///
-  /// Filters applications to show recently created or updated applications.
-  /// Shows applications from the last 7 days, sorted by most recent first.
+  /// Filters applications to show recently updated applications.
+  /// Shows applications updated within the last 7 days, sorted by most recent first.
   void _handleRecentTap() {
-    // TODO: Implement recent applications filter
-    // For now, clear filters and sort by newest
-    searchController.clearAllFilters();
-    // Future implementation: Add date range filter for last 7 days
+    searchController
+      ..clearAllFilters()
+      ..updateRecentFilter(true)
+      ..updateSortOption(SortOption.updatedDateDesc);
   }
 
   /// Handles the "Favorites" navigation item tap.
@@ -188,12 +189,10 @@ class SidebarNavigationSection extends StatelessWidget {
 
   /// Determines if "Recent" navigation item should be selected.
   ///
-  /// Returns true when recent applications filter is active.
-  /// Currently not implemented - returns false as placeholder.
+  /// Returns true when the recent-only filter is active, indicating
+  /// that only recently updated applications are being shown.
   bool _isRecentSelected() {
-    // TODO: Implement recent filter detection when recent functionality is added
-    // This would check for date range filters showing last 7 days
-    return false;
+    return searchController.currentFilter.recentOnly;
   }
 
   /// Determines if "Favorites" navigation item should be selected.

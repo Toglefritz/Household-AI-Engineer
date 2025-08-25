@@ -209,6 +209,17 @@ class ApplicationSearchController extends ChangeNotifier {
     _performSearch();
   }
 
+  /// Updates the recent filter.
+  ///
+  /// Immediately performs search with the new recent criteria.
+  /// Shows only applications updated within the last 7 days.
+  ///
+  /// @param showRecentOnly Whether to show only recently updated applications
+  void updateRecentFilter(bool showRecentOnly) {
+    _currentFilter = _currentFilter.copyWithRecentOnly(showRecentOnly);
+    _performSearch();
+  }
+
   /// Clears all filters and search criteria.
   ///
   /// Resets to default state showing all applications with default sorting.
