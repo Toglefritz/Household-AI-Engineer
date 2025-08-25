@@ -338,6 +338,60 @@ class UserApplicationService {
     throw UnimplementedError();
   }
 
+  /// Updates the favorite status of an application.
+  ///
+  /// Modifies the manifest.json file to set the isFavorite field
+  /// and triggers a refresh of the application list.
+  ///
+  /// @param applicationId The ID of the application to update
+  /// @param isFavorite Whether the application should be marked as favorite
+  Future<void> updateFavoriteStatus(String applicationId, bool isFavorite) async {
+    debugPrint('Updating favorite status for application: $applicationId to $isFavorite');
+
+    try {
+      // Find the application directory and manifest file
+      final Directory appsDirectory = await AppConfig.appsDirectory;
+      final List<FileSystemEntity> entries = appsDirectory.listSync(
+        followLinks: false,
+      );
+
+      for (final FileSystemEntity entity in entries) {
+        if (entity is! Directory) continue;
+
+        final Directory appDirectory = entity;
+        final File manifestFile = File('${appDirectory.path}/manifest.json');
+
+        if (!manifestFile.existsSync()) continue;
+
+        // Read the current manifest
+        final UserApplication? app = await _readManifest(manifestFile);
+        if (app != null && app.id == applicationId) {
+          // Update the application with new favorite status
+          final UserApplication updatedApp = app.copyWith(
+            isFavorite: isFavorite,
+            updatedAt: DateTime.now(),
+          );
+
+          // Write the updated manifest back to the file
+          final String updatedJson = json.encode(updatedApp.toJson());
+          await manifestFile.writeAsString(updatedJson);
+
+          debugPrint('Successfully updated favorite status for application: ${app.title}');
+
+          // Trigger a refresh to notify listeners
+          await refreshApplications();
+          return;
+        }
+      }
+
+      // If we get here, the application was not found
+      throw Exception('Application not found: $applicationId');
+    } catch (e) {
+      debugPrint('Failed to update favorite status for application $applicationId: $e');
+      rethrow;
+    }
+  }
+
   /// Deletes an application through the file system.
   ///
   /// Removes the application directory and all associated files.

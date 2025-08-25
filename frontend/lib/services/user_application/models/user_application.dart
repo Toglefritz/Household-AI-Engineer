@@ -8,7 +8,7 @@ import 'development_progress.dart';
 class UserApplication {
   /// Creates a new application tile.
   ///
-  /// All parameters except [iconUrl], [progress], [category], and [tags] are required
+  /// All parameters except [iconUrl], [progress], [category], [tags], and [isFavorite] are required
   /// to ensure complete application information for proper management.
   const UserApplication({
     required this.id,
@@ -21,6 +21,7 @@ class UserApplication {
     this.category,
     this.progress,
     this.tags = const [],
+    this.isFavorite = false,
   });
 
   /// Unique identifier for this application.
@@ -79,6 +80,12 @@ class UserApplication {
   /// categorization beyond the primary category.
   final List<String> tags;
 
+  /// Whether this application is marked as a favorite by the user.
+  ///
+  /// Favorite applications can be filtered and displayed separately
+  /// in the sidebar navigation for quick access to frequently used apps.
+  final bool isFavorite;
+
   /// Development progress information for applications being built.
   ///
   /// Null for applications that are not currently in development.
@@ -95,31 +102,20 @@ class UserApplication {
   factory UserApplication.fromJson(Map<String, dynamic> json) {
     try {
       return UserApplication(
-        id:
-            json['id'] as String? ??
-            (throw ArgumentError('Missing required field: id')),
-        title:
-            json['title'] as String? ??
-            (throw ArgumentError('Missing required field: title')),
-        description:
-            json['description'] as String? ??
-            (throw ArgumentError('Missing required field: description')),
+        id: json['id'] as String? ?? (throw ArgumentError('Missing required field: id')),
+        title: json['title'] as String? ?? (throw ArgumentError('Missing required field: title')),
+        description: json['description'] as String? ?? (throw ArgumentError('Missing required field: description')),
         status: _parseStatus(json['status'] as String?),
         createdAt: DateTime.parse(
-          json['createdAt'] as String? ??
-              (throw ArgumentError('Missing required field: createdAt')),
+          json['createdAt'] as String? ?? (throw ArgumentError('Missing required field: createdAt')),
         ),
         updatedAt: DateTime.parse(
-          json['updatedAt'] as String? ??
-              (throw ArgumentError('Missing required field: updatedAt')),
+          json['updatedAt'] as String? ?? (throw ArgumentError('Missing required field: updatedAt')),
         ),
         iconUrl: json['iconUrl'] as String?,
         category: _parseCategory(json['category'] as String?),
-        tags:
-            (json['tags'] as List<dynamic>?)
-                ?.map((tag) => tag as String)
-                .toList() ??
-            [],
+        tags: (json['tags'] as List<dynamic>?)?.map((tag) => tag as String).toList() ?? [],
+        isFavorite: json['isFavorite'] as bool? ?? false,
         progress: json['progress'] != null
             ? DevelopmentProgress.fromJson(
                 json['progress'] as Map<String, dynamic>,
@@ -146,6 +142,7 @@ class UserApplication {
       'iconUrl': iconUrl,
       'category': category?.name,
       'tags': tags,
+      'isFavorite': isFavorite,
       'progress': progress?.toJson(),
     };
   }
@@ -164,6 +161,7 @@ class UserApplication {
     String? iconUrl,
     ApplicationCategory? category,
     List<String>? tags,
+    bool? isFavorite,
     DevelopmentProgress? progress,
   }) {
     return UserApplication(
@@ -176,6 +174,7 @@ class UserApplication {
       iconUrl: iconUrl ?? this.iconUrl,
       category: category ?? this.category,
       tags: tags ?? this.tags,
+      isFavorite: isFavorite ?? this.isFavorite,
       progress: progress ?? this.progress,
     );
   }

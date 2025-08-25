@@ -366,6 +366,14 @@
   "@buttonDeleteApplication": {
     "description": "Button to delete an application"
   },
+  "buttonAddToFavorites": "Add to Favorites",
+  "@buttonAddToFavorites": {
+    "description": "Button to add an application to favorites"
+  },
+  "buttonRemoveFromFavorites": "Remove from Favorites",
+  "@buttonRemoveFromFavorites": {
+    "description": "Button to remove an application from favorites"
+  },
   "selectAll": "Select All",
   "@selectAll": {
     "description": "Button to select all applications"
@@ -441,6 +449,14 @@
         "description": "Number of applications deleted"
       }
     }
+  },
+  "applicationAddedToFavorites": "Added to favorites",
+  "@applicationAddedToFavorites": {
+    "description": "Message shown when an application is added to favorites"
+  },
+  "applicationRemovedFromFavorites": "Removed from favorites",
+  "@applicationRemovedFromFavorites": {
+    "description": "Message shown when an application is removed from favorites"
   },
   "conversationProcessingMessage": "Processing your request",
   "@conversationProcessingMessage": {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../services/user_application/models/application_status.dart';
@@ -46,67 +47,69 @@ class SidebarNavigationSection extends StatelessWidget {
     // Calculate the number of applications currently in development
     final int developmentCount = _calculateDevelopmentCount();
 
+    // Calculate the number of favorite applications
+    final int favoritesCount = _calculateFavoritesCount();
+
+    // Determine which navigation item should be selected based on current filter state
+    final bool isAllApplicationsSelected = _isAllApplicationsSelected();
+    final bool isRecentSelected = _isRecentSelected();
+    final bool isFavoritesSelected = _isFavoritesSelected();
+    final bool isInDevelopmentSelected = _isInDevelopmentSelected();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Insets.small),
       child: Column(
         children: [
-          GestureDetector(
+          SidebarNavigationItem(
+            key: const ValueKey('all_applications'),
+            item: NavigationItemData(
+              icon: Icons.apps,
+              label: AppLocalizations.of(context)!.navAllApplications,
+              isSelected: isAllApplicationsSelected,
+              badge: applications.isNotEmpty ? applications.length.toString() : null,
+            ),
+            showExpandedContent: showExpandedContent,
             onTap: _handleAllApplicationsTap,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: Insets.small),
             child: SidebarNavigationItem(
-              key: const ValueKey('all_applications'),
+              key: const ValueKey('recent'),
               item: NavigationItemData(
-                icon: Icons.apps,
-                label: AppLocalizations.of(context)!.navAllApplications,
-                isSelected: true, // TODO: Track actual selection state
-                badge: applications.isNotEmpty ? applications.length.toString() : null,
+                icon: Icons.history,
+                label: AppLocalizations.of(context)!.navRecent,
+                isSelected: isRecentSelected,
               ),
               showExpandedContent: showExpandedContent,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: Insets.small),
-            child: GestureDetector(
               onTap: _handleRecentTap,
-              child: SidebarNavigationItem(
-                key: const ValueKey('recent'),
-                item: NavigationItemData(
-                  icon: Icons.history,
-                  label: AppLocalizations.of(context)!.navRecent,
-                  isSelected: false, // TODO: Track actual selection state
-                ),
-                showExpandedContent: showExpandedContent,
-              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: Insets.small),
-            child: GestureDetector(
+            child: SidebarNavigationItem(
+              key: const ValueKey('favorites'),
+              item: NavigationItemData(
+                icon: Icons.favorite,
+                label: AppLocalizations.of(context)!.navFavorites,
+                isSelected: isFavoritesSelected,
+                badge: favoritesCount > 0 ? favoritesCount.toString() : null,
+              ),
+              showExpandedContent: showExpandedContent,
               onTap: _handleFavoritesTap,
-              child: SidebarNavigationItem(
-                key: const ValueKey('favorites'),
-                item: NavigationItemData(
-                  icon: Icons.favorite,
-                  label: AppLocalizations.of(context)!.navFavorites,
-                  isSelected: false, // TODO: Track actual selection state
-                ),
-                showExpandedContent: showExpandedContent,
-              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: Insets.small),
-            child: GestureDetector(
-              onTap: _handleInDevelopmentTap,
-              child: SidebarNavigationItem(
-                key: const ValueKey('in_development'),
-                item: NavigationItemData(
-                  icon: Icons.build,
-                  label: AppLocalizations.of(context)!.navInDevelopment,
-                  isSelected: false, // TODO: Track actual selection state
-                  badge: developmentCount > 0 ? developmentCount.toString() : null,
-                ),
-                showExpandedContent: showExpandedContent,
+            child: SidebarNavigationItem(
+              key: const ValueKey('in_development'),
+              item: NavigationItemData(
+                icon: Icons.build,
+                label: AppLocalizations.of(context)!.navInDevelopment,
+                isSelected: isInDevelopmentSelected,
+                badge: developmentCount > 0 ? developmentCount.toString() : null,
               ),
+              showExpandedContent: showExpandedContent,
+              onTap: _handleInDevelopmentTap,
             ),
           ),
         ],
@@ -136,10 +139,8 @@ class SidebarNavigationSection extends StatelessWidget {
   ///
   /// Filters applications to show only those marked as favorites by the user.
   void _handleFavoritesTap() {
-    // TODO: Implement favorites filter
-    // This requires adding a favorites field to UserApplication model
     searchController.clearAllFilters();
-    // Future implementation: Filter by isFavorite field
+    searchController.updateFavoritesFilter(true);
   }
 
   /// Handles the "In Development" navigation item tap.
@@ -166,5 +167,66 @@ class SidebarNavigationSection extends StatelessWidget {
           app.status == ApplicationStatus.testing ||
           app.status == ApplicationStatus.updating;
     }).length;
+  }
+
+  /// Calculates the number of applications marked as favorites.
+  ///
+  /// Counts applications with isFavorite set to true.
+  ///
+  /// Returns the count of favorite applications, or 0 if none are found.
+  int _calculateFavoritesCount() {
+    return applications.where((UserApplication app) => app.isFavorite).length;
+  }
+
+  /// Determines if "All Applications" navigation item should be selected.
+  ///
+  /// Returns true when no filters are active, indicating that all applications
+  /// are being shown without any filtering criteria applied.
+  bool _isAllApplicationsSelected() {
+    return !searchController.currentFilter.hasActiveFilters;
+  }
+
+  /// Determines if "Recent" navigation item should be selected.
+  ///
+  /// Returns true when recent applications filter is active.
+  /// Currently not implemented - returns false as placeholder.
+  bool _isRecentSelected() {
+    // TODO: Implement recent filter detection when recent functionality is added
+    // This would check for date range filters showing last 7 days
+    return false;
+  }
+
+  /// Determines if "Favorites" navigation item should be selected.
+  ///
+  /// Returns true when the favorites-only filter is active, indicating
+  /// that only favorite applications are being shown.
+  bool _isFavoritesSelected() {
+    return searchController.currentFilter.favoritesOnly;
+  }
+
+  /// Determines if "In Development" navigation item should be selected.
+  ///
+  /// Returns true when status filters are active and contain only development
+  /// statuses (developing, testing, updating), indicating that only applications
+  /// in development are being shown.
+  bool _isInDevelopmentSelected() {
+    final Set<ApplicationStatus> selectedStatuses = searchController.currentFilter.selectedStatuses;
+
+    // Check if status filter is active and contains only development statuses
+    if (selectedStatuses.isEmpty) {
+      return false;
+    }
+
+    // Define development statuses that correspond to "In Development" filter
+    const Set<ApplicationStatus> developmentStatuses = {
+      ApplicationStatus.developing,
+      ApplicationStatus.testing,
+      ApplicationStatus.updating,
+    };
+
+    // Check if selected statuses exactly match development statuses
+    // This ensures the "In Development" item is selected only when that specific filter is active
+    return selectedStatuses.length == developmentStatuses.length &&
+        selectedStatuses.every((status) => developmentStatuses.contains(status));
   }
 }

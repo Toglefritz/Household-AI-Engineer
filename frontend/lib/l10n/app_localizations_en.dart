@@ -269,6 +269,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buttonDeleteApplication => 'Delete';
 
   @override
+  String get buttonAddToFavorites => 'Add to Favorites';
+
+  @override
+  String get buttonRemoveFromFavorites => 'Remove from Favorites';
+
+  @override
   String get selectAll => 'Select All';
 
   @override
@@ -314,6 +320,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String applicationsDeleted(int count) {
     return '$count applications deleted';
   }
+
+  @override
+  String get applicationAddedToFavorites => 'Added to favorites';
+
+  @override
+  String get applicationRemovedFromFavorites => 'Removed from favorites';
 
   @override
   String get conversationProcessingMessage => 'Processing your request';

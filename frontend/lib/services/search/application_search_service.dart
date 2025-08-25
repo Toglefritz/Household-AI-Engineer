@@ -6,6 +6,7 @@
 /// Optimized for real-time search with efficient algorithms and caching.
 
 import 'dart:math' as math;
+import 'package:flutter/foundation.dart';
 
 import '../../services/user_application/models/application_status.dart';
 import '../../services/user_application/models/user_application.dart';
@@ -117,6 +118,16 @@ class ApplicationSearchService {
         if (app.createdAt.isAfter(endOfDay)) {
           return false;
         }
+      }
+
+      // Favorites filter
+      if (filter.favoritesOnly) {
+        debugPrint('Favorites filter active: checking ${app.title}, isFavorite: ${app.isFavorite}');
+        if (!app.isFavorite) {
+          debugPrint('Filtering out ${app.title} because it is not a favorite');
+          return false;
+        }
+        debugPrint('Keeping ${app.title} because it is a favorite');
       }
 
       return true;

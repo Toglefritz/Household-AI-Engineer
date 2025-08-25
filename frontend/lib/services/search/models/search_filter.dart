@@ -85,6 +85,7 @@ class SearchFilter {
   /// @param sortOption How to sort the filtered results
   /// @param dateRangeStart Optional start date for date filtering
   /// @param dateRangeEnd Optional end date for date filtering
+  /// @param favoritesOnly Whether to show only favorite applications
   const SearchFilter({
     this.query = '',
     this.selectedCategories = const {},
@@ -92,6 +93,7 @@ class SearchFilter {
     this.sortOption = SortOption.createdDateDesc,
     this.dateRangeStart,
     this.dateRangeEnd,
+    this.favoritesOnly = false,
   });
 
   /// Text search query for fuzzy matching against application titles and descriptions.
@@ -133,17 +135,25 @@ class SearchFilter {
   /// will be included in the results. Null means no end date filter.
   final DateTime? dateRangeEnd;
 
+  /// Whether to show only applications marked as favorites.
+  ///
+  /// When true, only applications with isFavorite set to true
+  /// will be included in the results. When false, all applications
+  /// are included regardless of favorite status.
+  final bool favoritesOnly;
+
   /// Whether any filters are currently active.
   ///
   /// Returns true if any filtering criteria are applied, including
-  /// text search, category filters, status filters, or date ranges.
+  /// text search, category filters, status filters, date ranges, or favorites.
   /// Used to show filter indicators and clear filter options.
   bool get hasActiveFilters {
     return query.isNotEmpty ||
         selectedCategories.isNotEmpty ||
         selectedStatuses.isNotEmpty ||
         dateRangeStart != null ||
-        dateRangeEnd != null;
+        dateRangeEnd != null ||
+        favoritesOnly;
   }
 
   /// Whether only text search is active with no other filters.
@@ -155,7 +165,8 @@ class SearchFilter {
         selectedCategories.isEmpty &&
         selectedStatuses.isEmpty &&
         dateRangeStart == null &&
-        dateRangeEnd == null;
+        dateRangeEnd == null &&
+        !favoritesOnly;
   }
 
   /// Creates a copy of this filter with updated search query.
@@ -170,6 +181,7 @@ class SearchFilter {
       sortOption: sortOption,
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
+      favoritesOnly: favoritesOnly,
     );
   }
 
@@ -185,6 +197,7 @@ class SearchFilter {
       sortOption: sortOption,
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
+      favoritesOnly: favoritesOnly,
     );
   }
 
@@ -200,6 +213,7 @@ class SearchFilter {
       sortOption: sortOption,
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
+      favoritesOnly: favoritesOnly,
     );
   }
 
@@ -215,6 +229,7 @@ class SearchFilter {
       sortOption: newSortOption,
       dateRangeStart: dateRangeStart,
       dateRangeEnd: dateRangeEnd,
+      favoritesOnly: favoritesOnly,
     );
   }
 
@@ -231,6 +246,23 @@ class SearchFilter {
       sortOption: sortOption,
       dateRangeStart: startDate,
       dateRangeEnd: endDate,
+      favoritesOnly: favoritesOnly,
+    );
+  }
+
+  /// Creates a copy of this filter with updated favorites filter.
+  ///
+  /// @param showFavoritesOnly Whether to show only favorite applications
+  /// @returns New SearchFilter instance with updated favorites filter
+  SearchFilter copyWithFavoritesOnly(bool showFavoritesOnly) {
+    return SearchFilter(
+      query: query,
+      selectedCategories: selectedCategories,
+      selectedStatuses: selectedStatuses,
+      sortOption: sortOption,
+      dateRangeStart: dateRangeStart,
+      dateRangeEnd: dateRangeEnd,
+      favoritesOnly: showFavoritesOnly,
     );
   }
 
@@ -254,7 +286,8 @@ class SearchFilter {
         selectedStatuses == other.selectedStatuses &&
         sortOption == other.sortOption &&
         dateRangeStart == other.dateRangeStart &&
-        dateRangeEnd == other.dateRangeEnd;
+        dateRangeEnd == other.dateRangeEnd &&
+        favoritesOnly == other.favoritesOnly;
   }
 
   @override
@@ -266,6 +299,7 @@ class SearchFilter {
       sortOption,
       dateRangeStart,
       dateRangeEnd,
+      favoritesOnly,
     );
   }
 

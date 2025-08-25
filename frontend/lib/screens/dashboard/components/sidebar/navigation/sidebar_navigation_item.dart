@@ -9,9 +9,11 @@ class SidebarNavigationItem extends StatelessWidget {
   ///
   /// @param item Navigation item data including icon, label, and state
   /// @param showExpandedContent Whether to show expanded content based on actual width
+  /// @param onTap Callback function when the navigation item is tapped
   const SidebarNavigationItem({
     required this.item,
     required this.showExpandedContent,
+    this.onTap,
     super.key,
   });
 
@@ -26,6 +28,11 @@ class SidebarNavigationItem extends StatelessWidget {
   /// Prevents content from appearing/disappearing abruptly during transitions.
   final bool showExpandedContent;
 
+  /// Callback function invoked when the navigation item is tapped.
+  ///
+  /// If null, the navigation item will not respond to taps.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -36,9 +43,7 @@ class SidebarNavigationItem extends StatelessWidget {
         color: item.isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          onTap: () {
-            // TODO(Toglefritz): Implement navigation item selection
-          },
+          onTap: onTap,
           borderRadius: BorderRadius.circular(8),
           child: Container(
             height: 40,

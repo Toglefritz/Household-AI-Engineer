@@ -568,6 +568,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get buttonDeleteApplication;
 
+  /// Button to add an application to favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Favorites'**
+  String get buttonAddToFavorites;
+
+  /// Button to remove an application from favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Favorites'**
+  String get buttonRemoveFromFavorites;
+
   /// Button to select all applications
   ///
   /// In en, this message translates to:
@@ -645,6 +657,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} applications deleted'**
   String applicationsDeleted(int count);
+
+  /// Message shown when an application is added to favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Added to favorites'**
+  String get applicationAddedToFavorites;
+
+  /// Message shown when an application is removed from favorites
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favorites'**
+  String get applicationRemovedFromFavorites;
 
   /// Message shown when the system is analyzing user input before specific progress is available
   ///

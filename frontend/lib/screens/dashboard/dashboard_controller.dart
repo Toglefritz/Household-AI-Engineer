@@ -494,6 +494,7 @@ class DashboardController extends State<DashboardRoute> {
       onRestart: (app) => _restartApplication(app),
       onStop: (app) => _stopApplication(app),
       onDelete: (app) => _deleteApplication(app),
+      onToggleFavorite: (app) => _toggleApplicationFavorite(app),
     );
   }
 
@@ -517,6 +518,7 @@ class DashboardController extends State<DashboardRoute> {
       onStop: (app) => _stopApplication(app),
       onDelete: (app) => _deleteApplication(app),
       onViewDetails: (app) => _showApplicationDetails(app),
+      onToggleFavorite: (app) => _toggleApplicationFavorite(app),
     );
   }
 
@@ -711,6 +713,59 @@ class DashboardController extends State<DashboardRoute> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to stop ${application.title}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Toggles the favorite status of the specified application.
+  ///
+  /// Updates the application's favorite status and shows appropriate feedback.
+  ///
+  /// @param application The application to toggle favorite status for
+  Future<void> _toggleApplicationFavorite(UserApplication application) async {
+    debugPrint('Toggling favorite status for application: ${application.title}');
+
+    try {
+      setState(() {
+        _connectionStatus = ConnectionStatus.connecting;
+      });
+
+      // Toggle the favorite status
+      final bool newFavoriteStatus = !application.isFavorite;
+      await _userApplicationService.updateFavoriteStatus(application.id, newFavoriteStatus);
+
+      debugPrint('Successfully toggled favorite status for application: ${application.title}');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.connected;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              newFavoriteStatus
+                  ? AppLocalizations.of(context)!.applicationAddedToFavorites
+                  : AppLocalizations.of(context)!.applicationRemovedFromFavorites,
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Exception during favorite status toggle: $e');
+
+      setState(() {
+        _connectionStatus = ConnectionStatus.error;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update favorite status for ${application.title}: $e'),
             backgroundColor: Colors.red,
           ),
         );

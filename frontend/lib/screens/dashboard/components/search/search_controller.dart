@@ -199,6 +199,16 @@ class ApplicationSearchController extends ChangeNotifier {
     updateStatusFilter(newStatuses);
   }
 
+  /// Updates the favorites filter.
+  ///
+  /// Immediately performs search with the new favorites criteria.
+  ///
+  /// @param showFavoritesOnly Whether to show only favorite applications
+  void updateFavoritesFilter(bool showFavoritesOnly) {
+    _currentFilter = _currentFilter.copyWithFavoritesOnly(showFavoritesOnly);
+    _performSearch();
+  }
+
   /// Clears all filters and search criteria.
   ///
   /// Resets to default state showing all applications with default sorting.
@@ -262,7 +272,16 @@ class ApplicationSearchController extends ChangeNotifier {
         searchDurationMs: 0,
       );
     } else {
+      debugPrint('Performing search with filter: favoritesOnly=${_currentFilter.favoritesOnly}');
+      debugPrint('Total applications before filtering: ${_allApplications.length}');
+
+      // Debug: Check favorites status of all applications
+      for (final app in _allApplications) {
+        debugPrint('App: ${app.title}, isFavorite: ${app.isFavorite}');
+      }
+
       _currentResults = _searchService.searchApplications(_allApplications, _currentFilter);
+      debugPrint('Applications after filtering: ${_currentResults?.applications.length ?? 0}');
     }
 
     notifyListeners();

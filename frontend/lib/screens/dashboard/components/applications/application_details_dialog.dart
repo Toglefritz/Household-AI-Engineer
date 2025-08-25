@@ -27,6 +27,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
   /// @param onRestart Callback when restart action is selected
   /// @param onStop Callback when stop action is selected
   /// @param onDelete Callback when delete action is selected
+  /// @param onToggleFavorite Callback when toggle favorite action is selected
   const ApplicationDetailsDialog({
     required this.application,
     this.onLaunch,
@@ -34,6 +35,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
     this.onRestart,
     this.onStop,
     this.onDelete,
+    this.onToggleFavorite,
     super.key,
   });
 
@@ -55,6 +57,9 @@ class ApplicationDetailsDialog extends StatelessWidget {
   /// Callback invoked when the delete action is selected.
   final ApplicationDetailsActionCallback? onDelete;
 
+  /// Callback invoked when the toggle favorite action is selected.
+  final ApplicationDetailsActionCallback? onToggleFavorite;
+
   /// Shows the application details dialog.
   ///
   /// This static method creates and displays the details dialog as a modal.
@@ -67,6 +72,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
   /// @param onRestart Restart action callback
   /// @param onStop Stop action callback
   /// @param onDelete Delete action callback
+  /// @param onToggleFavorite Toggle favorite action callback
   static Future<void> show({
     required BuildContext context,
     required UserApplication application,
@@ -75,6 +81,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
     ApplicationDetailsActionCallback? onRestart,
     ApplicationDetailsActionCallback? onStop,
     ApplicationDetailsActionCallback? onDelete,
+    ApplicationDetailsActionCallback? onToggleFavorite,
   }) async {
     await showDialog<void>(
       context: context,
@@ -86,6 +93,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
           onRestart: onRestart,
           onStop: onStop,
           onDelete: onDelete,
+          onToggleFavorite: onToggleFavorite,
         );
       },
     );

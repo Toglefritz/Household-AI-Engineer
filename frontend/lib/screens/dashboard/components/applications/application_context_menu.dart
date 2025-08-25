@@ -32,6 +32,7 @@ class ApplicationContextMenu extends StatelessWidget {
   /// @param onStop Callback when stop action is selected
   /// @param onDelete Callback when delete action is selected
   /// @param onViewDetails Callback when view details action is selected
+  /// @param onToggleFavorite Callback when toggle favorite action is selected
   const ApplicationContextMenu({
     required this.application,
     this.onLaunch,
@@ -40,6 +41,7 @@ class ApplicationContextMenu extends StatelessWidget {
     this.onStop,
     this.onDelete,
     this.onViewDetails,
+    this.onToggleFavorite,
     super.key,
   });
 
@@ -79,6 +81,11 @@ class ApplicationContextMenu extends StatelessWidget {
   /// Available for all applications to show detailed information.
   final ApplicationActionCallback? onViewDetails;
 
+  /// Callback invoked when the toggle favorites action is selected.
+  ///
+  /// Available for all applications to add/remove from favorites.
+  final ApplicationActionCallback? onToggleFavorite;
+
   /// Shows the context menu at the specified position.
   ///
   /// This static method creates and displays the context menu as a popup
@@ -94,6 +101,7 @@ class ApplicationContextMenu extends StatelessWidget {
   /// @param onStop Stop action callback
   /// @param onDelete Delete action callback
   /// @param onViewDetails View details action callback
+  /// @param onToggleFavorite Toggle favorite action callback
   static Future<void> show({
     required BuildContext context,
     required Offset position,
@@ -104,6 +112,7 @@ class ApplicationContextMenu extends StatelessWidget {
     ApplicationActionCallback? onStop,
     ApplicationActionCallback? onDelete,
     ApplicationActionCallback? onViewDetails,
+    ApplicationActionCallback? onToggleFavorite,
   }) async {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
 
@@ -122,6 +131,7 @@ class ApplicationContextMenu extends StatelessWidget {
         onStop: onStop,
         onDelete: onDelete,
         onViewDetails: onViewDetails,
+        onToggleFavorite: onToggleFavorite,
       ),
       elevation: 8,
       shape: RoundedRectangleBorder(
@@ -143,6 +153,7 @@ class ApplicationContextMenu extends StatelessWidget {
   /// @param onStop Stop action callback
   /// @param onDelete Delete action callback
   /// @param onViewDetails View details action callback
+  /// @param onToggleFavorite Toggle favorite action callback
   /// @returns List of popup menu items
   static List<PopupMenuEntry<void>> _buildMenuItems(
     BuildContext context,
@@ -153,6 +164,7 @@ class ApplicationContextMenu extends StatelessWidget {
     ApplicationActionCallback? onStop,
     ApplicationActionCallback? onDelete,
     ApplicationActionCallback? onViewDetails,
+    ApplicationActionCallback? onToggleFavorite,
   }) {
     final List<PopupMenuEntry<void>> items = [];
     final AppLocalizations l10n = AppLocalizations.of(context)!;
@@ -239,6 +251,20 @@ class ApplicationContextMenu extends StatelessWidget {
           child: _buildMenuItem(
             icon: Icons.info_outline,
             title: l10n.buttonViewDetails,
+          ),
+        ),
+      );
+    }
+
+    // Toggle favorite action - always available
+    if (onToggleFavorite != null) {
+      items.add(
+        PopupMenuItem<void>(
+          onTap: () => onToggleFavorite(application),
+          child: _buildMenuItem(
+            icon: application.isFavorite ? Icons.favorite : Icons.favorite_border,
+            title: application.isFavorite ? l10n.buttonRemoveFromFavorites : l10n.buttonAddToFavorites,
+            color: application.isFavorite ? Colors.red : null,
           ),
         ),
       );
