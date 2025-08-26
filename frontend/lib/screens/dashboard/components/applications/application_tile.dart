@@ -126,8 +126,8 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
   void initState() {
     super.initState();
 
-    // Initialize focus node
-    _focusNode = FocusNode();
+    // Initialize focus node without auto-focus
+    _focusNode = FocusNode(canRequestFocus: true);
 
     // Initialize animation controllers
     _hoverController = AnimationController(
@@ -311,7 +311,8 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
                 }
 
                 // Calculate border color based on state
-                Color borderColor;
+                Color borderColor = colorScheme.outline; // Default to outline color
+
                 if (widget.isSelected) {
                   borderColor = colorScheme.primary;
                 } else if (_successAnimation.value > 0) {
@@ -320,7 +321,7 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
                     Colors.green,
                     _successAnimation.value,
                   )!;
-                } else if (_isHovered) {
+                } else if (_isHovered && _hoverController.value > 0) {
                   borderColor =
                       Color.lerp(
                         colorScheme.outline,
@@ -328,8 +329,6 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
                         _hoverController.value,
                       ) ??
                       colorScheme.outline;
-                } else {
-                  borderColor = colorScheme.outline;
                 }
 
                 // Calculate shadow based on hover and success states
@@ -378,7 +377,7 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: borderColor,
-                        width: widget.isSelected ? 2 : 1,
+                        width: widget.isSelected ? 2.0 : 1.0,
                       ),
                       boxShadow: boxShadow,
                     ),

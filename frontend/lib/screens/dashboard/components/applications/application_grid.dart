@@ -209,7 +209,7 @@ class _ApplicationGridState extends State<ApplicationGrid> {
                         onLongPress: () => _handleLongPress(application),
                         child: ApplicationTile(
                           application: application,
-                          isSelected: isSelected || isFocused,
+                          isSelected: isSelected,
                           onTap: () => _handleTileTap(application),
                           onSecondaryTap: () => _handleSecondaryTap(
                             application,
