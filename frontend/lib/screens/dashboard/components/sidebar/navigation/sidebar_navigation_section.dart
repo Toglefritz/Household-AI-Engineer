@@ -138,19 +138,23 @@ class SidebarNavigationSection extends StatelessWidget {
   ///
   /// Filters applications to show only those marked as favorites by the user.
   void _handleFavoritesTap() {
-    searchController..clearAllFilters()
-    ..updateFavoritesFilter(showFavoritesOnly: true);
+    searchController
+      ..clearAllFilters()
+      ..updateFavoritesFilter(showFavoritesOnly: true);
   }
 
   /// Handles the "In Development" navigation item tap.
   ///
   /// Filters applications to show only those currently in development states.
+  /// Clears all other filters to ensure mutual exclusivity with other navigation options.
   void _handleInDevelopmentTap() {
-    searchController.updateStatusFilter({
-      ApplicationStatus.developing,
-      ApplicationStatus.testing,
-      ApplicationStatus.updating,
-    });
+    searchController
+      ..clearAllFilters()
+      ..updateStatusFilter({
+        ApplicationStatus.developing,
+        ApplicationStatus.testing,
+        ApplicationStatus.updating,
+      });
   }
 
   /// Calculates the number of applications currently in development.
