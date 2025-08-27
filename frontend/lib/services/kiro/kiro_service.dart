@@ -30,8 +30,7 @@ class KiroService {
   bool _isConnected = false;
 
   /// Stream controller for broadcasting Kiro status updates.
-  final StreamController<KiroStatus> _statusController =
-      StreamController<KiroStatus>.broadcast();
+  final StreamController<KiroStatus> _statusController = StreamController<KiroStatus>.broadcast();
 
   /// Whether the service is currently connected to the Kiro Bridge.
   bool get isConnected => _isConnected;
@@ -91,8 +90,7 @@ class KiroService {
   /// and a [StateError] if the Kiro Bridge does not become available in time.
   Future<void> setupKiroForNewApplication() async {
     // Step 1: Create a new folder for the application.
-    final String newAppPath = await _applicationService
-        .createNewApplicationDirectory();
+    final String newAppPath = await _applicationService.createNewApplicationDirectory();
     final Directory newAppDir = Directory(newAppPath);
 
     // Step 2: Create the .kiro directory structure and copy template files.
@@ -104,6 +102,28 @@ class KiroService {
 
     // Step 3: Open Kiro into the new application directory and wait for readiness.
     await _openKiroInAppsDir(newAppDir);
+  }
+
+  /// Sets up the Kiro IDE for modifying an existing user application.
+  ///
+  /// This method opens Kiro in the directory of an existing application to allow
+  /// for modifications. It performs the following steps:
+  /// 1. **Locate** the application directory by ID
+  /// 2. **Launch** the Kiro IDE pointing at the application directory
+  /// 3. **Wait** until the Kiro Bridge becomes available
+  ///
+  /// @param applicationId The ID of the application to modify
+  /// @throws [ArgumentError] if the application ID is not found
+  /// @throws [StateError] if the Kiro Bridge does not become available in time
+  Future<void> setupKiroForApplicationModification(String applicationId) async {
+    // Step 1: Find the application directory
+    final Directory? appDir = await _findApplicationDirectory(applicationId);
+    if (appDir == null) {
+      throw ArgumentError('Application not found: $applicationId');
+    }
+
+    // Step 2: Open Kiro in the application directory and wait for readiness
+    await _openKiroInAppsDir(appDir);
   }
 
   /// Creates the `.kiro/specs/user-application-template/` directory structure
@@ -138,8 +158,7 @@ class KiroService {
 
     // Copy each template file from assets to the new directory
     for (final String fileName in templateFiles) {
-      final String assetPath =
-          'assets/templates/kiro/specs/user-application-template/$fileName';
+      final String assetPath = 'assets/templates/kiro/specs/user-application-template/$fileName';
 
       try {
         // Load the file content from assets
@@ -169,8 +188,7 @@ class KiroService {
   ///
   /// Throws a [FileSystemException] if the asset cannot be loaded or written.
   Future<void> _copyManifestSchema(Directory destination) async {
-    const String manifestSchemaAssetPath =
-        'assets/templates/manifest/manifest_schema.json';
+    const String manifestSchemaAssetPath = 'assets/templates/manifest/manifest_schema.json';
 
     try {
       // Load the schema content
@@ -198,8 +216,7 @@ class KiroService {
   ///
   /// Throws a [FileSystemException] if the asset cannot be loaded or written.
   Future<void> _copyManifestTemplate(Directory destination) async {
-    const String exampleManifestAssetPath =
-        'assets/templates/manifest/manifest_example.json';
+    const String exampleManifestAssetPath = 'assets/templates/manifest/manifest_example.json';
 
     try {
       // Load the template content and schema
@@ -218,6 +235,52 @@ class KiroService {
         exampleManifestAssetPath,
       );
     }
+  }
+
+  /// Finds the directory for an existing application by its ID.
+  ///
+  /// Searches through all application directories in the apps/ folder to find
+  /// the one containing a manifest.json file with the specified application ID.
+  ///
+  /// @param applicationId The ID of the application to find
+  /// @returns The Directory containing the application, or null if not found
+  Future<Directory?> _findApplicationDirectory(String applicationId) async {
+    final Directory appsDirectory = await AppConfig.appsDirectory;
+
+    if (!appsDirectory.existsSync()) {
+      return null;
+    }
+
+    // Search through all subdirectories in the apps directory
+    final List<FileSystemEntity> entries = appsDirectory.listSync(
+      followLinks: false,
+    );
+
+    for (final FileSystemEntity entity in entries) {
+      if (entity is! Directory) continue;
+
+      final Directory appDirectory = entity;
+      final File manifestFile = File('${appDirectory.path}/manifest.json');
+
+      if (!manifestFile.existsSync()) continue;
+
+      try {
+        // Read and parse the manifest to check the application ID
+        final String contents = await manifestFile.readAsString();
+        final Map<String, dynamic> jsonMap = json.decode(contents) as Map<String, dynamic>;
+
+        final String? manifestAppId = jsonMap['id'] as String?;
+        if (manifestAppId == applicationId) {
+          return appDirectory;
+        }
+      } catch (e) {
+        // Skip directories with invalid manifest files
+        debugPrint('Failed to read manifest in ${appDirectory.path}: $e');
+        continue;
+      }
+    }
+
+    return null;
   }
 
   /// Launches the Kiro IDE with [targetDir] as the working directory and waits
@@ -290,8 +353,7 @@ class KiroService {
     Duration? pollInterval,
   }) async {
     final Duration actualTimeout = timeout ?? AppConfig.kiroBridgeTimeout;
-    final Duration actualPollInterval =
-        pollInterval ?? AppConfig.kiroBridgePollInterval;
+    final Duration actualPollInterval = pollInterval ?? AppConfig.kiroBridgePollInterval;
     final Uri statusUri = Uri.parse('$_baseUrl/api/kiro/status');
     final DateTime deadline = DateTime.now().add(actualTimeout);
     final HttpClient client = HttpClient();

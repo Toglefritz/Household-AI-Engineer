@@ -148,6 +148,7 @@ class ConversationService extends ChangeNotifier {
 
     // Clear any previous application tracking since this is a new conversation
     _trackedApplicationId = null;
+    _lastDevelopmentStatement = null;
 
     // Start monitoring application progress for development statements
     _startProgressMonitoring();
@@ -160,41 +161,58 @@ class ConversationService extends ChangeNotifier {
 
   /// Starts a new conversation for modifying an existing application.
   ///
+  /// Opens Kiro in the specific application directory and creates a conversation
+  /// thread for handling modification requests. The conversation will track
+  /// progress updates for the specified application.
+  ///
   /// @param application The application to modify
   Future<void> startModifyApplicationConversation(
     UserApplication application,
   ) async {
-    // TODO(Scott): Implementation
-    /*_error = null;
+    _error = null;
+    _isProcessing = true;
 
-    // Open a new Kiro window in the apps/ directory.
-    await _kiroService.openKiroInAppsDir();
+    try {
+      // Open Kiro in the specific application directory
+      await _kiroService.setupKiroForApplicationModification(application.id);
 
-    // Create a new conversation
-    _currentConversation = _createNewConversation(
-      purpose: 'modify_application',
-      applicationId: application.id,
-    );
+      // Create a new conversation for modification
+      _currentConversation = _createNewConversation(
+        purpose: 'modify_application',
+        applicationId: application.id,
+      );
 
-    // Add a welcome message to the conversation.
-    _currentConversation!.addMessage(
-      _createWelcomeMessage(
+      // Add a welcome message to the conversation
+      final ConversationMessage welcomeMessage = _createWelcomeMessage(
         conversationId: _currentConversation!.id,
         isModification: true,
         applicationName: application.title,
-      ),
-    );*/
+      );
+      _currentConversation = _currentConversation!.addMessage(welcomeMessage);
 
-    // Track this specific application for progress updates
-    _trackedApplicationId = application.id;
+      // Track this specific application for progress updates
+      _trackedApplicationId = application.id;
 
-    // Clear initial application IDs since this is not a new application conversation
-    _initialApplicationIds = null;
+      // Clear initial application IDs since this is not a new application conversation
+      _initialApplicationIds = null;
 
-    // After Kiro is open and the conversation is set up, processing is complete.
-    _isProcessing = false;
+      // Initialize the last development statement to prevent the current statement
+      // from appearing as a new message when starting the modification conversation
+      _lastDevelopmentStatement = application.progress?.developmentStatement;
 
-    notifyListeners();
+      // Start monitoring application progress for development statements
+      _startProgressMonitoring();
+
+      // After Kiro is open and the conversation is set up, processing is complete
+      _isProcessing = false;
+
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to start modification conversation: $e';
+      _isProcessing = false;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   /// Creates a new empty conversation thread for starting a new conversation.
