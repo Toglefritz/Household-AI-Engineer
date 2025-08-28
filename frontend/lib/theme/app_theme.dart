@@ -178,7 +178,7 @@ class AppTheme {
       shadowColor: Colors.transparent,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        side: const BorderSide(color: _highContrastLightBorder, width: 2),
+        side: const BorderSide(width: 2),
         borderRadius: BorderRadius.circular(8),
       ),
     ),
@@ -194,11 +194,11 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: _highContrastLightBorder, width: 2),
+        borderSide: const BorderSide(width: 2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: _highContrastLightBorder, width: 2),
+        borderSide: const BorderSide(width: 2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -223,7 +223,7 @@ class AppTheme {
     ),
     chipTheme: const ChipThemeData(
       backgroundColor: _highContrastLightSurface,
-      side: BorderSide(color: _highContrastLightBorder, width: 2),
+      side: BorderSide(width: 2),
       labelStyle: TextStyle(color: _highContrastLightOnBg, fontWeight: FontWeight.w700),
       selectedColor: _highContrastLightPrimary,
     ),

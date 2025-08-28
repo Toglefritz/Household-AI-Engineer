@@ -127,7 +127,7 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
     super.initState();
 
     // Initialize focus node without auto-focus
-    _focusNode = FocusNode(canRequestFocus: true);
+    _focusNode = FocusNode();
 
     // Initialize animation controllers
     _hoverController = AnimationController(
@@ -268,7 +268,7 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
         ? l10n.accessibilityApplicationTileHintDeveloping(
             widget.application.status.displayName,
             widget.application.description,
-            widget.application.progress?.percentage?.round() ?? 0,
+            widget.application.progress?.percentage.round() ?? 0,
           )
         : l10n.accessibilityApplicationTileHint(
             widget.application.status.displayName,
@@ -493,13 +493,11 @@ class _ApplicationTileState extends State<ApplicationTile> with TickerProviderSt
           widget.onTap!();
           return KeyEventResult.handled;
         }
-        break;
       case LogicalKeyboardKey.contextMenu:
         if (widget.onSecondaryTap != null) {
           widget.onSecondaryTap!();
           return KeyEventResult.handled;
         }
-        break;
     }
 
     return KeyEventResult.ignored;

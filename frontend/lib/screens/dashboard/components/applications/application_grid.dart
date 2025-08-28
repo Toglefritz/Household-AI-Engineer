@@ -199,7 +199,6 @@ class _ApplicationGridState extends State<ApplicationGrid> {
                     final bool isSelected = widget.selectedApplicationIds.contains(
                       application.id,
                     );
-                    final bool isFocused = index == _focusedIndex;
 
                     return AccessibilityHelper.createFocusTraversalOrder(
                       order: index.toDouble(),
@@ -213,7 +212,7 @@ class _ApplicationGridState extends State<ApplicationGrid> {
                           onTap: () => _handleTileTap(application),
                           onSecondaryTap: () => _handleSecondaryTap(
                             application,
-                            TapDownDetails(globalPosition: Offset.zero),
+                            TapDownDetails(),
                           ),
                         ),
                       ),
@@ -296,16 +295,14 @@ class _ApplicationGridState extends State<ApplicationGrid> {
           _handleTileTap(widget.applications[_focusedIndex]);
           return KeyEventResult.handled;
         }
-        break;
       case LogicalKeyboardKey.contextMenu:
         if (_focusedIndex < widget.applications.length) {
           _handleSecondaryTap(
             widget.applications[_focusedIndex],
-            TapDownDetails(globalPosition: Offset.zero),
+            TapDownDetails(),
           );
           return KeyEventResult.handled;
         }
-        break;
     }
 
     return KeyEventResult.ignored;

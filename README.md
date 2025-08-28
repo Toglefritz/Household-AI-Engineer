@@ -1,6 +1,6 @@
-# Dwellware
+# Dwellware Dashboard
 
-A personal AI-powered software development system that creates custom applications for your home on demand. Simply describe what you need in plain English, and watch as your personal software engineer designs, codes, tests, and deploys bespoke tools tailored to your unique needs.
+A revolutionary macOS desktop application that makes creating custom household applications as easy as having a conversation. Built with Flutter, Dwellware Dashboard provides an intuitive interface for managing your household's digital tools through natural language interaction.
 
 ## Overview
 

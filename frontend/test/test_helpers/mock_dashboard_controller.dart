@@ -4,10 +4,10 @@
 /// for use in accessibility and other tests.
 library;
 
-import 'package:flutter/material.dart';
 import 'package:dwellware/screens/dashboard/components/search/search_controller.dart' as search;
 import 'package:dwellware/services/kiro/models/kiro_status.dart';
 import 'package:dwellware/services/user_application/models/user_application.dart';
+import 'package:flutter/material.dart';
 
 /// Mock dashboard controller for testing.
 class MockDashboardController {

@@ -2,7 +2,7 @@ name: dwellware
 description: "Flutter dashboard for the Dwellware system - a native macOS application for creating and managing custom household applications."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0-beta.1+1
 
 environment:
   sdk: ^3.8.1

@@ -1,0 +1,74 @@
+name: Release Build and Deploy
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.8.1'
+        channel: 'stable'
+        
+    - name: Enable macOS desktop
+      run: flutter config --enable-macos-desktop
+      
+    - name: Install dependencies
+      run: |
+        cd frontend
+        flutter pub get
+        flutter gen-l10n
+        
+    - name: Run tests
+      run: |
+        cd frontend
+        flutter test
+        
+    - name: Run analysis
+      run: |
+        cd frontend
+        flutter analyze --fatal-infos
+        
+    - name: Build release
+      run: ./scripts/build-release.sh
+      
+    - name: Create beta package
+      run: ./scripts/package-beta.sh
+      
+    - name: Extract version from tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: "Dwellware Dashboard v${{ steps.version.outputs.VERSION }}"
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: ${{ contains(steps.version.outputs.VERSION, 'beta') || contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'rc') }}
+        files: |
+          dist/Dwellware-*.dmg
+          dist/Dwellware-*.zip
+          dist/*.sha256
+          dist/RELEASE_INFO.txt
+          Dwellware-Dashboard-Beta-*.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-artifacts
+        path: |
+          dist/
+          beta-release/
+        retention-days: 30

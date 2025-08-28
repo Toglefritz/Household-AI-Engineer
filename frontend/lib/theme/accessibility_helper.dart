@@ -185,8 +185,8 @@ class AccessibilityHelper {
   static Widget createAccessibleButton({
     required Widget child,
     required String label,
-    String? hint,
     required VoidCallback? onPressed,
+    String? hint,
     FocusNode? focusNode,
     bool enabled = true,
   }) {
@@ -262,22 +262,18 @@ class AccessibilityHelper {
         if (currentIndex % crossAxisCount > 0) {
           newIndex = currentIndex - 1;
         }
-        break;
       case LogicalKeyboardKey.arrowRight:
         if (currentIndex % crossAxisCount < crossAxisCount - 1 && currentIndex < itemCount - 1) {
           newIndex = currentIndex + 1;
         }
-        break;
       case LogicalKeyboardKey.arrowUp:
         if (currentIndex >= crossAxisCount) {
           newIndex = currentIndex - crossAxisCount;
         }
-        break;
       case LogicalKeyboardKey.arrowDown:
         if (currentIndex + crossAxisCount < itemCount) {
           newIndex = currentIndex + crossAxisCount;
         }
-        break;
       default:
         return false;
     }

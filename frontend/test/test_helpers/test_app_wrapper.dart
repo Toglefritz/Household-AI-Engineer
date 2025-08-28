@@ -4,9 +4,9 @@
 /// to provide the necessary context for accessibility testing.
 library;
 
-import 'package:flutter/material.dart';
 import 'package:dwellware/l10n/app_localizations.dart';
 import 'package:dwellware/theme/app_theme.dart';
+import 'package:flutter/material.dart';
 
 /// Wrapper widget for testing that provides MaterialApp context.
 ///

@@ -1,0 +1,26 @@
+Dwellware Dashboard - Release Information
+========================================
+
+Version: 1.0.0-beta.1
+Build Number: 1
+Build Date: Thu Aug 28 15:31:55 CDT 2025
+Platform: macOS (Universal Binary)
+
+System Requirements:
+- macOS 10.14 (Mojave) or later
+- Intel x64 or Apple Silicon (M1/M2)
+- 4GB RAM minimum, 8GB recommended
+- 500MB available disk space
+- Internet connection required
+
+Installation Instructions:
+1. Download the DMG file
+2. Open the DMG and drag Dwellware to Applications folder
+3. Launch Dwellware from Applications
+4. Follow the setup wizard on first launch
+
+Files in this release:
+- Dwellware-1.0.0-beta.1.dmg (19M)
+- Dwellware-1.0.0-beta.1.dmg.sha256 (93B)
+- Dwellware-1.0.0-beta.1.zip (50M)
+- Dwellware-1.0.0-beta.1.zip.sha256 (93B)

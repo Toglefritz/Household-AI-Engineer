@@ -78,7 +78,6 @@ class SidebarHeader extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: Insets.xSmall),
                 child: AccessibilityHelper.createSemanticHeader(
-                  level: 1,
                   child: Text(
                     l10n.sidebarTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(

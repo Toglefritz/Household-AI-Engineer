@@ -90,7 +90,6 @@ class DashboardView extends StatelessWidget {
                                   duration: const Duration(milliseconds: 500),
                                   opacity: 0.6,
                                   child: AccessibilityHelper.createSemanticHeader(
-                                    level: 1,
                                     child: Text(
                                       '${l10n.greeting},',
                                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
