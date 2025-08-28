@@ -5,8 +5,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../../lib/l10n/app_localizations.dart';
-import '../../lib/theme/app_theme.dart';
+import 'package:dwellware/l10n/app_localizations.dart';
+import 'package:dwellware/theme/app_theme.dart';
 
 /// Wrapper widget for testing that provides MaterialApp context.
 ///

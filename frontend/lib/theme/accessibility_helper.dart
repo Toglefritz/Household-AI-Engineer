@@ -336,7 +336,6 @@ class AccessibilityHelper {
   }) {
     return Semantics(
       header: true,
-      sortKey: const OrdinalSortKey(0),
       child: child,
     );
   }

@@ -5,9 +5,9 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../../lib/screens/dashboard/components/search/search_controller.dart' as search;
-import '../../lib/services/kiro/models/kiro_status.dart';
-import '../../lib/services/user_application/models/user_application.dart';
+import 'package:dwellware/screens/dashboard/components/search/search_controller.dart' as search;
+import 'package:dwellware/services/kiro/models/kiro_status.dart';
+import 'package:dwellware/services/user_application/models/user_application.dart';
 
 /// Mock dashboard controller for testing.
 class MockDashboardController {
@@ -15,7 +15,7 @@ class MockDashboardController {
   MockDashboardController({
     this.applications = const [],
     this.isSidebarExpanded = true,
-    this.connectionStatus = KiroStatus.connected,
+    this.connectionStatus = KiroStatus.available,
   });
 
   /// List of applications for testing.
