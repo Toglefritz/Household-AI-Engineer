@@ -83,7 +83,8 @@ class DefaultMessages {
     the manifest.json file for the project in order for the user to receive the question or request for clarification. 
     In all messages to the user, including those in the form of progress updates in manifest.json, avoid the use of 
     technical language. The user will interact with the applications and the overall system via a frontend UI so they 
-    will not interact with the codebase directly.
+    will not interact with the codebase directly. For the same reason, avoid Terminal commands that require permission
+    from the user unless absolutly necessary.
     ''';
   }
 
@@ -123,9 +124,10 @@ class DefaultMessages {
     (no servers required to try the app). Choose technologies appropriate to the problem (e.g., HTML/CSS/JS,
     Web Components, lightweight client frameworks, or Flutter Web), but ensure the resulting artifact can be opened
     locally in a browser or bundled as a desktop webview. Ideally, all applications will be able to run by simply
-    opening an index.html file, without requiring any scripts or npm commands.
+    opening an index.html file, without requiring any scripts or npm commands. Python should be avoided unless it is
+    necessary for the project.
 
-    Requirements:
+    **Requirements**:
     - Default to a self-contained client app runnable from local files.
     - Use simple, zero-setup integrations only. If the app needs data, prefer browser storage (LocalStorage/IndexedDB)
       or a single-call fetch to an internal/external API that requires **no user credentials or configuration**.
