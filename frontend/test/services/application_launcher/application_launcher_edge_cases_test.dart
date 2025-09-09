@@ -1,14 +1,10 @@
 import 'dart:io';
-import 'dart:async';
 
+import 'package:dwellware/services/application_launcher/application_launcher_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:dwellware/services/application_launcher/application_launcher_service.dart';
-import 'package:dwellware/services/user_application/models/user_application.dart';
 
 import 'application_launcher_edge_cases_test.mocks.dart';
 

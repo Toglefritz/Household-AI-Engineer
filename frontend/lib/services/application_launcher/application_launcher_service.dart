@@ -805,7 +805,6 @@ class ApplicationLauncherService {
     debugPrint('Checking for symbolic links: $filePath');
 
     try {
-      final File file = File(filePath);
       final Link link = Link(filePath);
 
       // Check if this is a symbolic link
@@ -1446,17 +1445,14 @@ class LaunchException implements Exception {
         message =
             'Circular symbolic link reference detected: $filePath\n\n'
             'The symbolic link chain contains a loop that prevents resolution.';
-        break;
       case 'broken_link':
         message =
             'Symbolic link points to non-existent target: $filePath\n\n'
             'The symbolic link target does not exist or is inaccessible.';
-        break;
       case 'excessive_recursion':
         message =
             'Symbolic link chain too deep: $filePath\n\n'
             'The symbolic link chain exceeds the maximum resolution depth.';
-        break;
       default:
         message =
             'Failed to resolve symbolic link: $filePath\n\n'
@@ -1499,21 +1495,21 @@ class LaunchException implements Exception {
       ..writeln('Message: $message');
 
     if (hasSearchContext) {
-      report..writeln('\nSearched Paths (${searchedPaths!.length}):');
+      report.writeln('\nSearched Paths (${searchedPaths!.length}):');
       for (int i = 0; i < searchedPaths!.length; i++) {
         report.writeln('  ${i + 1}. ${searchedPaths![i]}');
       }
     }
 
     if (hasAccessErrors) {
-      report..writeln('\nAccess Errors (${accessErrors!.length}):');
+      report.writeln('\nAccess Errors (${accessErrors!.length}):');
       for (int i = 0; i < accessErrors!.length; i++) {
         report.writeln('  ${i + 1}. ${accessErrors![i]}');
       }
     }
 
     if (context.isNotEmpty) {
-      report..writeln('\nAdditional Context:');
+      report.writeln('\nAdditional Context:');
       context.forEach((String key, dynamic value) {
         report.writeln('  $key: $value');
       });
