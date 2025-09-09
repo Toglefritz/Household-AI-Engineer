@@ -4,3 +4,4 @@
 /kiro-orchestration-extension/out
 /kiro-communication-bridge/node_modules
 /kiro-communication-bridge/out
+*.mov
