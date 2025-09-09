@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:dwellware/services/application_launcher/application_launcher_service.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 /// Test suite for LaunchException enhanced error handling functionality.
 ///
