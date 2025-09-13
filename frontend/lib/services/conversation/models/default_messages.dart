@@ -11,62 +11,92 @@ class DefaultMessages {
   /// A message displayed when the user first initializes a conversation with Kiro to create a new application.
   ///
   /// @param messageId Unique identifier for this welcome message
+  /// @param welcomeContent Localized welcome message content
+  /// @param choreTrackerLabel Localized label for chore tracker suggestion
+  /// @param choreTrackerValue Localized value for chore tracker suggestion
+  /// @param budgetPlannerLabel Localized label for budget planner suggestion
+  /// @param budgetPlannerValue Localized value for budget planner suggestion
+  /// @param recipeOrganizerLabel Localized label for recipe organizer suggestion
+  /// @param recipeOrganizerValue Localized value for recipe organizer suggestion
   /// @returns ConversationMessage with welcome content and action suggestions
   static ConversationMessage getNewApplicationWelcomeMessage({
     required String messageId,
+    required String welcomeContent,
+    required String choreTrackerLabel,
+    required String choreTrackerValue,
+    required String budgetPlannerLabel,
+    required String budgetPlannerValue,
+    required String recipeOrganizerLabel,
+    required String recipeOrganizerValue,
   }) {
     return ConversationMessage(
       id: messageId,
       sender: MessageSender.system,
-      content:
-          "Hi! I'll help you create a custom application for your household. What would you like to build?",
+      content: welcomeContent,
       timestamp: DateTime.now(),
       actions: [
-        const MessageAction(
+        MessageAction(
           id: 'welcome_action_001',
-          label: 'Chore Tracker',
-          value: 'I need a chore tracking app for my family',
+          label: choreTrackerLabel,
+          value: choreTrackerValue,
         ),
-        const MessageAction(
+        MessageAction(
           id: 'welcome_action_002',
-          label: 'Budget Planner',
-          value: 'I want to track our household budget',
+          label: budgetPlannerLabel,
+          value: budgetPlannerValue,
         ),
-        const MessageAction(
+        MessageAction(
           id: 'welcome_action_003',
-          label: 'Recipe Organizer',
-          value: 'Help me organize family recipes',
+          label: recipeOrganizerLabel,
+          value: recipeOrganizerValue,
         ),
       ],
     );
   }
 
   /// A message displayed when the user first initializes a conversation with Kiro to modify an existing application.
+  ///
+  /// @param messageId Unique identifier for this welcome message
+  /// @param applicationName Name of the application being modified
+  /// @param modifyContent Localized content for the modify message
+  /// @param addFeaturesLabel Localized label for add features action
+  /// @param addFeaturesValue Localized value for add features action
+  /// @param changeDesignLabel Localized label for change design action
+  /// @param changeDesignValue Localized value for change design action
+  /// @param fixIssuesLabel Localized label for fix issues action
+  /// @param fixIssuesValue Localized value for fix issues action
+  /// @returns ConversationMessage with modify content and action suggestions
   static ConversationMessage getModifyApplicationWelcomeMessage({
     required String messageId,
     required String applicationName,
+    required String modifyContent,
+    required String addFeaturesLabel,
+    required String addFeaturesValue,
+    required String changeDesignLabel,
+    required String changeDesignValue,
+    required String fixIssuesLabel,
+    required String fixIssuesValue,
   }) {
     return ConversationMessage(
       id: messageId,
       sender: MessageSender.system,
-      content:
-          'I can help you modify your $applicationName application. What changes would you like to make?',
+      content: modifyContent,
       timestamp: DateTime.now(),
       actions: [
-        const MessageAction(
+        MessageAction(
           id: 'action_modify_001',
-          label: 'Add Features',
-          value: 'I want to add new features',
+          label: addFeaturesLabel,
+          value: addFeaturesValue,
         ),
-        const MessageAction(
+        MessageAction(
           id: 'action_modify_002',
-          label: 'Change Design',
-          value: 'I want to change the design or layout',
+          label: changeDesignLabel,
+          value: changeDesignValue,
         ),
-        const MessageAction(
+        MessageAction(
           id: 'action_modify_003',
-          label: 'Fix Issues',
-          value: 'There are some issues I want to fix',
+          label: fixIssuesLabel,
+          value: fixIssuesValue,
         ),
       ],
     );

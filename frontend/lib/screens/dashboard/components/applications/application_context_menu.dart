@@ -286,19 +286,19 @@ class ApplicationContextMenu extends StatelessWidget {
 
     // Add divider before destructive actions
     if (onDelete != null && _canDelete(application)) {
-      items..add(const PopupMenuDivider())
-
-      // Delete action - for applications that can be deleted
-      ..add(
-        PopupMenuItem<void>(
-          onTap: () => onDelete(application),
-          child: _buildMenuItem(
-            icon: Icons.delete_outline,
-            title: l10n.buttonDeleteApplication,
-            color: Colors.red,
+      items
+        ..add(const PopupMenuDivider())
+        // Delete action - for applications that can be deleted
+        ..add(
+          PopupMenuItem<void>(
+            onTap: () => onDelete(application),
+            child: _buildMenuItem(
+              icon: Icons.delete_outline,
+              title: l10n.buttonDeleteApplication,
+              color: Colors.red,
+            ),
           ),
-        ),
-      );
+        );
     }
 
     return items;
@@ -328,16 +328,18 @@ class ApplicationContextMenu extends StatelessWidget {
             size: 20,
             color: color,
           ),
-          const SizedBox(width: Insets.small),
-          Flexible(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: color,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
+            child: Flexible(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: color,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

@@ -82,12 +82,29 @@ class _ConversationModalState extends State<ConversationModal> {
   Future<void> _initializeConversation() async {
     // Start appropriate conversation type
     if (widget.initialConversation == null) {
+      final AppLocalizations l10n = AppLocalizations.of(context)!;
+
       if (widget.applicationToModify != null) {
         await _controller.startModifyApplicationConversation(
           widget.applicationToModify!,
+          modifyContent: l10n.conversationWelcomeModifyApp(widget.applicationToModify!.title),
+          addFeaturesLabel: l10n.modifyActionAddFeatures,
+          addFeaturesValue: l10n.modifyActionAddFeaturesValue,
+          changeDesignLabel: l10n.modifyActionChangeDesign,
+          changeDesignValue: l10n.modifyActionChangeDesignValue,
+          fixIssuesLabel: l10n.modifyActionFixIssues,
+          fixIssuesValue: l10n.modifyActionFixIssuesValue,
         );
       } else {
-        await _controller.startNewApplicationConversation();
+        await _controller.startNewApplicationConversation(
+          welcomeContent: l10n.conversationWelcomeNewApp,
+          choreTrackerLabel: l10n.suggestionChoreTracker,
+          choreTrackerValue: l10n.suggestionChoreTrackerValue,
+          budgetPlannerLabel: l10n.suggestionBudgetPlanner,
+          budgetPlannerValue: l10n.suggestionBudgetPlannerValue,
+          recipeOrganizerLabel: l10n.suggestionRecipeOrganizer,
+          recipeOrganizerValue: l10n.suggestionRecipeOrganizerValue,
+        );
       }
     }
   }

@@ -1237,6 +1237,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'assistant'**
   String get assistant;
+
+  /// Section title for application description in details dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get detailsDescription;
+
+  /// Section title for development progress in details dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Development Progress'**
+  String get detailsDevelopmentProgress;
+
+  /// Section title for application information in details dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get detailsInformation;
+
+  /// Label for creation date in application details
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get detailsCreated;
+
+  /// Label for last updated date in application details
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get detailsLastUpdated;
+
+  /// Label for application category in details
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get detailsCategory;
+
+  /// Label for application tags in details
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get detailsTags;
+
+  /// Error message when application launcher service is not ready
+  ///
+  /// In en, this message translates to:
+  /// **'Application launcher not ready. Please try again.'**
+  String get errorApplicationLauncherNotReady;
+
+  /// Error message when application launch fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to launch {title}: {error}'**
+  String errorFailedToLaunch(String title, String error);
+
+  /// Error message when application restart fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restart {title}: {error}'**
+  String errorFailedToRestart(String title, String error);
+
+  /// Error message when application stop fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to stop {title}: {error}'**
+  String errorFailedToStop(String title, String error);
+
+  /// Error message when updating favorite status fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update favorite status for {title}: {error}'**
+  String errorFailedToUpdateFavorite(String title, String error);
+
+  /// Error message when application deletion fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete {title}: {error}'**
+  String errorFailedToDelete(String title, String error);
+
+  /// Error message when application fails to load in webview
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading application: {message}'**
+  String errorLoadingApplication(String message);
+
+  /// Message shown while application is loading in webview
+  ///
+  /// In en, this message translates to:
+  /// **'Loading application...'**
+  String get loadingApplication;
+
+  /// Message shown while application window is initializing
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing application window...'**
+  String get initializingApplicationWindow;
+
+  /// Label for chore tracker suggestion button
+  ///
+  /// In en, this message translates to:
+  /// **'Chore Tracker'**
+  String get suggestionChoreTracker;
+
+  /// Label for budget planner suggestion button
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Planner'**
+  String get suggestionBudgetPlanner;
+
+  /// Label for recipe organizer suggestion button
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe Organizer'**
+  String get suggestionRecipeOrganizer;
+
+  /// Value for chore tracker suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'I need a chore tracking app for my family'**
+  String get suggestionChoreTrackerValue;
+
+  /// Value for budget planner suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'I want to track our household budget'**
+  String get suggestionBudgetPlannerValue;
+
+  /// Value for recipe organizer suggestion
+  ///
+  /// In en, this message translates to:
+  /// **'Help me organize family recipes'**
+  String get suggestionRecipeOrganizerValue;
+
+  /// Label for add features modification action
+  ///
+  /// In en, this message translates to:
+  /// **'Add Features'**
+  String get modifyActionAddFeatures;
+
+  /// Label for change design modification action
+  ///
+  /// In en, this message translates to:
+  /// **'Change Design'**
+  String get modifyActionChangeDesign;
+
+  /// Label for fix issues modification action
+  ///
+  /// In en, this message translates to:
+  /// **'Fix Issues'**
+  String get modifyActionFixIssues;
+
+  /// Value for add features modification action
+  ///
+  /// In en, this message translates to:
+  /// **'I want to add new features'**
+  String get modifyActionAddFeaturesValue;
+
+  /// Value for change design modification action
+  ///
+  /// In en, this message translates to:
+  /// **'I want to change the design or layout'**
+  String get modifyActionChangeDesignValue;
+
+  /// Value for fix issues modification action
+  ///
+  /// In en, this message translates to:
+  /// **'There are some issues I want to fix'**
+  String get modifyActionFixIssuesValue;
+
+  /// Welcome message for new application creation conversation
+  ///
+  /// In en, this message translates to:
+  /// **'Hi! I\'ll help you create a custom application for your household. What would you like to build?'**
+  String get conversationWelcomeNewApp;
+
+  /// Welcome message for application modification conversation
+  ///
+  /// In en, this message translates to:
+  /// **'I can help you modify your {applicationName} application. What changes would you like to make?'**
+  String conversationWelcomeModifyApp(String applicationName);
 }
 
 class _AppLocalizationsDelegate

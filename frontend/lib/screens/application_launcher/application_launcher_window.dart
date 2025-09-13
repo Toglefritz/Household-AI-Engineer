@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../services/application_launcher/models/application_process.dart';
 import '../../services/application_launcher/models/window_state.dart';
 import 'application_webview.dart';
@@ -42,12 +43,10 @@ class ApplicationLauncherWindow extends StatefulWidget {
   final void Function(String applicationId)? onApplicationClosed;
 
   @override
-  State<ApplicationLauncherWindow> createState() =>
-      _ApplicationLauncherWindowState();
+  State<ApplicationLauncherWindow> createState() => _ApplicationLauncherWindowState();
 }
 
-class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow>
-    with WindowListener {
+class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow> with WindowListener {
   /// Current window state for this application.
   WindowState? _currentWindowState;
 
@@ -85,8 +84,7 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow>
     } catch (e) {
       debugPrint('Failed to initialize application window: $e');
       setState(() {
-        _isInitialized =
-            true; // Continue even if initialization partially failed
+        _isInitialized = true; // Continue even if initialization partially failed
       });
     }
   }
@@ -229,14 +227,14 @@ class _ApplicationLauncherWindowState extends State<ApplicationLauncherWindow>
   @override
   Widget build(BuildContext context) {
     if (!_isInitialized) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Initializing application window...'),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(AppLocalizations.of(context)!.initializingApplicationWindow),
             ],
           ),
         ),

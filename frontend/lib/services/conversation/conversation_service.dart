@@ -124,7 +124,23 @@ class ConversationService extends ChangeNotifier {
   /// Starts a new conversation for creating an application.
   ///
   /// Creates a new conversation thread and adds the initial welcome message.
-  Future<void> startNewApplicationConversation() async {
+  ///
+  /// @param welcomeContent Localized welcome message content
+  /// @param choreTrackerLabel Localized label for chore tracker suggestion
+  /// @param choreTrackerValue Localized value for chore tracker suggestion
+  /// @param budgetPlannerLabel Localized label for budget planner suggestion
+  /// @param budgetPlannerValue Localized value for budget planner suggestion
+  /// @param recipeOrganizerLabel Localized label for recipe organizer suggestion
+  /// @param recipeOrganizerValue Localized value for recipe organizer suggestion
+  Future<void> startNewApplicationConversation({
+    required String welcomeContent,
+    required String choreTrackerLabel,
+    required String choreTrackerValue,
+    required String budgetPlannerLabel,
+    required String budgetPlannerValue,
+    required String recipeOrganizerLabel,
+    required String recipeOrganizerValue,
+  }) async {
     _error = null;
 
     // Capture the current set of applications before starting the conversation
@@ -143,6 +159,13 @@ class ConversationService extends ChangeNotifier {
     // Add a default message to the conversation.
     final ConversationMessage welcomeMessage = _createWelcomeMessage(
       conversationId: _currentConversation!.id,
+      welcomeContent: welcomeContent,
+      choreTrackerLabel: choreTrackerLabel,
+      choreTrackerValue: choreTrackerValue,
+      budgetPlannerLabel: budgetPlannerLabel,
+      budgetPlannerValue: budgetPlannerValue,
+      recipeOrganizerLabel: recipeOrganizerLabel,
+      recipeOrganizerValue: recipeOrganizerValue,
     );
     _currentConversation = _currentConversation!.addMessage(welcomeMessage);
 
@@ -166,9 +189,23 @@ class ConversationService extends ChangeNotifier {
   /// progress updates for the specified application.
   ///
   /// @param application The application to modify
+  /// @param modifyContent Localized content for the modify message
+  /// @param addFeaturesLabel Localized label for add features action
+  /// @param addFeaturesValue Localized value for add features action
+  /// @param changeDesignLabel Localized label for change design action
+  /// @param changeDesignValue Localized value for change design action
+  /// @param fixIssuesLabel Localized label for fix issues action
+  /// @param fixIssuesValue Localized value for fix issues action
   Future<void> startModifyApplicationConversation(
-    UserApplication application,
-  ) async {
+    UserApplication application, {
+    required String modifyContent,
+    required String addFeaturesLabel,
+    required String addFeaturesValue,
+    required String changeDesignLabel,
+    required String changeDesignValue,
+    required String fixIssuesLabel,
+    required String fixIssuesValue,
+  }) async {
     _error = null;
     _isProcessing = true;
 
@@ -187,6 +224,13 @@ class ConversationService extends ChangeNotifier {
         conversationId: _currentConversation!.id,
         isModification: true,
         applicationName: application.title,
+        modifyContent: modifyContent,
+        addFeaturesLabel: addFeaturesLabel,
+        addFeaturesValue: addFeaturesValue,
+        changeDesignLabel: changeDesignLabel,
+        changeDesignValue: changeDesignValue,
+        fixIssuesLabel: fixIssuesLabel,
+        fixIssuesValue: fixIssuesValue,
       );
       _currentConversation = _currentConversation!.addMessage(welcomeMessage);
 
@@ -248,11 +292,39 @@ class ConversationService extends ChangeNotifier {
   /// @param conversationId The ID of the conversation
   /// @param isModification Whether this is for modifying an existing app
   /// @param applicationName Optional name of the app being modified
+  /// @param welcomeContent Localized welcome message content
+  /// @param choreTrackerLabel Localized label for chore tracker suggestion (for new apps)
+  /// @param choreTrackerValue Localized value for chore tracker suggestion (for new apps)
+  /// @param budgetPlannerLabel Localized label for budget planner suggestion (for new apps)
+  /// @param budgetPlannerValue Localized value for budget planner suggestion (for new apps)
+  /// @param recipeOrganizerLabel Localized label for recipe organizer suggestion (for new apps)
+  /// @param recipeOrganizerValue Localized value for recipe organizer suggestion (for new apps)
+  /// @param modifyContent Localized content for modify message (for existing apps)
+  /// @param addFeaturesLabel Localized label for add features action (for existing apps)
+  /// @param addFeaturesValue Localized value for add features action (for existing apps)
+  /// @param changeDesignLabel Localized label for change design action (for existing apps)
+  /// @param changeDesignValue Localized value for change design action (for existing apps)
+  /// @param fixIssuesLabel Localized label for fix issues action (for existing apps)
+  /// @param fixIssuesValue Localized value for fix issues action (for existing apps)
   /// @returns ConversationMessage with welcome content and suggestions
   ConversationMessage _createWelcomeMessage({
     required String conversationId,
     bool isModification = false,
     String? applicationName,
+    String? welcomeContent,
+    String? choreTrackerLabel,
+    String? choreTrackerValue,
+    String? budgetPlannerLabel,
+    String? budgetPlannerValue,
+    String? recipeOrganizerLabel,
+    String? recipeOrganizerValue,
+    String? modifyContent,
+    String? addFeaturesLabel,
+    String? addFeaturesValue,
+    String? changeDesignLabel,
+    String? changeDesignValue,
+    String? fixIssuesLabel,
+    String? fixIssuesValue,
   }) {
     final DateTime now = DateTime.now();
     final String messageId = 'msg_welcome_${now.millisecondsSinceEpoch}';
@@ -261,10 +333,28 @@ class ConversationService extends ChangeNotifier {
       return DefaultMessages.getModifyApplicationWelcomeMessage(
         messageId: messageId,
         applicationName: applicationName,
+        modifyContent:
+            modifyContent ??
+            'I can help you modify your $applicationName application. What changes would you like to make?',
+        addFeaturesLabel: addFeaturesLabel ?? 'Add Features',
+        addFeaturesValue: addFeaturesValue ?? 'I want to add new features',
+        changeDesignLabel: changeDesignLabel ?? 'Change Design',
+        changeDesignValue: changeDesignValue ?? 'I want to change the design or layout',
+        fixIssuesLabel: fixIssuesLabel ?? 'Fix Issues',
+        fixIssuesValue: fixIssuesValue ?? 'There are some issues I want to fix',
       );
     } else {
       return DefaultMessages.getNewApplicationWelcomeMessage(
         messageId: messageId,
+        welcomeContent:
+            welcomeContent ??
+            "Hi! I'll help you create a custom application for your household. What would you like to build?",
+        choreTrackerLabel: choreTrackerLabel ?? 'Chore Tracker',
+        choreTrackerValue: choreTrackerValue ?? 'I need a chore tracking app for my family',
+        budgetPlannerLabel: budgetPlannerLabel ?? 'Budget Planner',
+        budgetPlannerValue: budgetPlannerValue ?? 'I want to track our household budget',
+        recipeOrganizerLabel: recipeOrganizerLabel ?? 'Recipe Organizer',
+        recipeOrganizerValue: recipeOrganizerValue ?? 'Help me organize family recipes',
       );
     }
   }

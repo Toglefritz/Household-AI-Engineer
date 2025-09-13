@@ -57,8 +57,7 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
   String? _pageTitle;
 
   /// Whether navigation controls should be shown.
-  bool get _showNavigationControls =>
-      widget.process.launchConfig.showNavigationControls;
+  bool get _showNavigationControls => widget.process.launchConfig.showNavigationControls;
 
   /// Launch configuration for this application.
   ApplicationLaunchConfig get _config => widget.process.launchConfig;
@@ -76,9 +75,7 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
   void _initializeWebView() {
     _webViewController = WebViewController()
       ..setJavaScriptMode(
-        _config.enableJavaScript
-            ? JavaScriptMode.unrestricted
-            : JavaScriptMode.disabled,
+        _config.enableJavaScript ? JavaScriptMode.unrestricted : JavaScriptMode.disabled,
       )
       ..setNavigationDelegate(
         NavigationDelegate(
@@ -145,7 +142,7 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error loading application: $message'),
+          content: Text(AppLocalizations.of(context)!.errorLoadingApplication(message)),
           backgroundColor: Colors.red,
           action: SnackBarAction(
             label: 'Retry',
@@ -230,13 +227,13 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
               color: Theme.of(
                 context,
               ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Loading application...'),
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(AppLocalizations.of(context)!.loadingApplication),
                   ],
                 ),
               ),

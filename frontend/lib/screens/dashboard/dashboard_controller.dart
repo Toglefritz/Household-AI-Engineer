@@ -425,8 +425,8 @@ class DashboardController extends State<DashboardRoute> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Application launcher not ready. Please try again.'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorApplicationLauncherNotReady),
             backgroundColor: Colors.orange,
           ),
         );
@@ -465,7 +465,7 @@ class DashboardController extends State<DashboardRoute> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to launch ${application.title}: $e'),
+            content: Text(AppLocalizations.of(context)!.errorFailedToLaunch(application.title, e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -654,7 +654,7 @@ class DashboardController extends State<DashboardRoute> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to restart ${application.title}: $e'),
+            content: Text(AppLocalizations.of(context)!.errorFailedToRestart(application.title, e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -708,7 +708,7 @@ class DashboardController extends State<DashboardRoute> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to stop ${application.title}: $e'),
+            content: Text(AppLocalizations.of(context)!.errorFailedToStop(application.title, e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -764,7 +764,7 @@ class DashboardController extends State<DashboardRoute> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update favorite status for ${application.title}: $e'),
+            content: Text(AppLocalizations.of(context)!.errorFailedToUpdateFavorite(application.title, e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -825,7 +825,7 @@ class DashboardController extends State<DashboardRoute> {
       if (showIndividualFeedback && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete ${application.title}: $e'),
+            content: Text(AppLocalizations.of(context)!.errorFailedToDelete(application.title, e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -841,8 +841,9 @@ class DashboardController extends State<DashboardRoute> {
     // Clean up resources
     _applicationSubscription?.cancel();
     _launchEventsSubscription?.cancel();
-    _searchController..removeListener(_onSearchResultsChanged)
-    ..dispose();
+    _searchController
+      ..removeListener(_onSearchResultsChanged)
+      ..dispose();
     _userApplicationService.dispose();
     _applicationLauncherService?.dispose();
     super.dispose();

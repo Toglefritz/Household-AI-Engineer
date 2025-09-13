@@ -182,7 +182,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
                     // Description
                     _buildSection(
                       context: context,
-                      title: 'Description',
+                      title: l10n.detailsDescription,
                       child: Text(
                         application.description,
                         style: textTheme.bodyMedium,
@@ -195,7 +195,7 @@ class ApplicationDetailsDialog extends StatelessWidget {
                     if (application.isInDevelopment && application.progress != null) ...[
                       _buildSection(
                         context: context,
-                        title: 'Development Progress',
+                        title: l10n.detailsDevelopmentProgress,
                         child: Text(
                           '${application.progress!.percentage}% • ${application.progress!.currentPhase}',
                           style: textTheme.bodyMedium,
@@ -207,29 +207,29 @@ class ApplicationDetailsDialog extends StatelessWidget {
                     // Metadata
                     _buildSection(
                       context: context,
-                      title: 'Information',
+                      title: l10n.detailsInformation,
                       child: Column(
                         children: [
                           _buildInfoRow(
                             context: context,
-                            label: 'Created',
+                            label: l10n.detailsCreated,
                             value: application.createdTimeDescription,
                           ),
                           _buildInfoRow(
                             context: context,
-                            label: 'Last Updated',
+                            label: l10n.detailsLastUpdated,
                             value: application.updatedTimeDescription,
                           ),
                           if (application.hasCategory)
                             _buildInfoRow(
                               context: context,
-                              label: 'Category',
+                              label: l10n.detailsCategory,
                               value: application.category!.displayName,
                             ),
                           if (application.hasTags)
                             _buildInfoRow(
                               context: context,
-                              label: 'Tags',
+                              label: l10n.detailsTags,
                               value: application.tags.join(', '),
                             ),
                         ],

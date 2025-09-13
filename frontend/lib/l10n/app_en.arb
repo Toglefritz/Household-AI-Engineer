@@ -967,5 +967,187 @@
   "assistant": "assistant",
   "@assistant": {
     "description": "Label for assistant messages in conversation"
+  },
+  "detailsDescription": "Description",
+  "@detailsDescription": {
+    "description": "Section title for application description in details dialog"
+  },
+  "detailsDevelopmentProgress": "Development Progress",
+  "@detailsDevelopmentProgress": {
+    "description": "Section title for development progress in details dialog"
+  },
+  "detailsInformation": "Information",
+  "@detailsInformation": {
+    "description": "Section title for application information in details dialog"
+  },
+  "detailsCreated": "Created",
+  "@detailsCreated": {
+    "description": "Label for creation date in application details"
+  },
+  "detailsLastUpdated": "Last Updated",
+  "@detailsLastUpdated": {
+    "description": "Label for last updated date in application details"
+  },
+  "detailsCategory": "Category",
+  "@detailsCategory": {
+    "description": "Label for application category in details"
+  },
+  "detailsTags": "Tags",
+  "@detailsTags": {
+    "description": "Label for application tags in details"
+  },
+  "errorApplicationLauncherNotReady": "Application launcher not ready. Please try again.",
+  "@errorApplicationLauncherNotReady": {
+    "description": "Error message when application launcher service is not ready"
+  },
+  "errorFailedToLaunch": "Failed to launch {title}: {error}",
+  "@errorFailedToLaunch": {
+    "description": "Error message when application launch fails",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Application title"
+      },
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "errorFailedToRestart": "Failed to restart {title}: {error}",
+  "@errorFailedToRestart": {
+    "description": "Error message when application restart fails",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Application title"
+      },
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "errorFailedToStop": "Failed to stop {title}: {error}",
+  "@errorFailedToStop": {
+    "description": "Error message when application stop fails",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Application title"
+      },
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "errorFailedToUpdateFavorite": "Failed to update favorite status for {title}: {error}",
+  "@errorFailedToUpdateFavorite": {
+    "description": "Error message when updating favorite status fails",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Application title"
+      },
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "errorFailedToDelete": "Failed to delete {title}: {error}",
+  "@errorFailedToDelete": {
+    "description": "Error message when application deletion fails",
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "description": "Application title"
+      },
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "errorLoadingApplication": "Error loading application: {message}",
+  "@errorLoadingApplication": {
+    "description": "Error message when application fails to load in webview",
+    "placeholders": {
+      "message": {
+        "type": "String",
+        "description": "Error message details"
+      }
+    }
+  },
+  "loadingApplication": "Loading application...",
+  "@loadingApplication": {
+    "description": "Message shown while application is loading in webview"
+  },
+  "initializingApplicationWindow": "Initializing application window...",
+  "@initializingApplicationWindow": {
+    "description": "Message shown while application window is initializing"
+  },
+  "suggestionChoreTracker": "Chore Tracker",
+  "@suggestionChoreTracker": {
+    "description": "Label for chore tracker suggestion button"
+  },
+  "suggestionBudgetPlanner": "Budget Planner",
+  "@suggestionBudgetPlanner": {
+    "description": "Label for budget planner suggestion button"
+  },
+  "suggestionRecipeOrganizer": "Recipe Organizer",
+  "@suggestionRecipeOrganizer": {
+    "description": "Label for recipe organizer suggestion button"
+  },
+  "suggestionChoreTrackerValue": "I need a chore tracking app for my family",
+  "@suggestionChoreTrackerValue": {
+    "description": "Value for chore tracker suggestion"
+  },
+  "suggestionBudgetPlannerValue": "I want to track our household budget",
+  "@suggestionBudgetPlannerValue": {
+    "description": "Value for budget planner suggestion"
+  },
+  "suggestionRecipeOrganizerValue": "Help me organize family recipes",
+  "@suggestionRecipeOrganizerValue": {
+    "description": "Value for recipe organizer suggestion"
+  },
+  "modifyActionAddFeatures": "Add Features",
+  "@modifyActionAddFeatures": {
+    "description": "Label for add features modification action"
+  },
+  "modifyActionChangeDesign": "Change Design",
+  "@modifyActionChangeDesign": {
+    "description": "Label for change design modification action"
+  },
+  "modifyActionFixIssues": "Fix Issues",
+  "@modifyActionFixIssues": {
+    "description": "Label for fix issues modification action"
+  },
+  "modifyActionAddFeaturesValue": "I want to add new features",
+  "@modifyActionAddFeaturesValue": {
+    "description": "Value for add features modification action"
+  },
+  "modifyActionChangeDesignValue": "I want to change the design or layout",
+  "@modifyActionChangeDesignValue": {
+    "description": "Value for change design modification action"
+  },
+  "modifyActionFixIssuesValue": "There are some issues I want to fix",
+  "@modifyActionFixIssuesValue": {
+    "description": "Value for fix issues modification action"
+  },
+  "conversationWelcomeNewApp": "Hi! I'll help you create a custom application for your household. What would you like to build?",
+  "@conversationWelcomeNewApp": {
+    "description": "Welcome message for new application creation conversation"
+  },
+  "conversationWelcomeModifyApp": "I can help you modify your {applicationName} application. What changes would you like to make?",
+  "@conversationWelcomeModifyApp": {
+    "description": "Welcome message for application modification conversation",
+    "placeholders": {
+      "applicationName": {
+        "type": "String",
+        "description": "Name of the application being modified"
+      }
+    }
   }
 }

@@ -668,4 +668,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assistant => 'assistant';
+
+  @override
+  String get detailsDescription => 'Description';
+
+  @override
+  String get detailsDevelopmentProgress => 'Development Progress';
+
+  @override
+  String get detailsInformation => 'Information';
+
+  @override
+  String get detailsCreated => 'Created';
+
+  @override
+  String get detailsLastUpdated => 'Last Updated';
+
+  @override
+  String get detailsCategory => 'Category';
+
+  @override
+  String get detailsTags => 'Tags';
+
+  @override
+  String get errorApplicationLauncherNotReady =>
+      'Application launcher not ready. Please try again.';
+
+  @override
+  String errorFailedToLaunch(String title, String error) {
+    return 'Failed to launch $title: $error';
+  }
+
+  @override
+  String errorFailedToRestart(String title, String error) {
+    return 'Failed to restart $title: $error';
+  }
+
+  @override
+  String errorFailedToStop(String title, String error) {
+    return 'Failed to stop $title: $error';
+  }
+
+  @override
+  String errorFailedToUpdateFavorite(String title, String error) {
+    return 'Failed to update favorite status for $title: $error';
+  }
+
+  @override
+  String errorFailedToDelete(String title, String error) {
+    return 'Failed to delete $title: $error';
+  }
+
+  @override
+  String errorLoadingApplication(String message) {
+    return 'Error loading application: $message';
+  }
+
+  @override
+  String get loadingApplication => 'Loading application...';
+
+  @override
+  String get initializingApplicationWindow =>
+      'Initializing application window...';
+
+  @override
+  String get suggestionChoreTracker => 'Chore Tracker';
+
+  @override
+  String get suggestionBudgetPlanner => 'Budget Planner';
+
+  @override
+  String get suggestionRecipeOrganizer => 'Recipe Organizer';
+
+  @override
+  String get suggestionChoreTrackerValue =>
+      'I need a chore tracking app for my family';
+
+  @override
+  String get suggestionBudgetPlannerValue =>
+      'I want to track our household budget';
+
+  @override
+  String get suggestionRecipeOrganizerValue =>
+      'Help me organize family recipes';
+
+  @override
+  String get modifyActionAddFeatures => 'Add Features';
+
+  @override
+  String get modifyActionChangeDesign => 'Change Design';
+
+  @override
+  String get modifyActionFixIssues => 'Fix Issues';
+
+  @override
+  String get modifyActionAddFeaturesValue => 'I want to add new features';
+
+  @override
+  String get modifyActionChangeDesignValue =>
+      'I want to change the design or layout';
+
+  @override
+  String get modifyActionFixIssuesValue =>
+      'There are some issues I want to fix';
+
+  @override
+  String get conversationWelcomeNewApp =>
+      'Hi! I\'ll help you create a custom application for your household. What would you like to build?';
+
+  @override
+  String conversationWelcomeModifyApp(String applicationName) {
+    return 'I can help you modify your $applicationName application. What changes would you like to make?';
+  }
 }
