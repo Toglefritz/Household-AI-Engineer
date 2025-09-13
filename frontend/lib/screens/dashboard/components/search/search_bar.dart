@@ -231,11 +231,13 @@ class _SearchBarState extends State<SearchBar> {
           size: 16,
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
-        const SizedBox(width: Insets.xSmall),
-        Expanded(
-          child: Text(
-            statusText,
-            style: statusStyle,
+        Padding(
+          padding: const EdgeInsets.only(left: Insets.xSmall),
+          child: Expanded(
+            child: Text(
+              statusText,
+              style: statusStyle,
+            ),
           ),
         ),
       ],

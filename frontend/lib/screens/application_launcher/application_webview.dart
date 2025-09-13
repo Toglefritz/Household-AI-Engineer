@@ -232,8 +232,10 @@ class _ApplicationWebViewState extends State<ApplicationWebView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    Text(AppLocalizations.of(context)!.loadingApplication),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Text(AppLocalizations.of(context)!.loadingApplication),
+                    ),
                   ],
                 ),
               ),

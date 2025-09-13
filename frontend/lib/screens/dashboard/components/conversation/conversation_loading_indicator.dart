@@ -63,31 +63,35 @@ class ConversationLoadingIndicator extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: Insets.small),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                currentPhase ?? l10n.conversationDevelopmentInProgress,
-                key: ValueKey(currentPhase ?? l10n.conversationDevelopmentInProgress),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
+            child: Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  currentPhase ?? l10n.conversationDevelopmentInProgress,
+                  key: ValueKey(currentPhase ?? l10n.conversationDevelopmentInProgress),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
           if (progress > 0) ...[
-            const SizedBox(width: Insets.small),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                '${progress.round()}%',
-                key: ValueKey(progress.round()),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.small),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  '${progress.round()}%',
+                  key: ValueKey(progress.round()),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

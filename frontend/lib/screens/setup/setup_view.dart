@@ -135,12 +135,14 @@ class SetupView extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onErrorContainer,
                     size: 20,
                   ),
-                  const SizedBox(width: Insets.small),
-                  Expanded(
-                    child: Text(
-                      controller.errorMessage!,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
+                  Padding(
+                    padding: const EdgeInsets.only(left: Insets.small),
+                    child: Expanded(
+                      child: Text(
+                        controller.errorMessage!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
                       ),
                     ),
                   ),
@@ -176,8 +178,10 @@ class SetupView extends StatelessWidget {
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
-                        const SizedBox(width: Insets.small),
-                        Text(l10n.setupChecking),
+                        Padding(
+                          padding: const EdgeInsets.only(left: Insets.small),
+                          child: Text(l10n.setupChecking),
+                        ),
                       ],
                     )
                   : Text(l10n.setupContinue),
@@ -302,11 +306,13 @@ class SetupView extends StatelessWidget {
                   child: Text(l10n.setupSkipTutorial),
                 ),
               ),
-              const SizedBox(width: Insets.medium),
-              Flexible(
-                child: FilledButton(
-                  onPressed: controller.onCompleteTutorial,
-                  child: Text(l10n.setupGetStarted),
+              Padding(
+                padding: const EdgeInsets.only(left: Insets.medium),
+                child: Flexible(
+                  child: FilledButton(
+                    onPressed: controller.onCompleteTutorial,
+                    child: Text(l10n.setupGetStarted),
+                  ),
                 ),
               ),
             ],
@@ -335,21 +341,25 @@ class SetupView extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
           size: 20,
         ),
-        const SizedBox(width: Insets.medium),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: Insets.xxSmall),
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+        Padding(
+          padding: const EdgeInsets.only(left: Insets.medium),
+          child: Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: Insets.xxSmall),
+                  child: Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

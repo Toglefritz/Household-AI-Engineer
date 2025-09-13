@@ -57,59 +57,65 @@ class SortControls extends StatelessWidget {
               size: 20,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(width: Insets.small),
-            Text(
-              AppLocalizations.of(context)!.sortBy,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.small),
+              child: Text(
+                AppLocalizations.of(context)!.sortBy,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
-            const SizedBox(width: Insets.small),
 
             // Sort dropdown
-            Expanded(
-              child: DropdownButton<SortOption>(
-                value: currentSort,
-                onChanged: (SortOption? newSort) {
-                  if (newSort != null) {
-                    controller.updateSortOption(newSort);
-                    onSortChanged?.call(newSort);
-                  }
-                },
-                items: SortOption.values.map((SortOption option) {
-                  return DropdownMenuItem<SortOption>(
-                    value: option,
-                    child: Text(
-                      option.displayName,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  );
-                }).toList(),
-                isExpanded: true,
-                underline: Container(), // Remove default underline
-                icon: const Icon(Icons.arrow_drop_down),
-                style: Theme.of(context).textTheme.bodyMedium,
-                dropdownColor: Theme.of(context).colorScheme.surface,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.small),
+              child: Expanded(
+                child: DropdownButton<SortOption>(
+                  value: currentSort,
+                  onChanged: (SortOption? newSort) {
+                    if (newSort != null) {
+                      controller.updateSortOption(newSort);
+                      onSortChanged?.call(newSort);
+                    }
+                  },
+                  items: SortOption.values.map((SortOption option) {
+                    return DropdownMenuItem<SortOption>(
+                      value: option,
+                      child: Text(
+                        option.displayName,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    );
+                  }).toList(),
+                  isExpanded: true,
+                  underline: Container(), // Remove default underline
+                  icon: const Icon(Icons.arrow_drop_down),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  dropdownColor: Theme.of(context).colorScheme.surface,
+                ),
               ),
             ),
 
             // Result count indicator
             if (resultCount > 0) ...[
-              const SizedBox(width: Insets.medium),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Insets.small,
-                  vertical: Insets.xSmall,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  _getResultCountText(context, resultCount),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
+              Padding(
+                padding: const EdgeInsets.only(left: Insets.medium),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Insets.small,
+                    vertical: Insets.xSmall,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _getResultCountText(context, resultCount),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -181,13 +187,17 @@ class CompactSortControls extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                       )
                     else
-                      const SizedBox(width: 16),
-                    const SizedBox(width: Insets.small),
-                    Expanded(
-                      child: Text(
-                        option.displayName,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: option == currentSort ? Theme.of(context).colorScheme.primary : null,
+                      const Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Insets.small),
+                      child: Expanded(
+                        child: Text(
+                          option.displayName,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: option == currentSort ? Theme.of(context).colorScheme.primary : null,
+                          ),
                         ),
                       ),
                     ),
@@ -215,18 +225,22 @@ class CompactSortControls extends StatelessWidget {
                   size: 16,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                const SizedBox(width: Insets.xSmall),
-                Text(
-                  _getSortDisplayName(context, currentSort),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                Padding(
+                  padding: const EdgeInsets.only(left: Insets.xSmall),
+                  child: Text(
+                    _getSortDisplayName(context, currentSort),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-                const SizedBox(width: Insets.xSmall),
-                Icon(
-                  Icons.arrow_drop_down,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                Padding(
+                  padding: const EdgeInsets.only(left: Insets.xSmall),
+                  child: Icon(
+                    Icons.arrow_drop_down,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

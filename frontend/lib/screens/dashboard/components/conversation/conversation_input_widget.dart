@@ -189,30 +189,32 @@ class _ConversationInputWidgetState extends State<ConversationInputWidget> with 
           ),
 
           // Animated send button
-          const SizedBox(width: Insets.xSmall),
-          AnimatedBuilder(
-            animation: _sendButtonAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _sendButtonAnimation.value,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: _sendButtonAnimation.value,
-                  child: AnimatedButton(
-                    onPressed: canSend ? _handleSendMessage : null,
-                    isLoading: _isSending,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      foregroundColor: colorScheme.onPrimary,
-                      padding: const EdgeInsets.all(8),
-                      minimumSize: const Size(40, 40),
-                      shape: const CircleBorder(),
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.xSmall),
+            child: AnimatedBuilder(
+              animation: _sendButtonAnimation,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _sendButtonAnimation.value,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: _sendButtonAnimation.value,
+                    child: AnimatedButton(
+                      onPressed: canSend ? _handleSendMessage : null,
+                      isLoading: _isSending,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        padding: const EdgeInsets.all(8),
+                        minimumSize: const Size(40, 40),
+                        shape: const CircleBorder(),
+                      ),
+                      child: const Icon(Icons.send, size: 18),
                     ),
-                    child: const Icon(Icons.send, size: 18),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),

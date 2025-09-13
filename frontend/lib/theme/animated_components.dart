@@ -199,8 +199,9 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
       if (widget.isLoading) {
         _loadingController.repeat();
       } else {
-        _loadingController..stop()
-        ..reset();
+        _loadingController
+          ..stop()
+          ..reset();
       }
     }
 
@@ -800,8 +801,9 @@ class _AnimatedProgressIndicatorState extends State<AnimatedProgressIndicator> w
 
     if (widget.value != oldWidget.value && widget.value != null) {
       _previousProgress = _currentProgress;
-      _progressController..reset()
-      ..forward();
+      _progressController
+        ..reset()
+        ..forward();
 
       // Trigger success animation if reaching 100%
       if (widget.value! >= 1.0 && (oldWidget.value ?? 0.0) < 1.0) {
@@ -863,18 +865,20 @@ class _AnimatedProgressIndicatorState extends State<AnimatedProgressIndicator> w
 
         // Percentage text
         if (widget.showPercentage && widget.value != null) ...[
-          const SizedBox(height: 4),
-          AnimatedBuilder(
-            animation: _progressAnimation,
-            builder: (context, child) {
-              return Text(
-                '${(_currentProgress * 100).round()}%',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
-                ),
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: AnimatedBuilder(
+              animation: _progressAnimation,
+              builder: (context, child) {
+                return Text(
+                  '${(_currentProgress * 100).round()}%',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ],

@@ -110,34 +110,36 @@ class _ConversationImmediateLoadingWidgetState extends State<ConversationImmedia
               );
             },
           ),
-          const SizedBox(width: Insets.small),
 
           // Processing message with animated dots
-          Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n?.conversationProcessingMessage ?? 'Processing your request',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
+            child: Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n?.conversationProcessingMessage ?? 'Processing your request',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                AnimatedBuilder(
-                  animation: _dotsAnimation,
-                  builder: (BuildContext context, Widget? child) {
-                    final int dotCount = (_dotsAnimation.value * 3).floor() + 1;
-                    return Text(
-                      '.' * dotCount.clamp(1, 3),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  },
-                ),
-              ],
+                  AnimatedBuilder(
+                    animation: _dotsAnimation,
+                    builder: (BuildContext context, Widget? child) {
+                      final int dotCount = (_dotsAnimation.value * 3).floor() + 1;
+                      return Text(
+                        '.' * dotCount.clamp(1, 3),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ],

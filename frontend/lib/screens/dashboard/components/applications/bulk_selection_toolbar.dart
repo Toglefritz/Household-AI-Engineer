@@ -135,27 +135,30 @@ class BulkSelectionToolbar extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: Insets.medium),
-
           // Select All/None button
           if (onSelectAll != null && onSelectNone != null) ...[
-            _buildToolbarButton(
-              context: context,
-              icon: _allSelected ? Icons.deselect : Icons.select_all,
-              label: _allSelected ? l10n.selectNone : l10n.selectAll,
-              onPressed: _allSelected ? onSelectNone : onSelectAll,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.medium),
+              child: _buildToolbarButton(
+                context: context,
+                icon: _allSelected ? Icons.deselect : Icons.select_all,
+                label: _allSelected ? l10n.selectNone : l10n.selectAll,
+                onPressed: _allSelected ? onSelectNone : onSelectAll,
+              ),
             ),
-            const SizedBox(width: Insets.small),
           ],
 
           // Bulk delete button
           if (onBulkDelete != null && _canDeleteSelected) ...[
-            _buildToolbarButton(
-              context: context,
-              icon: Icons.delete_outline,
-              label: l10n.buttonDelete,
-              onPressed: () => _showBulkDeleteConfirmation(context),
-              color: colorScheme.error,
+            Padding(
+              padding: const EdgeInsets.only(left: Insets.small),
+              child: _buildToolbarButton(
+                context: context,
+                icon: Icons.delete_outline,
+                label: l10n.buttonDelete,
+                onPressed: () => _showBulkDeleteConfirmation(context),
+                color: colorScheme.error,
+              ),
             ),
           ],
         ],
@@ -202,13 +205,15 @@ class BulkSelectionToolbar extends StatelessWidget {
                 size: 18,
                 color: effectiveColor,
               ),
-              const SizedBox(width: Insets.xSmall),
-              Text(
-                label,
-                style: TextStyle(
-                  color: effectiveColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
+              Padding(
+                padding: const EdgeInsets.only(left: Insets.xSmall),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: effectiveColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ],

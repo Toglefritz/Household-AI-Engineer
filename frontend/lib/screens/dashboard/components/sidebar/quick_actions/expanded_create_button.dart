@@ -30,8 +30,10 @@ class _ExpandedCreateButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.add, size: 18),
-          const SizedBox(width: 8),
-          Text(AppLocalizations.of(context)!.buttonCreateNewApp),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(AppLocalizations.of(context)!.buttonCreateNewApp),
+          ),
         ],
       ),
     );

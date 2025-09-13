@@ -142,23 +142,26 @@ class ApplicationDetailsDialog extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(width: Insets.medium),
-
                   // Title and status
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          application.title,
-                          style: textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: colorScheme.onPrimaryContainer,
+                  Padding(
+                    padding: const EdgeInsets.only(left: Insets.medium),
+                    child: Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            application.title,
+                            style: textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: Insets.xxSmall),
-                        _buildStatusChip(context),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(top: Insets.xxSmall),
+                            child: _buildStatusChip(context),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -189,50 +192,53 @@ class ApplicationDetailsDialog extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: Insets.medium),
-
                     // Progress (if in development)
                     if (application.isInDevelopment && application.progress != null) ...[
-                      _buildSection(
-                        context: context,
-                        title: l10n.detailsDevelopmentProgress,
-                        child: Text(
-                          '${application.progress!.percentage}% • ${application.progress!.currentPhase}',
-                          style: textTheme.bodyMedium,
+                      Padding(
+                        padding: const EdgeInsets.only(top: Insets.medium),
+                        child: _buildSection(
+                          context: context,
+                          title: l10n.detailsDevelopmentProgress,
+                          child: Text(
+                            '${application.progress!.percentage}% • ${application.progress!.currentPhase}',
+                            style: textTheme.bodyMedium,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: Insets.medium),
                     ],
 
                     // Metadata
-                    _buildSection(
-                      context: context,
-                      title: l10n.detailsInformation,
-                      child: Column(
-                        children: [
-                          _buildInfoRow(
-                            context: context,
-                            label: l10n.detailsCreated,
-                            value: application.createdTimeDescription,
-                          ),
-                          _buildInfoRow(
-                            context: context,
-                            label: l10n.detailsLastUpdated,
-                            value: application.updatedTimeDescription,
-                          ),
-                          if (application.hasCategory)
+                    Padding(
+                      padding: const EdgeInsets.only(top: Insets.medium),
+                      child: _buildSection(
+                        context: context,
+                        title: l10n.detailsInformation,
+                        child: Column(
+                          children: [
                             _buildInfoRow(
                               context: context,
-                              label: l10n.detailsCategory,
-                              value: application.category!.displayName,
+                              label: l10n.detailsCreated,
+                              value: application.createdTimeDescription,
                             ),
-                          if (application.hasTags)
                             _buildInfoRow(
                               context: context,
-                              label: l10n.detailsTags,
-                              value: application.tags.join(', '),
+                              label: l10n.detailsLastUpdated,
+                              value: application.updatedTimeDescription,
                             ),
-                        ],
+                            if (application.hasCategory)
+                              _buildInfoRow(
+                                context: context,
+                                label: l10n.detailsCategory,
+                                value: application.category!.displayName,
+                              ),
+                            if (application.hasTags)
+                              _buildInfoRow(
+                                context: context,
+                                label: l10n.detailsTags,
+                                value: application.tags.join(', '),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -293,8 +299,10 @@ class ApplicationDetailsDialog extends StatelessWidget {
             color: colorScheme.onSurface,
           ),
         ),
-        const SizedBox(height: Insets.small),
-        child,
+        Padding(
+          padding: const EdgeInsets.only(top: Insets.small),
+          child: child,
+        ),
       ],
     );
   }
@@ -400,13 +408,15 @@ class ApplicationDetailsDialog extends StatelessWidget {
             size: 14,
             color: textColor,
           ),
-          const SizedBox(width: Insets.xxSmall),
-          Text(
-            application.status.displayName,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: textColor,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.xxSmall),
+            child: Text(
+              application.status.displayName,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: textColor,
+              ),
             ),
           ),
         ],
@@ -447,70 +457,70 @@ class ApplicationDetailsDialog extends StatelessWidget {
 
     // Restart button (for running applications)
     if (application.status == ApplicationStatus.running && onRestart != null) {
-      if (buttons.isNotEmpty) {
-        buttons.add(const SizedBox(width: Insets.small));
-      }
       buttons.add(
-        OutlinedButton.icon(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onRestart!(application);
-          },
-          icon: const Icon(Icons.restart_alt),
-          label: Text(l10n.buttonRestartApplication),
+        Padding(
+          padding: buttons.isNotEmpty ? const EdgeInsets.only(left: Insets.small) : EdgeInsets.zero,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onRestart!(application);
+            },
+            icon: const Icon(Icons.restart_alt),
+            label: Text(l10n.buttonRestartApplication),
+          ),
         ),
       );
     }
 
     // Stop button (for running applications)
     if (application.status == ApplicationStatus.running && onStop != null) {
-      if (buttons.isNotEmpty) {
-        buttons.add(const SizedBox(width: Insets.small));
-      }
       buttons.add(
-        OutlinedButton.icon(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onStop!(application);
-          },
-          icon: const Icon(Icons.stop),
-          label: Text(l10n.buttonStopApplication),
+        Padding(
+          padding: buttons.isNotEmpty ? const EdgeInsets.only(left: Insets.small) : EdgeInsets.zero,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onStop!(application);
+            },
+            icon: const Icon(Icons.stop),
+            label: Text(l10n.buttonStopApplication),
+          ),
         ),
       );
     }
 
     // Modify button
     if (application.canModify && onModify != null) {
-      if (buttons.isNotEmpty) {
-        buttons.add(const SizedBox(width: Insets.small));
-      }
       buttons.add(
-        OutlinedButton.icon(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onModify!(application);
-          },
-          icon: const Icon(Icons.edit),
-          label: Text(l10n.buttonModifyApplication),
+        Padding(
+          padding: buttons.isNotEmpty ? const EdgeInsets.only(left: Insets.small) : EdgeInsets.zero,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onModify!(application);
+            },
+            icon: const Icon(Icons.edit),
+            label: Text(l10n.buttonModifyApplication),
+          ),
         ),
       );
     }
 
     // Retry button (for failed applications)
     if (application.status == ApplicationStatus.failed && onModify != null) {
-      if (buttons.isNotEmpty) {
-        buttons.add(const SizedBox(width: Insets.small));
-      }
       buttons.add(
-        FilledButton.icon(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onModify!(application);
-          },
-          icon: const Icon(Icons.refresh),
-          label: Text(l10n.buttonRetryApplication),
-          style: FilledButton.styleFrom(
-            backgroundColor: Colors.orange,
+        Padding(
+          padding: buttons.isNotEmpty ? const EdgeInsets.only(left: Insets.small) : EdgeInsets.zero,
+          child: FilledButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onModify!(application);
+            },
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.buttonRetryApplication),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.orange,
+            ),
           ),
         ),
       );
@@ -518,16 +528,16 @@ class ApplicationDetailsDialog extends StatelessWidget {
 
     // Delete button
     if (onDelete != null && _canDelete(application)) {
-      if (buttons.isNotEmpty) {
-        buttons.add(const SizedBox(width: Insets.small));
-      }
       buttons.add(
-        OutlinedButton.icon(
-          onPressed: () => _showDeleteConfirmation(context),
-          icon: const Icon(Icons.delete_outline),
-          label: Text(l10n.buttonDeleteApplication),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.error,
+        Padding(
+          padding: buttons.isNotEmpty ? const EdgeInsets.only(left: Insets.small) : EdgeInsets.zero,
+          child: OutlinedButton.icon(
+            onPressed: () => _showDeleteConfirmation(context),
+            icon: const Icon(Icons.delete_outline),
+            label: Text(l10n.buttonDeleteApplication),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
           ),
         ),
       );

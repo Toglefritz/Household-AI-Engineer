@@ -74,25 +74,30 @@ class _FilterPanelState extends State<FilterPanel> {
                 // Filter panel header
                 _buildHeader(context),
 
-                const SizedBox(height: Insets.medium),
-
                 // Category filters
-                _buildCategorySection(context),
-
-                const SizedBox(height: Insets.medium),
+                Padding(
+                  padding: const EdgeInsets.only(top: Insets.medium),
+                  child: _buildCategorySection(context),
+                ),
 
                 // Status filters
-                _buildStatusSection(context),
-
-                const SizedBox(height: Insets.medium),
+                Padding(
+                  padding: const EdgeInsets.only(top: Insets.medium),
+                  child: _buildStatusSection(context),
+                ),
 
                 // Date range filters
-                _buildDateSection(context),
+                Padding(
+                  padding: const EdgeInsets.only(top: Insets.medium),
+                  child: _buildDateSection(context),
+                ),
 
                 // Clear filters button
                 if (widget.controller.hasActiveFilters) ...[
-                  const SizedBox(height: Insets.medium),
-                  _buildClearFiltersButton(context),
+                  Padding(
+                    padding: const EdgeInsets.only(top: Insets.medium),
+                    child: _buildClearFiltersButton(context),
+                  ),
                 ],
               ],
             ),
@@ -118,29 +123,33 @@ class _FilterPanelState extends State<FilterPanel> {
           size: 20,
           color: Theme.of(context).colorScheme.primary,
         ),
-        const SizedBox(width: Insets.small),
-        Text(
-          AppLocalizations.of(context)!.filters,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.only(left: Insets.small),
+          child: Text(
+            AppLocalizations.of(context)!.filters,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         if (activeFilterCount > 0) ...[
-          const SizedBox(width: Insets.small),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Insets.xSmall,
-              vertical: 2,
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              activeFilterCount.toString(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Insets.xSmall,
+                vertical: 2,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                activeFilterCount.toString(),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -228,8 +237,10 @@ class _FilterPanelState extends State<FilterPanel> {
                   size: 16,
                   color: status.color,
                 ),
-                const SizedBox(width: Insets.small),
-                Text(status.displayName),
+                Padding(
+                  padding: const EdgeInsets.only(left: Insets.small),
+                  child: Text(status.displayName),
+                ),
               ],
             ),
             subtitle: Text(

@@ -75,10 +75,10 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
     _searchController = search.ApplicationSearchController();
 
     // Listen to search controller changes
-    _searchController..addListener(_onSearchResultsChanged)
-
-    // Initialize with current applications
-    ..updateApplications(widget.applications);
+    _searchController
+      ..addListener(_onSearchResultsChanged)
+      // Initialize with current applications
+      ..updateApplications(widget.applications);
   }
 
   @override
@@ -93,8 +93,9 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
 
   @override
   void dispose() {
-    _searchController..removeListener(_onSearchResultsChanged)
-    ..dispose();
+    _searchController
+      ..removeListener(_onSearchResultsChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -133,20 +134,22 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
 
             // Filter panel toggle button
             if (widget.showFilterPanel) ...[
-              const SizedBox(width: Insets.small),
-              IconButton(
-                onPressed: _toggleFilterPanel,
-                icon: Icon(
-                  _filterPanelExpanded ? Icons.filter_list_off : Icons.filter_list,
-                ),
-                tooltip: _filterPanelExpanded ? 'Hide Filters' : 'Show Filters',
-                style: IconButton.styleFrom(
-                  backgroundColor: _searchController.hasActiveFilters
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : null,
-                  foregroundColor: _searchController.hasActiveFilters
-                      ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : null,
+              Padding(
+                padding: const EdgeInsets.only(left: Insets.small),
+                child: IconButton(
+                  onPressed: _toggleFilterPanel,
+                  icon: Icon(
+                    _filterPanelExpanded ? Icons.filter_list_off : Icons.filter_list,
+                  ),
+                  tooltip: _filterPanelExpanded ? 'Hide Filters' : 'Show Filters',
+                  style: IconButton.styleFrom(
+                    backgroundColor: _searchController.hasActiveFilters
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : null,
+                    foregroundColor: _searchController.hasActiveFilters
+                        ? Theme.of(context).colorScheme.onPrimaryContainer
+                        : null,
+                  ),
                 ),
               ),
             ],
@@ -155,32 +158,38 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
 
         // Sort controls
         if (widget.showSortControls) ...[
-          const SizedBox(height: Insets.medium),
-          SortControls(
-            controller: _searchController,
-            onSortChanged: (sortOption) {
-              // Optional: Add analytics or additional handling
-            },
-          ),
-        ],
-
-        // Filter panel (expandable)
-        if (widget.showFilterPanel && _filterPanelExpanded) ...[
-          const SizedBox(height: Insets.medium),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            child: FilterPanel(
+          Padding(
+            padding: const EdgeInsets.only(top: Insets.medium),
+            child: SortControls(
               controller: _searchController,
-              onFiltersChanged: () {
+              onSortChanged: (sortOption) {
                 // Optional: Add analytics or additional handling
               },
             ),
           ),
         ],
 
+        // Filter panel (expandable)
+        if (widget.showFilterPanel && _filterPanelExpanded) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: Insets.medium),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              child: FilterPanel(
+                controller: _searchController,
+                onFiltersChanged: () {
+                  // Optional: Add analytics or additional handling
+                },
+              ),
+            ),
+          ),
+        ],
+
         // Search results summary
-        const SizedBox(height: Insets.medium),
-        _buildResultsSummary(context),
+        Padding(
+          padding: const EdgeInsets.only(top: Insets.medium),
+          child: _buildResultsSummary(context),
+        ),
       ],
     );
   }
@@ -219,14 +228,16 @@ class _SearchAndFilterInterfaceState extends State<SearchAndFilterInterface> {
                 size: 16,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(width: Insets.small),
 
               // Results text
-              Expanded(
-                child: Text(
-                  _getResultsSummaryText(context, resultCount, totalCount, searchQuery, hasActiveFilters),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+              Padding(
+                padding: const EdgeInsets.only(left: Insets.small),
+                child: Expanded(
+                  child: Text(
+                    _getResultsSummaryText(context, resultCount, totalCount, searchQuery, hasActiveFilters),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),

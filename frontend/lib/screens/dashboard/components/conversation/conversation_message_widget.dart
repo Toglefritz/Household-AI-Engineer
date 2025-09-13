@@ -87,27 +87,17 @@ class ConversationMessageWidget extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Column(
-      crossAxisAlignment: message.isUserMessage
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
+      crossAxisAlignment: message.isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(Insets.small),
           decoration: BoxDecoration(
-            color: message.isUserMessage
-                ? colorScheme.primary
-                : colorScheme.surface,
+            color: message.isUserMessage ? colorScheme.primary : colorScheme.surface,
             borderRadius: BorderRadius.circular(16).copyWith(
-              topLeft: message.isSystemMessage
-                  ? Radius.zero
-                  : const Radius.circular(16),
-              topRight: message.isUserMessage
-                  ? Radius.zero
-                  : const Radius.circular(16),
+              topLeft: message.isSystemMessage ? Radius.zero : const Radius.circular(16),
+              topRight: message.isUserMessage ? Radius.zero : const Radius.circular(16),
             ),
-            border: message.isSystemMessage
-                ? Border.all(color: colorScheme.outline.withValues(alpha: 0.3))
-                : null,
+            border: message.isSystemMessage ? Border.all(color: colorScheme.outline.withValues(alpha: 0.3)) : null,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,9 +105,7 @@ class ConversationMessageWidget extends StatelessWidget {
               Text(
                 message.content,
                 style: textTheme.bodyMedium?.copyWith(
-                  color: message.isUserMessage
-                      ? colorScheme.onPrimary
-                      : colorScheme.onSurface,
+                  color: message.isUserMessage ? colorScheme.onPrimary : colorScheme.onSurface,
                 ),
               ),
 
@@ -127,9 +115,7 @@ class ConversationMessageWidget extends StatelessWidget {
                 child: Text(
                   message.formattedTimestamp,
                   style: textTheme.bodySmall?.copyWith(
-                    color: message.isUserMessage
-                        ? colorScheme.onPrimary.withValues(alpha: 0.7)
-                        : colorScheme.tertiary,
+                    color: message.isUserMessage ? colorScheme.onPrimary.withValues(alpha: 0.7) : colorScheme.tertiary,
                     fontSize: 11,
                   ),
                 ),
@@ -140,8 +126,10 @@ class ConversationMessageWidget extends StatelessWidget {
 
         // Actions (only for system messages)
         if (message.hasActions && message.isSystemMessage) ...[
-          const SizedBox(height: Insets.xSmall),
-          _buildMessageActions(context),
+          Padding(
+            padding: const EdgeInsets.only(top: Insets.xSmall),
+            child: _buildMessageActions(context),
+          ),
         ],
       ],
     );
@@ -228,25 +216,27 @@ class ConversationMessageWidget extends StatelessWidget {
       child: Row(
         children: [
           _buildAvatar(context, isSystem: true),
-          const SizedBox(width: Insets.small),
-          Container(
-            padding: const EdgeInsets.all(Insets.small),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(16).copyWith(
-                topLeft: Radius.zero,
+          Padding(
+            padding: const EdgeInsets.only(left: Insets.small),
+            child: Container(
+              padding: const EdgeInsets.all(Insets.small),
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                borderRadius: BorderRadius.circular(16).copyWith(
+                  topLeft: Radius.zero,
+                ),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
-              border: Border.all(
-                color: colorScheme.outline.withValues(alpha: 0.3),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTypingDot(context, delay: 0),
+                  _buildTypingDot(context, delay: 200),
+                  _buildTypingDot(context, delay: 400),
+                ],
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTypingDot(context, delay: 0),
-                _buildTypingDot(context, delay: 200),
-                _buildTypingDot(context, delay: 400),
-              ],
             ),
           ),
         ],
