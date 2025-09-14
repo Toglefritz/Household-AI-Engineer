@@ -76,6 +76,107 @@ Transform your home management with custom applications:
 - **Error Recovery** - Robust error handling with automatic recovery procedures
 - **Extensible Architecture** - Clean separation of concerns for future enhancements
 
+## Project Components
+
+The Dwellware system consists of three main components working together to provide a seamless application development experience:
+
+### 1. Dwellware Frontend Dashboard
+
+The **Flutter Desktop Dashboard** serves as your primary interface for managing and creating custom household applications. Built with Flutter for macOS, it provides an intuitive, conversational approach to application development.
+
+**Key Features:**
+- 🖥️ **Native macOS Interface** - Beautiful Flutter desktop application optimized for macOS
+- 🗂️ **Application Grid View** - Visual management of all your custom applications with responsive design
+- 💬 **Conversational Interface** - Natural language input for describing application requirements
+- ⚡ **Real-Time Progress Monitoring** - Live updates during application development with WebSocket integration
+- 🚀 **One-Click Application Launch** - Direct launching of completed applications from the dashboard
+- 🎯 **Context Menu Actions** - Right-click functionality for application management (favorites, deletion, etc.)
+- 📱 **Responsive Design** - Adaptive layout that works across different screen sizes
+
+**Video Demonstration:**
+The [Dwellware Overview Demo](https://www.youtube.com/watch?v=akMIcMcPc9w&t=8s) showcases the complete user experience, from opening the dashboard to creating a new application through natural language conversation. You'll see the intuitive grid interface, the conversational request process, and real-time progress updates as applications are developed. The demo also highlights the responsive design and context menu functionality that makes managing multiple applications effortless.
+
+**Technical Architecture:**
+- Built with Flutter 3.x for cross-platform desktop support
+- Implements MVC architecture pattern with strict separation of concerns
+- Uses WebSocket connections for real-time progress updates
+- REST API integration for application metadata management
+- Localized interface supporting multiple languages
+- Comprehensive error handling and user feedback systems
+
+### 2. Kiro Communication Bridge Extension
+
+The **Kiro Communication Bridge** is a Kiro IDE extension that transforms the IDE into a headless development environment for the Dwellware system. It provides the critical link between the Flutter frontend and Kiro's development capabilities.
+
+**Key Features:**
+- 🔗 **REST API Server** - HTTP endpoints for application creation, job management, and status monitoring
+- 🏗️ **Workspace Management** - Automated creation of isolated development environments for each application
+- ⚙️ **Job Orchestration** - Complete lifecycle management of development jobs including queuing, execution, and cleanup
+- 🔧 **Configuration Management** - Typed access to the Kiro IDE settings with validation and intelligent defaults
+- 🚨 **Port Conflict Resolution** - Automatic detection and resolution of port conflicts across multiple Kiro instances
+- 📊 **Health Monitoring** - Continuous monitoring of server health and automatic recovery procedures
+
+**Video Demonstration:**
+The communication bridge extension process is explained in the [Dwellware Communication Bridge Explainer](https://youtu.be/Rhtd7WHvbME), which shows how the communication bridge orchestrates the entire development workflow. You'll see how user requests are processed, how Kiro sessions are managed, and how progress updates flow back to the frontend in real-time.
+
+**Technical Architecture:**
+- TypeScript-based Kiro IDE extension with comprehensive type safety
+- Express.js REST API server with CORS support and authentication
+- WebSocket server for bidirectional real-time communication
+- Modular architecture with separate managers for jobs, workspaces, and configuration
+- Automatic activation based on workspace content and startup events
+- Robust error handling with graceful degradation and recovery mechanisms
+- Comprehensive logging and debugging capabilities
+
+**Configuration Options:**
+- API server port and host configuration
+- WebSocket server settings
+- Job concurrency limits and timeout settings
+- Workspace directory management
+- Logging levels and debug options
+- Auto-start behavior control
+
+### 3. Kiro Command Research Extension
+
+The **Kiro Command Research Tool** is a specialized Kiro IDE extension designed to discover, document, and test Kiro IDE commands for remote orchestration. It serves as the foundation for understanding Kiro's capabilities and building reliable automation.
+
+**Key Features:**
+- 🔍 **Command Discovery** - Automated discovery of available Kiro commands through multiple detection methods
+- 🧪 **Safe Command Testing** - Controlled testing environment with parameter validation and rollback capabilities
+- 📚 **Documentation Generation** - Automatic generation of comprehensive command documentation with examples
+- 🎛️ **Interactive Command Explorer** - Tree view interface for browsing and managing discovered commands
+- 📊 **Research Dashboard** - Centralized interface for monitoring discovery progress and results
+- 🔬 **Parameter Research** - Deep analysis of command parameters, types, and validation rules
+- 📤 **Export Capabilities** - Multiple export formats for integration with other systems
+- 🔒 **Safety Mechanisms** - Built-in safeguards to prevent destructive operations during research
+
+**Video Demonstration:**
+The research capabilities are demonstrated through the [Command Research  Explainer](https://youtu.be/hcOhmLfT0Es) This video explains the extension's comprehensive command explorer, the interactive testing interface, and the detailed documentation generation capabilities that make Kiro command research both thorough and safe.
+
+**Technical Architecture:**
+- TypeScript-based extension with modular component architecture
+- Multiple command discovery strategies (API introspection, documentation parsing, runtime analysis)
+- Comprehensive storage system for research results and command metadata
+- Interactive UI components including tree views, dashboards, and detail panels
+- Export system supporting JSON, Markdown, and API documentation formats
+- Safety mechanisms including command validation, parameter checking, and operation rollback
+- Extensive logging and error tracking for research operations
+
+**Research Capabilities:**
+- **Command Discovery**: Automated identification of available commands across Kiro's API surface
+- **Parameter Analysis**: Deep inspection of command parameters, types, and validation requirements
+- **Usage Pattern Detection**: Analysis of common command usage patterns and workflows
+- **Documentation Extraction**: Automated extraction and formatting of command documentation
+- **Test Case Generation**: Creation of comprehensive test cases for command validation
+- **Integration Mapping**: Understanding of how commands integrate with the broader Kiro ecosystem
+
+**User Interface Components:**
+- **Command Explorer**: Hierarchical view of discovered commands with search and filtering
+- **Research Dashboard**: Overview of discovery progress, statistics, and recent findings
+- **Testing Interface**: Safe environment for command execution with parameter validation
+- **Documentation Viewer**: Formatted display of generated command documentation
+- **Export Manager**: Tools for exporting research results in various formats
+
 ## Disclaimer
 
 In the creation of this project, artificial intelligence (AI) tools have been utilized. These tools have assisted in various stages of the project's development, from initial code generation to the optimization of algorithms.
